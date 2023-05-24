@@ -1,6 +1,6 @@
 # Ciena Waveserver5 Collection for Ansible
 <!-- Add CI and code coverage badges here. Samples included below. -->
-[![CI](https://github.com/ansible-collections/REPONAMEHERE/workflows/CI/badge.svg?event=push)](https://github.com/ansible-collections/REPONAMEHERE/actions) [![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/REPONAMEHERE)](https://codecov.io/gh/ansible-collections/REPONAMEHERE)
+[![CI](https://github.com/ciena/ciena.waveserver5/workflows/CI/badge.svg?event=push)](https://github.com/ciena/ciena.waveserver5/actions) [![Codecov](https://img.shields.io/codecov/c/github/ciena/ciena.waveserver5)](https://codecov.io/gh/ciena/ciena.waveserver5)
 
 <!-- Describe the collection and why a user would want to use it. What does the collection do? -->
 
