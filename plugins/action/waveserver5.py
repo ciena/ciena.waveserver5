@@ -45,7 +45,8 @@ class ActionModule(ActionNetworkModule):
         if persistent_connection in ("network_cli"):
             return {
                 "failed": True,
-                "msg": "Connection type %s is not valid for this module" % self._play_context.connection,
+                "msg": "Connection type %s is not valid for this module"
+                % self._play_context.connection,
             }
 
         if persistent_connection in ("netconf"):
@@ -53,7 +54,8 @@ class ActionModule(ActionNetworkModule):
             if any(provider.values()):
                 if not (module_name == "waveserver5_facts"):
                     display.warning(
-                        "provider is unnecessary when using %s and will be ignored" % self._play_context.connection
+                        "provider is unnecessary when using %s and will be ignored"
+                        % self._play_context.connection
                     )
                     del self._task.args["provider"]
 
@@ -67,7 +69,8 @@ class ActionModule(ActionNetworkModule):
         else:
             return {
                 "failed": True,
-                "msg": "Connection type %s is not valid for this module" % self._play_context.connection,
+                "msg": "Connection type %s is not valid for this module"
+                % self._play_context.connection,
             }
 
         result = super(ActionModule, self).run(task_vars=task_vars)
