@@ -62,10 +62,14 @@ class Default(FactsBase):
         config_filter = '<components xmlns="http://openconfig.net/yang/platform"/>'
         reply = get(self.module, filter=("subtree", config_filter))
         root = remove_ns(reply)
-        serial_number = root.xpath("//component[name='Waveserver']/state/serial-no")[0].text
+        serial_number = root.xpath("//component[name='Waveserver']/state/serial-no")[
+            0
+        ].text
         platform = root.xpath("//component[name='Waveserver']/state/id")[0].text
         model = root.xpath("//component[name='Waveserver']/state/description")[0].text
-        network_os_version = root.xpath("//component[name='CM-1']/state/software-version")[0].text
+        network_os_version = root.xpath(
+            "//component[name='CM-1']/state/software-version"
+        )[0].text
 
         self.facts["serialnum"] = serial_number
         self.facts["model"] = model

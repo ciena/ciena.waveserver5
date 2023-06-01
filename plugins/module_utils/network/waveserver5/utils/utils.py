@@ -11,7 +11,7 @@ def config_is_diff(new_config, actual_config):
     """Compares actual configuration with intended new
 
     :rtype: Bool
-    :returns: True if configs are equal, False if not. 
+    :returns: True if configs are equal, False if not.
 
     """
     return new_config != actual_config
