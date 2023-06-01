@@ -94,9 +94,7 @@ def get_connection(module):
 
     capabilities = get_capabilities(module)
     network_api = capabilities.get("network_api")
-    if network_api == "cliconf":
-        module._waveserver5_connection = Connection(module._socket_path)
-    elif network_api == "netconf":
+    if network_api == "netconf":
         module._waveserver5_connection = NetconfConnection(module._socket_path)
     else:
         module.fail_json(msg="Invalid connection type %s" % network_api)
