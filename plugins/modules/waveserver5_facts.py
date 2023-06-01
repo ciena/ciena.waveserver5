@@ -23,7 +23,7 @@ version_added: 1.0.0
 author:
 - Jeff Groom
 notes:
-- Tested against SAOS 10-4.
+- Tested against Waveserver 5.
 options:
   gather_subset:
     description:

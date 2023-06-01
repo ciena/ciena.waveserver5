@@ -26,20 +26,11 @@ import copy
 from ansible_collections.ansible.netcommon.plugins.action.network import (
     ActionModule as ActionNetworkModule,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    load_provider,
-)
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
-    waveserver5_provider_spec,
-)
 from ansible.utils.display import Display
 
 display = Display()
 
-CLI_SUPPORTED_MODULES = [
-    "waveserver5_netconf",
-    "waveserver5_ping",
-]
+SUPPORTED_MODULES = ["aaa"]
 
 
 class ActionModule(ActionNetworkModule):
@@ -47,96 +38,36 @@ class ActionModule(ActionNetworkModule):
         del tmp  # tmp no longer has any effect
 
         module_name = self._task.action.split(".")[-1]
-        self._config_module = True if module_name == "saos_config" else False
+        self._config_module = False
         persistent_connection = self._play_context.connection.split(".")[-1]
         warnings = []
 
-        if persistent_connection in ("netconf", "network_cli"):
+        if persistent_connection in ("network_cli"):
+            return {
+                "failed": True,
+                "msg": "Connection type %s is not valid for this module" % self._play_context.connection,
+            }
+
+        if persistent_connection in ("netconf"):
             provider = self._task.args.get("provider", {})
             if any(provider.values()):
                 if not (module_name == "waveserver5_facts"):
                     display.warning(
-                        "provider is unnecessary when using %s and will be ignored"
-                        % self._play_context.connection
+                        "provider is unnecessary when using %s and will be ignored" % self._play_context.connection
                     )
                     del self._task.args["provider"]
 
-            if (
-                persistent_connection == "network_cli"
-                and module_name not in CLI_SUPPORTED_MODULES
-            ) or (
-                persistent_connection == "netconf"
-                and module_name in CLI_SUPPORTED_MODULES[0:2]
-            ):
+            if module_name not in SUPPORTED_MODULES:
                 return {
                     "failed": True,
                     "msg": "Connection type '%s' is not valid for '%s' module. "
                     "Please see https://docs.ansible.com/ansible/latest/network/user_guide/platform_junos.html"
                     % (self._play_context.connection, module_name),
                 }
-
-        elif self._play_context.connection == "local":
-            provider = load_provider(waveserver5_provider_spec, self._task.args)
-            pc = copy.deepcopy(self._play_context)
-            pc.connection = "ansible.netcommon.network_cli"
-            pc.network_os = "ciena.waveserver5.waveserver5"
-            pc.remote_addr = provider["host"] or self._play_context.remote_addr
-            pc.port = int(provider["port"] or self._play_context.port or 22)
-            pc.remote_user = provider["username"] or self._play_context.connection_user
-            pc.password = provider["password"] or self._play_context.password
-            pc.private_key_file = (
-                provider["ssh_keyfile"] or self._play_context.private_key_file
-            )
-
-            connection = self._shared_loader_obj.connection_loader.get(
-                "ansible.netcommon.persistent",
-                pc,
-                sys.stdin,
-                task_uuid=self._task._uuid,
-            )
-
-            # TODO: Remove below code after ansible minimal is cut out
-            if connection is None:
-                pc.connection = "network_cli"
-                pc.network_os = "waveserver5"
-                connection = self._shared_loader_obj.connection_loader.get(
-                    "persistent", pc, sys.stdin, task_uuid=self._task._uuid
-                )
-
-            display.vvv(
-                "using connection plugin %s (was local)" % pc.connection, pc.remote_addr
-            )
-
-            command_timeout = (
-                int(provider["timeout"])
-                if provider["timeout"]
-                else connection.get_option("persistent_command_timeout")
-            )
-            connection.set_options(
-                direct={"persistent_command_timeout": command_timeout}
-            )
-
-            socket_path = connection.run()
-            display.vvvv("socket_path: %s" % socket_path, pc.remote_addr)
-            if not socket_path:
-                return {
-                    "failed": True,
-                    "msg": "unable to open shell. Please see: "
-                    + "https://docs.ansible.com/ansible/network_debug_troubleshooting.html#unable-to-open-shell",
-                }
-
-            task_vars["ansible_socket"] = socket_path
-            warnings.append(
-                [
-                    "connection local support for this module is deprecated and will be removed in version 2.14, use connection %s"
-                    % pc.connection
-                ]
-            )
         else:
             return {
                 "failed": True,
-                "msg": "Connection type %s is not valid for this module"
-                % self._play_context.connection,
+                "msg": "Connection type %s is not valid for this module" % self._play_context.connection,
             }
 
         result = super(ActionModule, self).run(task_vars=task_vars)
