@@ -133,3 +133,4 @@ dmypy.json
 
 # VSCode
 .vscode/settings.json
+tests/static/cache/
