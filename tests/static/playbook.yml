@@ -11,6 +11,10 @@
         gather_subset:
           - all
       connection: netconf
-    - name: print facts
-      debug:
-        var: ansible_facts
+    - name: set hostname
+      ciena.waveserver5.waveserver5_system:
+        config:
+          config:
+            hostname: WS-1
+        state: merged
+      connection: netconf
