@@ -39,7 +39,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: system
-version_added: '0.0.1'
+version_added: 0.0.1
 short_description: Waveserver System configuration data and operational data.
 description: Waveserver System configuration data and operational data.
 author: Jeff Groom (jgroom@ciena.com)
@@ -73,37 +73,21 @@ options:
 EXAMPLES = """
 # Using merged
 
-- name: Configure classifier
-  ciena.saos10.saos10_classifiers:
+- name: Configure system hostname
+  ciena.waveserver5.waveserver5_system:
     config:
-      - name: untagged
-        filter-entry:
-          - filter-parameter: vtag-stack
-            untagged-exclude-priority-tagged: false
-      - name: foo-100
-        filter-entry:
-          - filter-parameter: vtag-stack
-            vtags:
-              - tag: 1
-                vlan-id: 100
+      config:
+        hostname: foo
     state: merged
 
 
 # Using overridden
 
-- name: Configure classifier
-  ciena.saos10.saos10_classifiers:
+- name: Configure system hostname
+  ciena.waveserver5.waveserver5_system:
     config:
-      - name: untagged
-        filter-entry:
-          - filter-parameter: vtag-stack
-            untagged-exclude-priority-tagged: false
-      - name: foo-100
-        filter-entry:
-          - filter-parameter: vtag-stack
-            vtags:
-              - tag: 1
-                vlan-id: 100
+      config:
+        hostname: foo
     state: overridden
 
 

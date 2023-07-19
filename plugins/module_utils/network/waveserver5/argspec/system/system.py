@@ -25,6 +25,10 @@
 """
 The arg spec for the waveserver5_system module
 """
+from __future__ import absolute_import, division, print_function
+
+
+__metaclass__ = type
 
 
 class SystemArgs(object):  # pylint: disable=R0903

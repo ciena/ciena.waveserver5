@@ -10,6 +10,12 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
 created
 """
+from __future__ import absolute_import, division, print_function
+
+
+__metaclass__ = type
+
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
@@ -35,7 +41,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.utils.utils import (
     config_is_diff,
 )
-from lxml import etree
 
 
 class System(ConfigBase):
@@ -117,10 +122,7 @@ class System(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-
-        NSMAP = {None: "http://openconfig.net/yang/system"}
-        root = etree.Element("system", nsmap=NSMAP)
-
+        root = build_root_xml_node("system")
         state = self._module.params["state"]
         if state == "overridden":
             config_xmls = self._state_overridden(want, have)
@@ -133,12 +135,10 @@ class System(ConfigBase):
 
         for xml in config_xmls:
             root.append(xml)
-
-        data = xml_to_string(root)
+        data = remove_namespaces(xml_to_string(root))
         root = fromstring(to_bytes(data, errors="surrogate_then_replace"))
 
         return xml_to_string(root)
-
 
     def _state_replaced(self, want, have):
         """The command generator when state is replaced

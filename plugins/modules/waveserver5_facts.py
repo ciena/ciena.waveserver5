@@ -19,7 +19,7 @@ description:
   places the facts gathered in the fact tree keyed by the respective resource name.  The
   facts module will always collect a base set of facts from the device and can enable
   or disable collection of additional facts.
-version_added: 1.0.0
+version_added: 0.0.1
 author:
 - Jeff Groom
 notes:
