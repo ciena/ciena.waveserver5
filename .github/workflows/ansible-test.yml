@@ -172,21 +172,12 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          # The commented branches below are EOL,
-          # do you really need your collection to support them if it still does?
-          # - stable-2.9 # Only if your collection supports Ansible 2.9
-          # - stable-2.10 # Only if your collection supports ansible-base 2.10
-          # - stable-2.11 # Only if your collection supports ansible-core 2.11
           - stable-2.12
           - stable-2.13
           - stable-2.14
           - devel
         # - milestone
         python:
-          - '2.6'
-          - '2.7'
-          - '3.5'
-          - '3.6'
           - '3.7'
           - '3.8'
           - '3.9'
