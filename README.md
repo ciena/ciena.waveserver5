@@ -10,7 +10,7 @@ The Ansible Ciena Waveserver 5 collection includes a variety of Ansible content 
 
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.9.10,<=2.13**.
+This collection has been tested against following Ansible versions: **>=2.12**.
 
 For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
 fully qualified collection name (for example, `ciena.waveserver5.waveserver5`).
