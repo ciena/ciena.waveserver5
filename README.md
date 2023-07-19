@@ -1,119 +1,104 @@
 # Ciena Waveserver5 Collection for Ansible
+
 <!-- Add CI and code coverage badges here. Samples included below. -->
+
 [![CI](https://github.com/ciena/ciena.waveserver5/workflows/CI/badge.svg?event=push)](https://github.com/ciena/ciena.waveserver5/actions) [![Codecov](https://img.shields.io/codecov/c/github/ciena/ciena.waveserver5)](https://codecov.io/gh/ciena/ciena.waveserver5)
 
-<!-- Describe the collection and why a user would want to use it. What does the collection do? -->
+The Ansible Ciena Waveserver 5 collection includes a variety of Ansible content to help automate the management of Ciena Waveserver 5 network appliances.
 
-## Code of Conduct
+<!--start requires_ansible-->
 
-We follow the [Ansible Code of Conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html) in all our interactions within this project.
+## Ansible version compatibility
 
-If you encounter abusive behavior, please refer to the [policy violations](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html#policy-violations) section of the Code for information on how to raise a complaint.
+This collection has been tested against following Ansible versions: **>=2.9.10,<=2.13**.
 
-<!-- ## Communication
+For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
+fully qualified collection name (for example, `ciena.waveserver5.waveserver5`).
+Plugins and modules within a collection may be tested with only specific Ansible versions.
+A collection may contain metadata that identifies these versions.
+PEP440 is the schema used to describe the versions of Ansible.
 
-We announce releases and important changes through Ansible's [The Bullhorn newsletter](https://github.com/ansible/community/wiki/News#the-bullhorn). Be sure you are [subscribed](https://eepurl.com/gZmiEP).
-
-Join us in the `#ansible` (general use questions and support), `#ansible-community` (community and collection development questions), and other [IRC channels](https://docs.ansible.com/ansible/devel/community/communication.html#irc-channels).
-
-We take part in the global quarterly [Ansible Contributor Summit](https://github.com/ansible/community/wiki/Contributor-Summit) virtually or in-person. Track [The Bullhorn newsletter](https://eepurl.com/gZmiEP) and join us.
-
-For more information about communication, refer to the [Ansible Communication guide](https://docs.ansible.com/ansible/devel/community/communication.html). -->
-
-## Contributing to this collection
-
-<!--Describe how the community can contribute to your collection. At a minimum, fill up and include the CONTRIBUTING.md file containing how and where users can create issues to report problems or request features for this collection. List contribution requirements, including preferred workflows and necessary testing, so you can benefit from community PRs. If you are following general Ansible contributor guidelines, you can link to - [Ansible Community Guide](https://docs.ansible.com/ansible/devel/community/index.html). List the current maintainers (contributors with write or higher access to the repository). The following can be included:-->
-
-The content of this collection is made by people like you, a community of individuals collaborating on making the world better through developing automation software.
-
-We are actively accepting new contributors.
-
-Any kind of contribution is very welcome.
-
-You don't know how to start? Refer to our [contribution guide](CONTRIBUTING.md)!
-
-We use the following guidelines:
-
-* [CONTRIBUTING.md](CONTRIBUTING.md)
-* [REVIEW_CHECKLIST.md](REVIEW_CHECKLIST.md)
-* [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html)
-* [Ansible Development Guide](https://docs.ansible.com/ansible/devel/dev_guide/index.html)
-* [Ansible Collection Development Guide](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections)
-
-## Collection maintenance
-
-The current maintainers are listed in the [MAINTAINERS](MAINTAINERS) file. If you have questions or need help, feel free to mention them in the proposals.
-
-To learn how to maintain / become a maintainer of this collection, refer to the [Maintainer guidelines](MAINTAINING.md).
-
-## Tested with Ansible
-
-<!-- List the versions of Ansible the collection has been tested with. Must match what is in galaxy.yml. -->
-
-## External requirements
-
-<!-- List any external resources the collection depends on, for example minimum versions of an OS, libraries, or utilities. Do not list other Ansible collections here. -->
+<!--end requires_ansible-->
 
 ### Supported connections
-<!-- Optional. If your collection supports only specific connection types (such as HTTPAPI, netconf, or others), list them here. -->
+
+The Ciena Waveserver5 collection supports `netconf` connections.
 
 ## Included content
 
-<!-- Galaxy will eventually list the module docs within the UI, but until that is ready, you may need to either describe your plugins etc here, or point to an external docsite to cover that information. -->
+<!--start collection content-->
+### Netconf plugins
+Name | Description
+--- | ---
+[ciena.waveserver5.waveserver5](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_netconf.rst)|Use waveserver5 netconf plugin to run netconf commands on Ciena waveserver5 platform
 
-## Using this collection
+### Modules
+Name | Description
+--- | ---
+[ciena.waveserver5.waveserver5_system](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_system_module.rst)|Manage system resources on Ciena Waveserver 5 devices
 
-### Installing the Collection from Ansible Galaxy
+<!--end collection content-->
 
-Before using this collection, you need to install it with the Ansible Galaxy command-line tool:
+## Installing this collection
+
+Install the Ciena Waveserver 5 collection with the Ansible Galaxy CLI:
+
 ```bash
 ansible-galaxy collection install ciena.waveserver5
 ```
 
 You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
+
 ```yaml
 ---
 collections:
   - name: ciena.waveserver5
 ```
 
-Note that if you install the collection from Ansible Galaxy, it will not be upgraded automatically when you upgrade the `ansible` package. To upgrade the collection to the latest available version, run the following command:
-```bash
-ansible-galaxy collection install ciena.waveserver5 --upgrade
+## Using this collection
+
+This collection includes [network resource modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html).
+
+### Using modules from the Ciena Waveserver 5 collection in your playbooks
+
+You can call modules by their Fully Qualified Collection Namespace (FQCN), such as `ciena.waveserver5.waveserver5_system`.
+The following example task replaces configuration changes in the existing configuration on a Ciena Waveserver 5 network device, using the FQCN:
+
+```yaml
+---
+- hosts: all
+  collections:
+    - ciena.waveserver5
+  gather_facts: false
+  name: Gather facts for ciena device Saos 10
+  tasks:
+    - name: get device facts for Saos 10
+      ciena.waveserver5.waveserver5_facts:
+        gather_subset:
+          - all
+      connection: netconf
+    - name: Configure system hostname
+      ciena.waveserver5.waveserver5_system:
+        config:
+          config:
+            hostname: foo
+        state: merged
 ```
 
-You can also install a specific version of the collection, for example, if you need to downgrade when something is broken in the latest version (please report an issue in this repository). Use the following syntax to install version `0.1.0`:
+## Contributing to this collection
 
-```bash
-ansible-galaxy collection install ciena.waveserver5:==0.1.0
-```
+We welcome community contributions to this collection. If you find problems, please [open an issue](https://github.com/ciena/ciena.waveserver5/issues) or create a PR against the [Ciena SAOS 10 collection repository](https://github.com/ciena/ciena.waveserver5).
 
-See [Ansible Using collections](https://docs.ansible.com/ansible/devel/user_guide/collections_using.html) for more details.
+Release is done automatically using Github Actions as part of merging to master.
 
-## Release notes
+### Resource Module Builder
 
-See the [changelog](https://github.com/ansible-collections/REPONAMEHERE/tree/main/CHANGELOG.rst).
+The modules in this project were built using the [resource module builder hosted by Ciena](https://github.com/ciena/resource_module_builder).
 
-## Roadmap
+## Changelogs
 
-<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
-
-## More information
-
-<!-- List out where the user can find additional information, such as working group meeting times, slack/IRC channels, or documentation for the product this collection automates. At a minimum, link to: -->
-
-- [Ansible Collection overview](https://github.com/ansible-collections/overview)
-- [Ansible User guide](https://docs.ansible.com/ansible/devel/user_guide/index.html)
-- [Ansible Developer guide](https://docs.ansible.com/ansible/devel/dev_guide/index.html)
-- [Ansible Collections Checklist](https://github.com/ansible-collections/overview/blob/main/collection_requirements.rst)
-- [Ansible Community code of conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html)
-- [The Bullhorn (the Ansible Contributor newsletter)](https://us19.campaign-archive.com/home/?u=56d874e027110e35dea0e03c1&id=d6635f5420)
-- [News for Maintainers](https://github.com/ansible-collections/news-for-maintainers)
+[CHANGELOG](CHANGELOG.md)
 
 ## Licensing
 
-<!-- Include the appropriate license information here and a pointer to the full licensing details. If the collection contains modules migrated from the ansible/ansible repo, you must use the same license that existed in the ansible/ansible repo. See the GNU license example below. -->
-
-GNU General Public License v3.0 or later.
-
-See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.
+See [LICENSE](LICENSE) to see the full text.
