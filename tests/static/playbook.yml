@@ -12,4 +12,4 @@
     #       - all
     #   connection: netconf
     - name: Test hostname
-      include_tasks: check-hostname.yml
+      ansible.builtin.include_tasks: check-hostname.yml

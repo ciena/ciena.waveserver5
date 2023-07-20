@@ -11,22 +11,22 @@
   register: xml
   ansible.netcommon.netconf_rpc:
     rpc: get
-    xmlns: 'urn:ietf:params:xml:ns:netconf:base:1.0'
+    xmlns: "urn:ietf:params:xml:ns:netconf:base:1.0"
     content: |
-        <filter type="subtree">
-          <system xmlns="http://openconfig.net/yang/system">
-            <config>
-              <hostname></hostname>
-            </config>
-          </system>
-        </filter>
+      <filter type="subtree">
+        <system xmlns="http://openconfig.net/yang/system">
+          <config>
+            <hostname></hostname>
+          </config>
+        </system>
+      </filter>
 - name: Convert xml text to dictionary
   set_fact:
-    xml_dict: '{{ xml.stdout | ansible.utils.from_xml | from_json }}'
+    xml_dict: "{{ xml.stdout | ansible.utils.from_xml | from_json }}"
 - name: Validate hostname was set
   assert:
     that:
-      - xml_dict.data.system.config.hostname == 'foo' 
+      - xml_dict.data.system.config.hostname == 'foo'
 - name: set hostname
   ciena.waveserver5.waveserver5_system:
     config:
