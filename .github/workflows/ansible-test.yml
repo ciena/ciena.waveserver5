@@ -1,25 +1,9 @@
-# README FIRST
-# 1. If you don't have unit tests, remove that section.
-# 2. If your collection depends on other collections ensure they are installed,
-#    add them to the "test-deps" input.
-# 3. For the comprehensive list of the inputs supported by the
-#    ansible-community/ansible-test-gh-action GitHub Action, see
-#    https://github.com/marketplace/actions/ansible-test.
-# 4. If you want to prevent merging PRs that do not pass all tests,
-#    make sure to add the "check" job to your repository branch
-#    protection once this workflow is added.
-#    It is also possible to tweak which jobs are allowed to fail. See
-#    https://github.com/marketplace/actions/alls-green#gotchas for more detail.
-# 5. If you need help please ask in #ansible-community on the Libera.chat IRC
-#    network.
-
-name: CI
+name: Test collection
 on:
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
     branches:
       - main
-      - stable-*
   pull_request:
   # Run CI once per day (at 06:00 UTC)
   # This ensures that even if there haven't been commits that we are still
@@ -36,34 +20,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
-###
-# Sanity tests (REQUIRED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
-
+  ansible-lint:
+    uses: ansible-network/github_actions/.github/workflows/ansible-lint.yml@main
   sanity:
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
       matrix:
         ansible:
-          # It's important that Sanity is tested against all stable-X.Y branches
-          # Testing against `devel` may fail as new tests are added.
-          # An alternative to `devel` is the `milestone` branch with
-          # gets synchronized with `devel` every few weeks and therefore
-          # tends to be a more stable target. Be aware that it is not updated
-          # around creation of a new stable branch, this might cause a problem
-          # that two different versions of ansible-test use the same sanity test
-          # ignore.txt file.
           - stable-2.12
           - stable-2.13
           - stable-2.14
-        # - milestone
-    # Ansible-test on various stable branches does not yet work well with cgroups v2.
-    # Since ubuntu-latest now uses Ubuntu 22.04, we need to fall back to the ubuntu-20.04
-    # image for these stable branches. The list of branches where this is necessary will
-    # shrink over time, check out https://github.com/ansible-collections/news-for-maintainers/issues/28
-    # for the latest list.
     runs-on: >-
       ${{ contains(fromJson(
           '["stable-2.9", "stable-2.10", "stable-2.11"]'

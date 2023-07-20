@@ -1,0 +1,29 @@
+{
+ "collection_info": {
+  "namespace": "ciena",
+  "name": "waveserver5",
+  "version": "0.0.1",
+  "authors": [
+   "Jeff Groom (github.com/jgroom33)",
+   "Galo Ertola (github.com/perrary)"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "ciena",
+   "iosxr",
+   "networking",
+   "netconf"
+  ],
+  "description": "Ansible Network Collection for Ciena Waveserver5 devices.",
+  "license": [],
+  "license_file": "LICENSE",
+  "dependencies": {
+   "ansible.netcommon": ">=2.5.1"
+  },
+  "repository": "https://github.com/ciena/ciena.waveserver5",
+  "documentation": null,
+  "homepage": null,
+  "issues": "https://github.com/ciena/ciena.waveserver5/issues"
+ },
+ "format": 1
+}
