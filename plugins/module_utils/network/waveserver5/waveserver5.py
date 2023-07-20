@@ -48,7 +48,7 @@ except ImportError:
     HAS_LXML = False
 
 _DEVICE_CONFIGS = {}
-CONFIG_FORMATS = frozenset(["xml", "text", "json", "set"])
+CONFIG_FORMATS = frozenset(["xml"])
 
 waveserver5_provider_spec = {
     "host": dict(),

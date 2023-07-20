@@ -38,11 +38,13 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: system
+module: waveserver5_system
 version_added: 0.0.1
 short_description: Waveserver System configuration data and operational data.
 description: Waveserver System configuration data and operational data.
-author: Jeff Groom (jgroom@ciena.com)
+author:
+  - Jeff Groom (@jgroom33)
+  - Galo Ertola (@perrary)
 requirements:
   - ncclient (>=v0.6.4)
   - xmltodict (>=0.12.0)
@@ -106,12 +108,14 @@ RETURN = """
 before:
   description: The configuration prior to the model invocation.
   returned: always
+  type: dict
   sample: >
     The configuration returned will always be in the same format
      of the parameters above.
 after:
   description: The resulting configuration model invocation.
   returned: when changed
+  type: dict
   sample: >
     The configuration returned will always be in the same format
      of the parameters above.
