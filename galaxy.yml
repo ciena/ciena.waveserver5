@@ -1,5 +1,4 @@
-# See https://docs.ansible.com/ansible/latest/dev_guide/collections_galaxy_meta.html
-
+---
 namespace: ciena
 name: waveserver5
 version: 0.0.2

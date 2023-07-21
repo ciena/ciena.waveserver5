@@ -21,13 +21,13 @@
         </system>
       </filter>
 - name: Convert xml text to dictionary
-  set_fact:
+  ansible.builtin.set_fact:
     xml_dict: "{{ xml.stdout | ansible.utils.from_xml | from_json }}"
 - name: Validate hostname was set
-  assert:
+  ansible.builtin.assert:
     that:
       - xml_dict.data.system.config.hostname == 'foo'
-- name: set hostname
+- name: Set hostname
   ciena.waveserver5.waveserver5_system:
     config:
       config:
