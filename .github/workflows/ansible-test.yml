@@ -1,12 +1,11 @@
 name: Test collection
-on:
-  # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
+on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 6 * * *'
+    - cron: "0 6 * * *"
 
 concurrency:
   group: >-

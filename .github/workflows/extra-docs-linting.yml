@@ -1,13 +1,9 @@
 name: Lint extra docsite docs and links
-on:
-  # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
+on: # yamllint disable-line rule:truthy
   push:
-    branches:
-      - main
-      - stable-*
+    branches: [main]
   pull_request:
-  # Run CI once per day (at 06:00 UTC)
-  # This ensures that even if there haven't been commits that we are still testing against latest version of ansible-test for each ansible-base version
+    branches: [main]
   schedule:
     - cron: '0 6 * * *'
 
