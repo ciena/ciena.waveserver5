@@ -1,5 +1,6 @@
+---
 name: Lint extra docsite docs and links
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request:
