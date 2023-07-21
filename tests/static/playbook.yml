@@ -1,7 +1,5 @@
 ---
 - hosts: all
-  collections:
-    - ciena.waveserver5
   gather_facts: false
   name: Gather facts for ciena device Waveserver 5
   connection: netconf

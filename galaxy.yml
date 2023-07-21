@@ -12,11 +12,9 @@ description: null
 license_file: LICENSE
 tags: [ciena, waveserver, networking, ethernet, netconf, optical, dwdm]
 repository: https://github.com/ciena/ciena.waveserver5
-# documentation: https://github.com/ansible-collection-migration/community.REPO_NAME/tree/main/docs
 homepage: https://github.com/ciena/ciena.waveserver5
 issues: https://github.com/ciena/ciena.waveserver5/issues
 build_ignore:
-# https://docs.ansible.com/ansible/devel/dev_guide/developing_collections_distributing.html#ignoring-files-and-folders
   - .gitignore
   - changelogs/.plugin-cache.yaml
   - .vscode
