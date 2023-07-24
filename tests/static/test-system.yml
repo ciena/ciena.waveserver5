@@ -31,6 +31,6 @@
   ciena.waveserver5.waveserver5_system:
     config:
       config:
-        hostname: WS-1
+        hostname: WS-2
     state: merged
   connection: netconf

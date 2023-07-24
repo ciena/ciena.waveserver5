@@ -9,5 +9,5 @@
     #     gather_subset:
     #       - all
     #   connection: netconf
-    - name: Test hostname
-      ansible.builtin.include_tasks: check-hostname.yml
+    - name: Test System
+      ansible.builtin.include_tasks: test-system.yml
