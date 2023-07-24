@@ -29,7 +29,7 @@ except ImportError:
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible.module_utils._text import to_text, to_bytes
+from ansible.module_utils._text import to_bytes
 
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
     xml_to_string,
