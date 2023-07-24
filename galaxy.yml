@@ -8,7 +8,7 @@ dependencies:
 authors:
   - Jeff Groom (github.com/jgroom33)
   - Galo Ertola (github.com/perrary)
-description: null
+# description: null
 license_file: LICENSE
 tags: [ciena, waveserver, networking, ethernet, netconf, optical, dwdm]
 repository: https://github.com/ciena/ciena.waveserver5
