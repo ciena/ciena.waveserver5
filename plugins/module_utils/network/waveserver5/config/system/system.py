@@ -90,7 +90,7 @@ class System(ConfigBase):
         config_xmls = self.set_config(existing_system_facts)
 
         for config_xml in to_list(config_xmls):
-            config = f'<config">{config_xml.decode("utf-8")}</config>'
+            config = f"<config>{config_xml}</config>"
             kwargs = {
                 "config": config,
                 "target": "running",
@@ -133,7 +133,11 @@ class System(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        root = build_root_xml_node("system")
+        key = "waveserver-system"
+        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
+        prefix = "sys"
+        nsmap = {prefix: namespace}
+        root = etree.Element(f"{{{namespace}}}{key}", nsmap=nsmap)
         state = self._module.params["state"]
         if state == "overridden":
             config_xmls = self._state_overridden(want, have)
