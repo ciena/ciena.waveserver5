@@ -77,11 +77,18 @@ def remove_ns(element):
     return root
 
 
-def tostring(element, encoding="UTF-8"):
+def tostring(element, encoding="UTF-8", pretty_print=False):
     if HAS_LXML:
-        return xml_to_string(element, encoding="unicode")
+        return xml_to_string(
+            element,
+            encoding="unicode",
+            pretty_print=pretty_print,
+        )
     else:
-        return to_text(xml_to_string(element, encoding), encoding=encoding)
+        return to_text(
+            xml_to_string(element, encoding),
+            encoding=encoding,
+        )
 
 
 def get_provider_argspec():
