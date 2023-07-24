@@ -104,7 +104,6 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>overridden</li>
-                                    <li>deleted</li>
                         </ul>
                 </td>
                 <td>
@@ -127,8 +126,8 @@ Examples
     - name: Configure system hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          config:
-            hostname: foo
+          host-name:
+            config-host-name: foo
         state: merged
 
 
@@ -137,19 +136,9 @@ Examples
     - name: Configure system hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          config:
-            hostname: foo
+          host-name:
+            config-host-name: foo
         state: overridden
-
-
-    # Using deleted
-
-    - name: Delete classifier
-      ciena.saos10.saos10_classifiers:
-        config:
-          - name: untagged
-          - name: foo-100
-        state: deleted
 
 
 

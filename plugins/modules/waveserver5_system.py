@@ -65,7 +65,6 @@ options:
     choices:
     - merged
     - overridden
-    - deleted
     default: merged
     description:
     - The state the configuration should be left in
@@ -77,8 +76,8 @@ EXAMPLES = """
 - name: Configure system hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      config:
-        hostname: foo
+      host-name:
+        config-host-name: foo
     state: merged
 
 
@@ -87,19 +86,9 @@ EXAMPLES = """
 - name: Configure system hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      config:
-        hostname: foo
+      host-name:
+        config-host-name: foo
     state: overridden
-
-
-# Using deleted
-
-- name: Delete classifier
-  ciena.saos10.saos10_classifiers:
-    config:
-      - name: untagged
-      - name: foo-100
-    state: deleted
 
 
 """

@@ -48,7 +48,7 @@ class SystemArgs(object):  # pylint: disable=R0903
             "type": "dict",
         },
         "state": {
-            "choices": ["merged", "overridden", "deleted"],
+            "choices": ["merged", "overridden"],
             "default": "merged",
             "type": "str",
         },
