@@ -1,5 +1,5 @@
 ---
-- name: set hostname
+- name: Set hostname
   ciena.waveserver5.waveserver5_system:
     config:
       config:
