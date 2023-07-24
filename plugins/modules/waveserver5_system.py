@@ -53,15 +53,14 @@ options:
     description: A dictionary of system options
     type: dict
     suboptions:
-      config:
+      host-name:
         description: Waveserver system host name attributes.
         suboptions:
-          hostname:
+          config-host-name:
             description: User configured host name.
             required: true
             type: str
         type: dict
-
   state:
     choices:
     - merged

@@ -34,6 +34,7 @@ from ansible.module_utils._text import to_bytes
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
     xml_to_string,
     fromstring,
+    tostring,
 )
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -89,7 +90,7 @@ class System(ConfigBase):
         config_xmls = self.set_config(existing_system_facts)
 
         for config_xml in to_list(config_xmls):
-            config = f'<nc:config xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">{config_xml.decode("utf-8")}</nc:config>'
+            config = f'<config">{config_xml.decode("utf-8")}</config>'
             kwargs = {
                 "config": config,
                 "target": "running",
@@ -145,10 +146,8 @@ class System(ConfigBase):
 
         for xml in config_xmls:
             root.append(xml)
-        data = remove_namespaces(xml_to_string(root))
-        root = fromstring(to_bytes(data, errors="surrogate_then_replace"))
 
-        return xml_to_string(root)
+        return tostring(root)
 
     def _state_replaced(self, want, have):
         """The command generator when state is replaced
