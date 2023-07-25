@@ -135,9 +135,8 @@ class System(ConfigBase):
         """
         key = "waveserver-system"
         namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
-        prefix = "sys"
-        nsmap = {prefix: namespace}
-        root = etree.Element(f"{{{namespace}}}{key}", nsmap=nsmap)
+        nsmap = {None: namespace}
+        root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
         state = self._module.params["state"]
         if state == "overridden":
             config_xmls = self._state_overridden(want, have)
@@ -150,8 +149,8 @@ class System(ConfigBase):
 
         for xml in config_xmls:
             root.append(xml)
-
-        return tostring(root)
+        response = tostring(root)
+        return response
 
     def _state_replaced(self, want, have):
         """The command generator when state is replaced
