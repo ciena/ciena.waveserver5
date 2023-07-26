@@ -12,7 +12,7 @@ The Ansible Ciena Waveserver 5 collection includes a variety of Ansible content 
 This collection has been tested against following Ansible versions: **>=2.12.0**.
 
 For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
-fully qualified collection name (for example, `ciena.waveserver5.waveserver5`).
+fully qualified collection name (for example, `cisco.ios.ios`).
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
@@ -25,6 +25,11 @@ The Ciena Waveserver5 collection supports `netconf` connections.
 ## Included content
 
 <!--start collection content-->
+### Netconf plugins
+Name | Description
+--- | ---
+[ciena.waveserver5.waveserver5](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_netconf.rst)|Use ciena netconf plugin to run netconf commands on Ciena Waveserver5 platform
+
 ### Modules
 Name | Description
 --- | ---
@@ -96,3 +101,4 @@ The modules in this project were built using the [resource module builder hosted
 ## Licensing
 
 See [LICENSE](LICENSE) to see the full text.
+
