@@ -3,7 +3,7 @@
   ciena.waveserver5.waveserver5_system:
     config:
       host-name:
-        config-host-name: foo
+        config-host-name: hostname_test
     state: merged
   connection: netconf
 
@@ -26,11 +26,11 @@
 - name: Validate hostname was set
   ansible.builtin.assert:
     that:
-      - xml_dict.data.system.config.hostname == 'foo'
+      - xml_dict.data.system.config.hostname == 'hostname_test'
 - name: Set hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      config:
-        hostname: WS-2
+      host-name:
+        config-host-name: WS-2
     state: merged
   connection: netconf
