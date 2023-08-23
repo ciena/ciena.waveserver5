@@ -1,2 +1,11 @@
 ---
 requires_ansible: '>=2.12.0'
+plugin_routing:
+  action:
+    system:
+      redirect: ciena.waveserver5.waveserver5
+    waveserver5_system:
+      redirect: ciena.waveserver5.waveserver5
+  modules:
+    system:
+      redirect: ciena.waveserver5.waveserver5_system

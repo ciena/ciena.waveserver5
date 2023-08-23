@@ -35,7 +35,6 @@ from ansible.module_utils.basic import env_fallback
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
     NetconfConnection,
-    remove_namespaces,
 )
 
 try:
@@ -50,32 +49,6 @@ except ImportError:
 _DEVICE_CONFIGS = {}
 CONFIG_FORMATS = frozenset(["xml"])
 
-waveserver5_provider_spec = {
-    "host": dict(),
-    "port": dict(type="int"),
-    "username": dict(fallback=(env_fallback, ["ANSIBLE_NET_USERNAME"])),
-    "password": dict(fallback=(env_fallback, ["ANSIBLE_NET_PASSWORD"]), no_log=True),
-    "ssh_keyfile": dict(
-        fallback=(env_fallback, ["ANSIBLE_NET_SSH_KEYFILE"]), type="path"
-    ),
-    "timeout": dict(type="int"),
-    "transport": dict(default="netconf", choices=["netconf"]),
-}
-waveserver5_argument_spec = {
-    "provider": dict(
-        type="dict",
-        options=waveserver5_provider_spec,
-        removed_at_date="2022-06-01",
-        removed_from_collection="ciena.waveserver5",
-    )
-}
-
-
-def remove_ns(element):
-    data = remove_namespaces(xml_to_string(element))
-    root = fromstring(to_bytes(data, errors="surrogate_then_replace"))
-    return root
-
 
 def tostring(element, encoding="UTF-8", pretty_print=False):
     if HAS_LXML:
@@ -89,10 +62,6 @@ def tostring(element, encoding="UTF-8", pretty_print=False):
             xml_to_string(element, encoding),
             encoding=encoding,
         )
-
-
-def get_provider_argspec():
-    return waveserver5_provider_spec
 
 
 def get_connection(module):
@@ -169,9 +138,7 @@ def load_config(module, commands, commit=False, comment=None):
     connection = get_connection(module)
 
     try:
-        response = connection.edit_config(
-            candidate=commands, commit=commit, comment=comment
-        )
+        response = connection.edit_config(candidate=commands, commit=commit, comment=comment)
     except ConnectionError as exc:
         module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 

@@ -17,7 +17,6 @@ import platform
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
     get_configuration,
     get_capabilities,
-    remove_ns,
 )
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.netconf.netconf import (
@@ -60,7 +59,7 @@ class Default(FactsBase):
         # Get some properties from the <components> GET
         config_filter = '<components xmlns="http://openconfig.net/yang/platform"/>'
         reply = get(self.module, filter=("subtree", config_filter))
-        root = remove_ns(reply)
+        root = reply
         serial_number = root.xpath("//component[name='Waveserver']/state/serial-no")[
             0
         ].text
@@ -78,7 +77,7 @@ class Default(FactsBase):
         # Get some properties from the <system> GET
         config_filter = '<system xmlns="http://openconfig.net/yang/system"><config><hostname/></config></system>'
         reply = get(self.module, filter=("subtree", config_filter))
-        root = remove_ns(reply)
+        root = reply
         hostname = root.xpath("/data/system/config/hostname")[0].text
         self.facts["hostname"] = hostname
 
@@ -108,7 +107,7 @@ class Config(FactsBase):
         reply = get_configuration(self.module, format="xml")
 
         if config_format == "xml":
-            config = xml_to_string(remove_ns(reply))
+            config = xml_to_string(reply)
 
         elif config_format == "text":
             raise Exception("text Not yet Implemented")
