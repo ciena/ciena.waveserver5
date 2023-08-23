@@ -19,10 +19,6 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
     get_capabilities,
 )
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.netconf.netconf import (
-    get,
-)
-
 try:
     from lxml.etree import tostring as xml_to_string
 
@@ -34,7 +30,6 @@ except ImportError:
 
 
 class FactsBase(object):
-
     COMMANDS = frozenset()
 
     def __init__(self, module):
@@ -56,30 +51,6 @@ class FactsBase(object):
 class Default(FactsBase):
     def populate(self):
         self.facts.update(self.platform_facts())
-        # Get some properties from the <components> GET
-        config_filter = '<components xmlns="http://openconfig.net/yang/platform"/>'
-        reply = get(self.module, filter=("subtree", config_filter))
-        root = reply
-        serial_number = root.xpath("//component[name='Waveserver']/state/serial-no")[
-            0
-        ].text
-        platform = root.xpath("//component[name='Waveserver']/state/id")[0].text
-        model = root.xpath("//component[name='Waveserver']/state/description")[0].text
-        network_os_version = root.xpath(
-            "//component[name='CM-1']/state/software-version"
-        )[0].text
-
-        self.facts["serialnum"] = serial_number
-        self.facts["model"] = model
-        self.facts["platform"] = platform
-        self.facts["version"] = network_os_version
-
-        # Get some properties from the <system> GET
-        config_filter = '<system xmlns="http://openconfig.net/yang/system"><config><hostname/></config></system>'
-        reply = get(self.module, filter=("subtree", config_filter))
-        root = reply
-        hostname = root.xpath("/data/system/config/hostname")[0].text
-        self.facts["hostname"] = hostname
 
     def platform_facts(self):
         platform_facts = {}
@@ -89,7 +60,7 @@ class Default(FactsBase):
 
         platform_facts["system"] = device_info["network_os"]
 
-        for item in ("image", "version", "hostname"):
+        for item in ("image", "model", "version", "hostname", "platform", "serialnum"):
             val = device_info.get("network_os_%s" % item)
             if val:
                 platform_facts[item] = val

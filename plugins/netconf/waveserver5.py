@@ -33,9 +33,9 @@ version_added: 1.0.0
 options:
   ncclient_device_handler:
     type: str
-    default: default
+    default: waveserver5
     description:
-    - Specifies the ncclient device handler name for Juniper waveserver5 network os. To
+    - Specifies the ncclient device handler name for Ciena waveserver5 network os. To
       identify the ncclient device handler name refer ncclient library documentation.
 """
 
@@ -44,14 +44,13 @@ import re
 
 
 from ansible.errors import AnsibleConnectionFailure
-from lxml.etree import XMLSyntaxError
 from ansible.module_utils._text import to_native
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.netconf_base import (
     NetconfBase,
     ensure_ncclient,
 )
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
-    remove_ns,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
+    remove_namespaces,
 )
 
 
@@ -88,12 +87,9 @@ class Netconf(NetconfBase):
 
     @ensure_ncclient
     def get_device_info(self):
-        device_info = {
-            "network_os": "waveserver5",
-        }
-
-        # Combine filters for components and system information
-        combined_filter = '''
+        device_info = {}
+        device_info["network_os"] = "waveserver5"
+        filter = """
         <filter>
             <components xmlns="http://openconfig.net/yang/platform"/>
             <system xmlns="http://openconfig.net/yang/system">
@@ -102,37 +98,41 @@ class Netconf(NetconfBase):
                 </config>
             </system>
         </filter>
-        '''
-        root = self._fetch_data(combined_filter)
-
-        # Extract data from components
+        """
+        filter = to_ele(filter)
+        response = self.get(filter=filter, remove_ns=True)
+        root = to_ele(response)
         model = self._extract_xpath(root, "//component[name='Waveserver']/state/description")
         network_os_version = self._extract_xpath(root, "//component[name='CM-1']/state/software-version")
+        hostname = self._extract_xpath(root, "/data/system/config/hostname")
+        serial_number = self._extract_xpath(root, "//component[name='Waveserver']/state/serial-no")
+        platform = self._extract_xpath(root, "//component[name='Waveserver']/state/id")
 
+        device_info["network_os_platform"] = platform
+        device_info["network_os_serialnum"] = serial_number
+        device_info["network_os_hostname"] = hostname
         device_info["network_os_version"] = network_os_version
         device_info["network_os_model"] = model
 
-        # Extract hostname from system data
-        hostname = self._extract_xpath(root, "/data/system/config/hostname")
-        device_info["network_os_hostname"] = hostname
-
         return device_info
+
+    def get(self, filter=None, with_defaults=None, remove_ns=False):
+        if isinstance(filter, list):
+            filter = tuple(filter)
+        try:
+            resp = self.m.get(filter=filter, with_defaults=with_defaults)
+            if remove_ns:
+                response = remove_namespaces(resp)
+            else:
+                response = resp.data_xml if hasattr(resp, "data_xml") else resp.xml
+            return response
+        except RPCError as exc:
+            raise Exception(to_xml(exc.xml))
 
     def _extract_xpath(self, root, xpath_str, default=None):
         """Extract data using XPath and return text or default."""
         result = root.xpath(xpath_str)
         return result[0].text if result else default
-
-    def _fetch_data(self, filter_str):
-        """Fetch data from device using given filter."""
-        filter_ele = to_ele(filter_str)
-        reply = self.m.get(filter=("subtree", filter_ele))
-        try:
-            response = remove_ns(reply.data_ele)
-        except Exception as e:
-            # Handle the XML parsing error
-            raise ValueError("Received an invalid XML response from the device. %s" % e)
-        return response
 
     @staticmethod
     @ensure_ncclient
@@ -162,12 +162,14 @@ class Netconf(NetconfBase):
 
         guessed_os = None
         for c in m.server_capabilities:
-            if re.search("waveserver", c):
+            # TODO HACK
+            raise AnsibleConnectionFailure("Unable to guess network os")
+            if re.search("default", c):
                 guessed_os = "waveserver5"
 
         m.close_session()
         return guessed_os
-    
+
     def execute_rpc(self, name):
         """
         RPC to be execute on remote device
