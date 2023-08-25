@@ -30,8 +30,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 import json
 
-from ansible.module_utils._text import to_text, to_bytes
-from ansible.module_utils.basic import env_fallback
+from ansible.module_utils._text import to_text
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
     NetconfConnection,
@@ -91,11 +90,6 @@ def get_capabilities(module):
     return module._waveserver5_capabilities
 
 
-def is_netconf(module):
-    capabilities = get_capabilities(module)
-    return True if capabilities.get("network_api") == "netconf" else False
-
-
 def get_config(module, flags=None, format=None):
     flags = [] if flags is None else flags
     global _DEVICE_CONFIGS
@@ -123,23 +117,3 @@ def get_configuration(module, source="running", format="xml", filter=None):
     except ConnectionError as exc:
         module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
     return reply
-
-
-def run_commands(module, commands, check_rc=True):
-    connection = get_connection(module)
-    try:
-        response = connection.run_commands(commands=commands, check_rc=check_rc)
-    except ConnectionError as exc:
-        module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
-    return response
-
-
-def load_config(module, commands, commit=False, comment=None):
-    connection = get_connection(module)
-
-    try:
-        response = connection.edit_config(candidate=commands, commit=commit, comment=comment)
-    except ConnectionError as exc:
-        module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
-
-    return response.get("diff")
