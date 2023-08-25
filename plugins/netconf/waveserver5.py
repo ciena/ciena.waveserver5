@@ -33,11 +33,13 @@ version_added: 1.0.0
 options:
   ncclient_device_handler:
     type: str
-    default: waveserver5
+    default: alu
     description:
     - Specifies the ncclient device handler name for Ciena waveserver5 network os. To
       identify the ncclient device handler name refer ncclient library documentation.
 """
+
+# IMPORTANT: the ncclient_device_handler is set to alu to piggyback that handling for base namespace. A PR is open: https://github.com/ncclient/ncclient/pull/569
 
 import json
 
