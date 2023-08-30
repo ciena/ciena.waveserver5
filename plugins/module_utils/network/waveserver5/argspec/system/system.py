@@ -40,8 +40,8 @@ class SystemArgs(object):  # pylint: disable=R0903
     argument_spec = {
         "config": {
             "options": {
-                "host-name": {
-                    "options": {"config-host-name": {"required": True, "type": "str"}},
+                "host_name": {
+                    "options": {"config_host_name": {"required": True, "type": "str"}},
                     "type": "dict",
                 }
             },

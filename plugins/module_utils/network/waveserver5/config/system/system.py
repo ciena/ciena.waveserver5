@@ -205,6 +205,7 @@ class System(ConfigBase):
 
         # Iterate over the 'want' dictionary
         for key, value in want.items():
+            key = key.replace("_", "-")
             if isinstance(value, dict):
                 # If the value is a dictionary, create a new element and recursively add its children
                 element = etree.Element(key)

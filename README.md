@@ -78,8 +78,8 @@ The following example task replaces configuration changes in the existing config
     - name: Set hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          host-name:
-            config-host-name: hostname_test
+          host_name:
+            config_host_name: hostname_test
         state: merged
 ```
 

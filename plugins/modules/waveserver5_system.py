@@ -53,10 +53,10 @@ options:
     description: A dictionary of system options
     type: dict
     suboptions:
-      host-name:
+      host_name:
         description: Waveserver system host name attributes.
         suboptions:
-          config-host-name:
+          config_host_name:
             description: User configured host name.
             required: true
             type: str
@@ -76,8 +76,8 @@ EXAMPLES = """
 - name: Configure system hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      host-name:
-        config-host-name: foo
+      host_name:
+        config_host_name: foo
     state: merged
 
 
@@ -86,8 +86,8 @@ EXAMPLES = """
 - name: Configure system hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      host-name:
-        config-host-name: foo
+      host_name:
+        config_host_name: foo
     state: overridden
 
 

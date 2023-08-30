@@ -59,7 +59,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>host-name</b>
+                    <b>host_name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
@@ -76,7 +76,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>config-host-name</b>
+                    <b>config_host_name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -126,8 +126,8 @@ Examples
     - name: Configure system hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          host-name:
-            config-host-name: foo
+          host_name:
+            config_host_name: foo
         state: merged
 
 
@@ -136,8 +136,8 @@ Examples
     - name: Configure system hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          host-name:
-            config-host-name: foo
+          host_name:
+            config_host_name: foo
         state: overridden
 
 
