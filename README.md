@@ -1,9 +1,6 @@
 # Ciena Waveserver5 Collection for Ansible
 
-<!-- Add CI and code coverage badges here. Samples included below. -->
-
-[![CI](https://github.com/ciena/ciena.waveserver5/workflows/CI/badge.svg?event=push)](https://github.com/ciena/ciena.waveserver5/actions) [![Codecov](https://img.shields.io/codecov/c/github/ciena/ciena.waveserver5)](https://codecov.io/gh/ciena/ciena.waveserver5)
-
+[![CI](https://github.com/ciena/ciena.waveserver5/workflows/Test%20collection/badge.svg?event=push)](https://github.com/ciena/ciena.waveserver5/actions)
 The Ansible Ciena Waveserver 5 collection includes a variety of Ansible content to help automate the management of Ciena Waveserver 5 network appliances.
 
 <!--start requires_ansible-->
