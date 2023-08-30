@@ -39,7 +39,8 @@ options:
       identify the ncclient device handler name refer ncclient library documentation.
 """
 
-# IMPORTANT: the ncclient_device_handler is set to alu to piggyback that handling for base namespace. A PR is open: https://github.com/ncclient/ncclient/pull/569
+# IMPORTANT: the ncclient_device_handler is set to alu to piggyback that handling for base namespace.
+# A PR is open: https://github.com/ncclient/ncclient/pull/569
 
 import json
 
