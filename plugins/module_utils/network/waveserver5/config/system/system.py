@@ -17,11 +17,9 @@ __metaclass__ = type
 
 try:
     from lxml import etree
-    from lxml.etree import tostring as xml_to_string, fromstring
 
     HAS_LXML = True
 except ImportError:
-    from xml.etree.ElementTree import fromstring, tostring as xml_to_string
 
     HAS_LXML = False
 
@@ -29,11 +27,8 @@ except ImportError:
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible.module_utils._text import to_bytes
 
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
-    xml_to_string,
-    fromstring,
     tostring,
 )
 
@@ -44,7 +39,6 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
     Facts,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
-    remove_namespaces,
     build_root_xml_node,
     build_child_xml_node,
 )

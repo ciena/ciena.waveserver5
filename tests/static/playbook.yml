@@ -4,7 +4,7 @@
   name: Gather facts for ciena device Waveserver 5
   connection: netconf
   tasks:
-    - name: get device facts for Waveserver 5
+    - name: Get device facts for Waveserver 5
       ciena.waveserver5.waveserver5_facts:
         gather_subset:
           - all
