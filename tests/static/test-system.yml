@@ -5,7 +5,6 @@
       host-name:
         config-host-name: hostname_test
     state: merged
-  connection: netconf
 
 - name: Get the pre-change config using the filter
   register: xml

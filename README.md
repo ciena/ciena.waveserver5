@@ -75,12 +75,11 @@ The following example task replaces configuration changes in the existing config
       ciena.waveserver5.waveserver5_facts:
         gather_subset:
           - all
-      connection: netconf
-    - name: Configure system hostname
+    - name: Set hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          config:
-            hostname: foo
+          host-name:
+            config-host-name: hostname_test
         state: merged
 ```
 
