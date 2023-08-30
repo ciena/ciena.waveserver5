@@ -37,11 +37,11 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 try:
-    from lxml.etree import tostring as xml_to_string, fromstring
+    from lxml.etree import tostring as xml_to_string
 
     HAS_LXML = True
 except ImportError:
-    from xml.etree.ElementTree import fromstring, tostring as xml_to_string
+    from xml.etree.ElementTree import tostring as xml_to_string
 
     HAS_LXML = False
 
