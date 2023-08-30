@@ -40,15 +40,15 @@ class SystemArgs(object):  # pylint: disable=R0903
     argument_spec = {
         "config": {
             "options": {
-                "config": {
-                    "options": {"hostname": {"required": True, "type": "str"}},
+                "host_name": {
+                    "options": {"config_host_name": {"required": True, "type": "str"}},
                     "type": "dict",
                 }
             },
             "type": "dict",
         },
         "state": {
-            "choices": ["merged", "overridden", "deleted"],
+            "choices": ["merged", "overridden"],
             "default": "merged",
             "type": "str",
         },

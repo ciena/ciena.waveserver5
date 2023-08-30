@@ -4,10 +4,9 @@
   name: Gather facts for ciena device Waveserver 5
   connection: netconf
   tasks:
-    # - name: get device facts for Waveserver 5
-    #   ciena.waveserver5.waveserver5_facts:
-    #     gather_subset:
-    #       - all
-    #   connection: netconf
-    - name: Test hostname
-      ansible.builtin.include_tasks: check-hostname.yml
+    - name: Get device facts for Waveserver 5
+      ciena.waveserver5.waveserver5_facts:
+        gather_subset:
+          - all
+    - name: Test System
+      ansible.builtin.include_tasks: test-system.yml

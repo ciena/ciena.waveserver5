@@ -53,20 +53,18 @@ options:
     description: A dictionary of system options
     type: dict
     suboptions:
-      config:
+      host_name:
         description: Waveserver system host name attributes.
         suboptions:
-          hostname:
+          config_host_name:
             description: User configured host name.
             required: true
             type: str
         type: dict
-
   state:
     choices:
     - merged
     - overridden
-    - deleted
     default: merged
     description:
     - The state the configuration should be left in
@@ -78,8 +76,8 @@ EXAMPLES = """
 - name: Configure system hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      config:
-        hostname: foo
+      host_name:
+        config_host_name: foo
     state: merged
 
 
@@ -88,19 +86,9 @@ EXAMPLES = """
 - name: Configure system hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      config:
-        hostname: foo
+      host_name:
+        config_host_name: foo
     state: overridden
-
-
-# Using deleted
-
-- name: Delete classifier
-  ciena.saos10.saos10_classifiers:
-    config:
-      - name: untagged
-      - name: foo-100
-    state: deleted
 
 
 """

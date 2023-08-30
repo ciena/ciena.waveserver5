@@ -17,11 +17,9 @@ __metaclass__ = type
 
 try:
     from lxml import etree
-    from lxml.etree import tostring as xml_to_string, fromstring
 
     HAS_LXML = True
 except ImportError:
-    from xml.etree.ElementTree import fromstring, tostring as xml_to_string
 
     HAS_LXML = False
 
@@ -29,11 +27,9 @@ except ImportError:
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible.module_utils._text import to_text, to_bytes
 
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
-    xml_to_string,
-    fromstring,
+    tostring,
 )
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -43,7 +39,6 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
     Facts,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
-    remove_namespaces,
     build_root_xml_node,
     build_child_xml_node,
 )
@@ -89,7 +84,7 @@ class System(ConfigBase):
         config_xmls = self.set_config(existing_system_facts)
 
         for config_xml in to_list(config_xmls):
-            config = f'<nc:config xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">{config_xml.decode("utf-8")}</nc:config>'
+            config = f"<config>{config_xml}</config>"
             kwargs = {
                 "config": config,
                 "target": "running",
@@ -132,7 +127,10 @@ class System(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        root = build_root_xml_node("system")
+        key = "waveserver-system"
+        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
+        nsmap = {None: namespace}
+        root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
         state = self._module.params["state"]
         if state == "overridden":
             config_xmls = self._state_overridden(want, have)
@@ -145,10 +143,8 @@ class System(ConfigBase):
 
         for xml in config_xmls:
             root.append(xml)
-        data = remove_namespaces(xml_to_string(root))
-        root = fromstring(to_bytes(data, errors="surrogate_then_replace"))
-
-        return xml_to_string(root)
+        response = tostring(root)
+        return response
 
     def _state_replaced(self, want, have):
         """The command generator when state is replaced
@@ -203,6 +199,7 @@ class System(ConfigBase):
 
         # Iterate over the 'want' dictionary
         for key, value in want.items():
+            key = key.replace("_", "-")
             if isinstance(value, dict):
                 # If the value is a dictionary, create a new element and recursively add its children
                 element = etree.Element(key)

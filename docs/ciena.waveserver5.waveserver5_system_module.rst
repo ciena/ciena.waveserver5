@@ -59,7 +59,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>config</b>
+                    <b>host_name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
@@ -76,7 +76,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>hostname</b>
+                    <b>config_host_name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -104,7 +104,6 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>overridden</li>
-                                    <li>deleted</li>
                         </ul>
                 </td>
                 <td>
@@ -127,8 +126,8 @@ Examples
     - name: Configure system hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          config:
-            hostname: foo
+          host_name:
+            config_host_name: foo
         state: merged
 
 
@@ -137,19 +136,9 @@ Examples
     - name: Configure system hostname
       ciena.waveserver5.waveserver5_system:
         config:
-          config:
-            hostname: foo
+          host_name:
+            config_host_name: foo
         state: overridden
-
-
-    # Using deleted
-
-    - name: Delete classifier
-      ciena.saos10.saos10_classifiers:
-        config:
-          - name: untagged
-          - name: foo-100
-        state: deleted
 
 
 

@@ -1,11 +1,10 @@
 ---
-- name: set hostname
+- name: Set hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      config:
-        hostname: foo
+      host_name:
+        config_host_name: hostname_test
     state: merged
-  connection: netconf
 
 - name: Get the pre-change config using the filter
   register: xml
@@ -26,11 +25,11 @@
 - name: Validate hostname was set
   ansible.builtin.assert:
     that:
-      - xml_dict.data.system.config.hostname == 'foo'
+      - xml_dict['rpc-reply'].data.system.config.hostname == 'hostname_test'
 - name: Set hostname
   ciena.waveserver5.waveserver5_system:
     config:
-      config:
-        hostname: WS-1
+      host_name:
+        config_host_name: WS-2
     state: merged
   connection: netconf

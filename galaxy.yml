@@ -1,14 +1,14 @@
 ---
 namespace: ciena
 name: waveserver5
-version: 0.0.2
+version: 1.0.0
 readme: README.md
 dependencies:
   ansible.netcommon: ">=2.5.1"
 authors:
   - Jeff Groom (github.com/jgroom33)
   - Galo Ertola (github.com/perrary)
-description: null
+description: Ansible collection for Ciena's Waveserver 5
 license_file: LICENSE
 tags: [ciena, waveserver, networking, ethernet, netconf, optical, dwdm]
 repository: https://github.com/ciena/ciena.waveserver5
