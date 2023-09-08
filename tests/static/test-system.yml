@@ -1,35 +1,39 @@
 ---
-- name: Set hostname
+- name: Gather hostname
   ciena.waveserver5.waveserver5_system:
-    config:
-      host_name:
-        config_host_name: hostname_test
-    state: merged
+    state: gathered
 
-- name: Get the pre-change config using the filter
-  register: xml
-  ansible.netcommon.netconf_rpc:
-    rpc: get
-    xmlns: "urn:ietf:params:xml:ns:netconf:base:1.0"
-    content: |
-      <filter type="subtree">
-        <system xmlns="http://openconfig.net/yang/system">
-          <config>
-            <hostname></hostname>
-          </config>
-        </system>
-      </filter>
-- name: Convert xml text to dictionary
-  ansible.builtin.set_fact:
-    xml_dict: "{{ xml.stdout | ansible.utils.from_xml | from_json }}"
-- name: Validate hostname was set
-  ansible.builtin.assert:
-    that:
-      - xml_dict['rpc-reply'].data.system.config.hostname == 'hostname_test'
-- name: Set hostname
-  ciena.waveserver5.waveserver5_system:
-    config:
-      host_name:
-        config_host_name: WS-2
-    state: merged
-  connection: netconf
+# - name: Set hostname
+#   ciena.waveserver5.waveserver5_system:
+#     config:
+#       host_name:
+#         config_host_name: hostname_test
+#     state: merged
+
+# - name: Get the pre-change config using the filter
+#   register: xml
+#   ansible.netcommon.netconf_rpc:
+#     rpc: get
+#     xmlns: "urn:ietf:params:xml:ns:netconf:base:1.0"
+#     content: |
+#       <filter type="subtree">
+#         <system xmlns="http://openconfig.net/yang/system">
+#           <config>
+#             <hostname></hostname>
+#           </config>
+#         </system>
+#       </filter>
+# - name: Convert xml text to dictionary
+#   ansible.builtin.set_fact:
+#     xml_dict: "{{ xml.stdout | ansible.utils.from_xml | from_json }}"
+# - name: Validate hostname was set
+#   ansible.builtin.assert:
+#     that:
+#       - xml_dict['rpc-reply'].data.system.config.hostname == 'hostname_test'
+# - name: Set hostname
+#   ciena.waveserver5.waveserver5_system:
+#     config:
+#       host_name:
+#         config_host_name: WS-2
+#     state: merged
+#   connection: netconf

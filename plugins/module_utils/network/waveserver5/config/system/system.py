@@ -83,25 +83,31 @@ class System(ConfigBase):
         existing_system_facts = self.get_system_facts()
         config_xmls = self.set_config(existing_system_facts)
 
-        for config_xml in to_list(config_xmls):
-            config = f"<config>{config_xml}</config>"
-            kwargs = {
-                "config": config,
-                "target": "running",
-                "default_operation": "merge",
-                "format": "xml",
-            }
+        if config_xmls and self.state in self.ACTION_STATES:
+            for config_xml in to_list(config_xmls):
+                config = f"<config>{config_xml}</config>"
+                kwargs = {
+                    "config": config,
+                    "target": "running",
+                    "default_operation": "merge",
+                    "format": "xml",
+                }
+                self._module._connection.edit_config(**kwargs)
+            result["changed"] = True
+            result["xml"] = config_xmls
 
-            self._module._connection.edit_config(**kwargs)
-
-        result["xml"] = config_xmls
         changed_system_facts = self.get_system_facts()
 
         result["changed"] = config_is_diff(existing_system_facts, changed_system_facts)
 
         result["before"] = existing_system_facts
-        if result["changed"]:
-            result["after"] = changed_system_facts
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_system_facts
+            if result["changed"]:
+                result["after"] = changed_system_facts
+
+        elif self.state == "gathered":
+            result["gathered"] = changed_system_facts
 
         return result
 
@@ -134,15 +140,21 @@ class System(ConfigBase):
         state = self._module.params["state"]
         if state == "overridden":
             config_xmls = self._state_overridden(want, have)
+            for xml in config_xmls:
+                root.append(xml)
         elif state == "deleted":
             config_xmls = self._state_deleted(want, have)
+            for xml in config_xmls:
+                root.append(xml)
         elif state == "merged":
             config_xmls = self._state_merged(want, have)
+            for xml in config_xmls:
+                root.append(xml)
         elif state == "replaced":
             config_xmls = self._state_replaced(want, have)
+            for xml in config_xmls:
+                root.append(xml)
 
-        for xml in config_xmls:
-            root.append(xml)
         response = tostring(root)
         return response
 

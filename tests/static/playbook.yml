@@ -10,3 +10,5 @@
           - all
     - name: Test System
       ansible.builtin.include_tasks: test-system.yml
+    # - name: Test Chassis
+    #   ansible.builtin.include_tasks: test-chassis.yml
