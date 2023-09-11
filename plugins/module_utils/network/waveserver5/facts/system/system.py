@@ -79,30 +79,22 @@ class SystemFacts(object):
 
         if not data:
             config_filter = """
-                <system>
-                </system>
+                <waveserver-system xmlns="urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system">
+                </waveserver-system>
                 """
             data = get(self._module, filter=("subtree", config_filter))
 
         stripped = remove_namespaces(xml_to_string(data))
         data = fromstring(to_bytes(stripped, errors="surrogate_then_replace"))
 
-        resources = data.xpath("/data/system/system")
-
-        objs = []
-        for resource in resources:
-            if resource:
-                obj = self.render_config(self.generated_spec, resource)
-                if obj:
-                    objs.append(obj)
-
+        waveserver_system = (
+            data.xpath("/rpc-reply/data/waveserver-system/host-name/config-host-name")[0]
+            if data.xpath("/rpc-reply/data/waveserver-system")
+            else None
+        )
+        hostname = waveserver_system.text
         facts = {}
-        if objs:
-            facts["system"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
-            for cfg in params["config"]:
-                facts["system"].append(utils.remove_empties(cfg))
-
+        facts["system"] = {"host-name": {"config-host-name": hostname}}
         ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts
 

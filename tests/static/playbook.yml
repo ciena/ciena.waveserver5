@@ -8,6 +8,8 @@
       ciena.waveserver5.waveserver5_facts:
         gather_subset:
           - all
+        gather_network_resources:
+          - system
     - name: Test System
       ansible.builtin.include_tasks: test-system.yml
     # - name: Test Chassis

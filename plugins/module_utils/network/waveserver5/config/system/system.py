@@ -107,7 +107,7 @@ class System(ConfigBase):
                 result["after"] = changed_system_facts
 
         elif self.state == "gathered":
-            result["gathered"] = changed_system_facts
+            result["gathered"] = existing_system_facts
 
         return result
 
