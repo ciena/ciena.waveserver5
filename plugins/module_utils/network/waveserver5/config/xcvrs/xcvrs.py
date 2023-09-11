@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
-The waveserver5_system class
+The waveserver5_xcvrs class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
@@ -47,28 +47,30 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 )
 
 
-class System(ConfigBase):
+class Xcvrs(ConfigBase):
     """
-    The waveserver5_system class
+    The waveserver5_xcvrs class
     """
 
     gather_subset = ["!all", "!min"]
-    gather_network_resources = ["system"]
+    gather_network_resources = ["xcvrs"]
 
     def __init__(self, module):
-        super(System, self).__init__(module)
+        super(Xcvrs, self).__init__(module)
 
-    def get_system_facts(self):
+    def get_xcvrs_facts(self):
         """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
-        facts, _warnings = Facts(self._module).get_facts(self.gather_subset, self.gather_network_resources)
-        system_facts = facts["ansible_network_resources"].get("system")
-        if not system_facts:
+        facts, _warnings = Facts(self._module).get_facts(
+            self.gather_subset, self.gather_network_resources
+        )
+        xcvrs_facts = facts["ansible_network_resources"].get("xcvrs")
+        if not xcvrs_facts:
             return []
-        return system_facts
+        return xcvrs_facts
 
     def execute_module(self):
         """Execute the module
@@ -77,8 +79,8 @@ class System(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        existing_system_facts = self.get_system_facts()
-        config_xmls = self.set_config(existing_system_facts)
+        existing_xcvrs_facts = self.get_xcvrs_facts()
+        config_xmls = self.set_config(existing_xcvrs_facts)
 
         if config_xmls and self.state in self.ACTION_STATES:
             for config_xml in to_list(config_xmls):
@@ -93,22 +95,22 @@ class System(ConfigBase):
             result["changed"] = True
             result["xml"] = config_xmls
 
-        changed_system_facts = self.get_system_facts()
+        changed_xcvrs_facts = self.get_xcvrs_facts()
 
-        result["changed"] = config_is_diff(existing_system_facts, changed_system_facts)
+        result["changed"] = config_is_diff(existing_xcvrs_facts, changed_xcvrs_facts)
 
-        result["before"] = existing_system_facts
+        result["before"] = existing_xcvrs_facts
         if self.state in self.ACTION_STATES:
-            result["before"] = existing_system_facts
+            result["before"] = existing_xcvrs_facts
             if result["changed"]:
-                result["after"] = changed_system_facts
+                result["after"] = changed_xcvrs_facts
 
         elif self.state == "gathered":
-            result["gathered"] = existing_system_facts
+            result["gathered"] = existing_xcvrs_facts
 
         return result
 
-    def set_config(self, existing_system_facts):
+    def set_config(self, existing_xcvrs_facts):
         """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
@@ -117,7 +119,7 @@ class System(ConfigBase):
                   to the desired configuration
         """
         want = self._module.params["config"]
-        have = existing_system_facts
+        have = existing_xcvrs_facts
         resp = self.set_state(want, have)
         return to_list(resp)
 
@@ -130,8 +132,8 @@ class System(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        key = "waveserver-system"
-        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
+        key = "waveserver-xcvr"
+        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr"
         nsmap = {None: namespace}
         root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
         state = self._module.params["state"]
@@ -156,10 +158,10 @@ class System(ConfigBase):
         :returns: the xml necessary to migrate the current configuration
                   to the desired configuration
         """
-        system_xml = []
-        system_xml.extend(self._state_deleted(want, have))
-        system_xml.extend(self._state_merged(want, have))
-        return system_xml
+        xcvrs_xml = []
+        xcvrs_xml.extend(self._state_deleted(want, have))
+        xcvrs_xml.extend(self._state_merged(want, have))
+        return xcvrs_xml
 
     def _state_overridden(self, want, have):
         """The command generator when state is overridden
@@ -168,10 +170,10 @@ class System(ConfigBase):
         :returns: the xml necessary to migrate the current configuration
                   to the desired configuration
         """
-        system_xml = []
-        system_xml.extend(self._state_deleted(have, have))
-        system_xml.extend(self._state_merged(want, have))
-        return system_xml
+        xcvrs_xml = []
+        xcvrs_xml.extend(self._state_deleted(have, have))
+        xcvrs_xml.extend(self._state_merged(want, have))
+        return xcvrs_xml
 
     def _state_deleted(self, want, have):
         """The command generator when state is deleted
@@ -180,15 +182,15 @@ class System(ConfigBase):
         :returns: the xml necessary to migrate the current configuration
                   to the desired configuration
         """
-        system_xml = []
+        xcvrs_xml = []
         if not want:
             want = have
         for config in want:
-            system_root = build_root_xml_node("system")
-            build_child_xml_node(system_root, "name", config["name"])
-            system_root.attrib["operation"] = "remove"
-            system_xml.append(system_root)
-        return system_xml
+            xcvr_root = build_root_xml_node("xcvr")
+            build_child_xml_node(xcvr_root, "xcvr_id", config["xcvr_id"])
+            xcvr_root.attrib["operation"] = "remove"
+            xcvrs_xml.append(xcvr_root)
+        return xcvrs_xml
 
     def _state_merged(self, want, have):
         """The command generator when state is merged

@@ -44,12 +44,12 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">"waveserver5"</div>
+                        <b>Default:</b><br/><div style="color: blue">"alu"</div>
                 </td>
                     <td>
                     </td>
                 <td>
-                        <div>Specifies the ncclient device handler name for Juniper waveserver5 network os. To identify the ncclient device handler name refer ncclient library documentation.</div>
+                        <div>Specifies the ncclient device handler name for Ciena waveserver5 network os. To identify the ncclient device handler name refer ncclient library documentation.</div>
                 </td>
             </tr>
     </table>

@@ -23,7 +23,7 @@
 #############################################
 
 """
-The module file for waveserver5_system
+The module file for waveserver5_xcvrs
 """
 
 from __future__ import absolute_import, division, print_function
@@ -38,10 +38,10 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: waveserver5_system
-version_added: 0.0.1
-short_description: Waveserver System configuration data and operational data.
-description: Waveserver System configuration data and operational data.
+module: waveserver5_xcvr
+version_added: 1.1.0
+short_description: Waveserver Transceiver configuration data and operational data.
+description: Waveserver Transceiver configuration data and operational data.
 author:
   - Jeff Groom (@jgroom33)
   - Galo Ertola (@perrary)
@@ -50,22 +50,36 @@ requirements:
   - xmltodict (>=0.12.0)
 options:
   config:
-    description: A dictionary of system options
-    type: dict
+    description: Waveserver transceiver (XCVR) list.
     suboptions:
-      host_name:
-        description: Waveserver system host name attributes.
+      properties:
+        description: All the Configurable and operational data of this XCVR instance.
         suboptions:
-          config_host_name:
-            description: User configured host name.
+          mode:
+            description: Mode of the XCVR.
             required: true
-            type: str
+            type: cienawstypes:xcvr-mode
         type: dict
+      state:
+        description: State information of this XCVR instance.
+        suboptions:
+          admin-state:
+            description: Whether Admin State is enabled or disabled for this XCVR's
+              PTP.
+            required: true
+            type: cienawstypes:enabled-disabled-enum
+        type: dict
+      xcvr_id:
+        description: Unique, access identifier string of the XCVR (e.g. '1-1').
+          Key value for the XCVR List.
+        required: true
+        type: cienawstypes:name-string
+    type: list
   state:
     choices:
+    - gathered
     - merged
     - overridden
-    - gathered
     default: merged
     description:
     - The state the configuration should be left in
@@ -74,21 +88,21 @@ options:
 EXAMPLES = """
 # Using merged
 
-- name: Configure system hostname
-  ciena.waveserver5.waveserver5_system:
+- name: Configure xcvr
+  ciena.waveserver5.waveserver5_xcvr:
     config:
-      host_name:
-        config_host_name: foo
+      host-name:
+        config-host-name: foo
     state: merged
 
 
 # Using overridden
 
-- name: Configure system hostname
-  ciena.waveserver5.waveserver5_system:
+- name: Configure Transceiver enable
+  ciena.waveserver5.waveserver5_xcvr:
     config:
-      host_name:
-        config_host_name: foo
+      host-name:
+        config-host-name: foo
     state: overridden
 
 
@@ -117,11 +131,11 @@ xml:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.argspec.system.system import (
-    SystemArgs,
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.argspec.xcvrs.xcvrs import (
+    XcvrsArgs,
 )
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.config.system.system import (
-    System,
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.config.xcvrs.xcvrs import (
+    Xcvrs,
 )
 
 
@@ -132,10 +146,10 @@ def main():
     :returns: the result form module invocation
     """
     module = AnsibleModule(
-        argument_spec=SystemArgs.argument_spec, supports_check_mode=True
+        argument_spec=XcvrsArgs.argument_spec, supports_check_mode=True
     )
 
-    result = System(module).execute_module()
+    result = Xcvrs(module).execute_module()
     module.exit_json(**result)
 
 

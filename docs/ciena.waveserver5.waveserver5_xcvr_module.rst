@@ -1,14 +1,14 @@
-.. _ciena.waveserver5.waveserver5_system_module:
+.. _ciena.waveserver5.waveserver5_xcvr_module:
 
 
-************************************
-ciena.waveserver5.waveserver5_system
-************************************
+**********************************
+ciena.waveserver5.waveserver5_xcvr
+**********************************
 
-**Waveserver System configuration data and operational data.**
+**Waveserver Transceiver configuration data and operational data.**
 
 
-Version added: 0.0.1
+Version added: 1.1.0
 
 .. contents::
    :local:
@@ -17,7 +17,7 @@ Version added: 0.0.1
 
 Synopsis
 --------
-- Waveserver System configuration data and operational data.
+- Waveserver Transceiver configuration data and operational data.
 
 
 
@@ -46,20 +46,20 @@ Parameters
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">list</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>A dictionary of system options</div>
+                        <div>Waveserver transceiver (XCVR) list.</div>
                 </td>
             </tr>
                                 <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>host_name</b>
+                    <b>properties</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
@@ -68,7 +68,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Waveserver system host name attributes.</div>
+                        <div>All the Configurable and operational data of this XCVR instance.</div>
                 </td>
             </tr>
                                 <tr>
@@ -76,20 +76,72 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>config_host_name</b>
+                    <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">cienawstypes:xcvr-mode</span>
                          / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>User configured host name.</div>
+                        <div>Mode of the XCVR.</div>
                 </td>
             </tr>
 
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>State information of this XCVR instance.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>admin-state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">cienawstypes:enabled-disabled-enum</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Whether Admin State is enabled or disabled for this XCVR&#x27;s PTP.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>xcvr_id</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">cienawstypes:name-string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Unique, access identifier string of the XCVR (e.g. &#x27;1-1&#x27;). Key value for the XCVR List.</div>
+                </td>
+            </tr>
 
             <tr>
                 <td colspan="3">
@@ -102,9 +154,9 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>gathered</li>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>overridden</li>
-                                    <li>gathered</li>
                         </ul>
                 </td>
                 <td>
@@ -124,21 +176,21 @@ Examples
 
     # Using merged
 
-    - name: Configure system hostname
-      ciena.waveserver5.waveserver5_system:
+    - name: Configure xcvr
+      ciena.waveserver5.waveserver5_xcvr:
         config:
-          host_name:
-            config_host_name: foo
+          host-name:
+            config-host-name: foo
         state: merged
 
 
     # Using overridden
 
-    - name: Configure system hostname
-      ciena.waveserver5.waveserver5_system:
+    - name: Configure Transceiver enable
+      ciena.waveserver5.waveserver5_xcvr:
         config:
-          host_name:
-            config_host_name: foo
+          host-name:
+            config-host-name: foo
         state: overridden
 
 
