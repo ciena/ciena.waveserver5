@@ -59,7 +59,7 @@ options:
       state:
         description: State information of this XCVR instance.
         suboptions:
-          admin-state:
+          admin_state:
             description: Whether Admin State is enabled or disabled for this XCVR's
               PTP.
             required: true

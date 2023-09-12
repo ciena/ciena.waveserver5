@@ -45,7 +45,7 @@ class XcvrsArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                 },
                 "state": {
-                    "options": {"admin-state": {"required": True, "type": "cienawstypes:enabled-disabled-enum"}},
+                    "options": {"admin_state": {"required": True, "type": "cienawstypes:enabled-disabled-enum"}},
                     "type": "dict",
                 },
                 "xcvr_id": {"required": True, "type": "cienawstypes:name-string"},
