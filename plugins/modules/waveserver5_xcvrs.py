@@ -145,9 +145,7 @@ def main():
 
     :returns: the result form module invocation
     """
-    module = AnsibleModule(
-        argument_spec=XcvrsArgs.argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=XcvrsArgs.argument_spec, supports_check_mode=True)
 
     result = Xcvrs(module).execute_module()
     module.exit_json(**result)

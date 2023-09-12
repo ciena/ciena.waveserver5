@@ -41,9 +41,7 @@ class XcvrsArgs(object):  # pylint: disable=R0903
         "config": {
             "options": {
                 "properties": {
-                    "options": {
-                        "mode": {"required": True, "type": "cienawstypes:xcvr-mode"}
-                    },
+                    "options": {"mode": {"required": True, "type": "cienawstypes:xcvr-mode"}},
                     "type": "dict",
                 },
                 "state": {

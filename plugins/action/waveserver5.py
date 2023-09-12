@@ -44,8 +44,7 @@ class ActionModule(ActionNetworkModule):
         if persistent_connection not in ("netconf"):
             return {
                 "failed": True,
-                "msg": "Connection type %s is not valid for this module"
-                % self._play_context.connection,
+                "msg": "Connection type %s is not valid for this module" % self._play_context.connection,
             }
 
         result = super(ActionModule, self).run(task_vars=task_vars)

@@ -64,9 +64,7 @@ class Xcvrs(ConfigBase):
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
-        facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
-        )
+        facts, _warnings = Facts(self._module).get_facts(self.gather_subset, self.gather_network_resources)
         xcvrs_facts = facts["ansible_network_resources"].get("xcvrs")
         if not xcvrs_facts:
             return []
