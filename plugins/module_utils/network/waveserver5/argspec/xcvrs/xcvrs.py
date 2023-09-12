@@ -45,21 +45,12 @@ class XcvrsArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                 },
                 "state": {
-                    "options": {
-                        "admin-state": {
-                            "required": True,
-                            "type": "cienawstypes:enabled-disabled-enum",
-                        }
-                    },
+                    "options": {"admin-state": {"required": True, "type": "cienawstypes:enabled-disabled-enum"}},
                     "type": "dict",
                 },
                 "xcvr_id": {"required": True, "type": "cienawstypes:name-string"},
             },
             "type": "list",
         },
-        "state": {
-            "choices": ["gathered", "merged", "overridden"],
-            "default": "merged",
-            "type": "str",
-        },
+        "state": {"choices": ["gathered", "merged", "overridden"], "default": "merged", "type": "str"},
     }  # pylint: disable=C0301

@@ -79,15 +79,15 @@ class XcvrsFacts(object):
 
         if not data:
             config_filter = """
-                <xcvr:waveserver-xcvrs xmlns:xcvr="urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr">
-                </xcvr:waveserver-xcvrs>
+                <waveserver-xcvrs xmlns="urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr">
+                </waveserver-xcvrs>
                 """
             data = get(self._module, filter=("subtree", config_filter))
 
         stripped = remove_namespaces(xml_to_string(data))
         data = fromstring(to_bytes(stripped, errors="surrogate_then_replace"))
 
-        resources = data.xpath("/rpc-reply/data/waveserver-xcvrs/xcvrs")
+        resources = data.xpath("/rpc-reply/data/waveserver-xcvrs/xcvr")[0]
 
         objs = []
         for resource in resources:

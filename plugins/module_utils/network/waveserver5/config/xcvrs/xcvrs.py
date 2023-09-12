@@ -130,7 +130,7 @@ class Xcvrs(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        key = "waveserver-xcvr"
+        key = "waveserver-xcvrs"
         namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr"
         nsmap = {None: namespace}
         root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
