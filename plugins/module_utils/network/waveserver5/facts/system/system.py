@@ -87,16 +87,33 @@ class SystemFacts(object):
         stripped = remove_namespaces(xml_to_string(data))
         data = fromstring(to_bytes(stripped, errors="surrogate_then_replace"))
 
-        waveserver_system = (
-            data.xpath("/rpc-reply/data/waveserver-system/host-name/config-host-name")[0]
-            if data.xpath("/rpc-reply/data/waveserver-system")
-            else None
-        )
-        hostname = waveserver_system.text
+        resource = data.xpath("/rpc-reply/data/waveserver-system")[0]
+        obj = self.render_config(self.generated_spec, resource)
+
         facts = {}
-        facts["system"] = {"host-name": {"config-host-name": hostname}}
+        facts["system"] = {}
+        params = utils.validate_config(self.argument_spec, {"config": obj})
+        facts["system"] = params["config"]
+
         ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts
+
+    def get_xml_value(self, xml_obj, xpath):
+        result = xml_obj.xpath(xpath)
+        return result[0].text if result else None
+
+    def recursive_config_fill(self, config, conf, spec, xml_base_path=""):
+        for key, _ in spec.items():
+            modified_key = key.replace("_", "-")
+            new_base_path = f"{xml_base_path}/{modified_key}" if xml_base_path else modified_key
+
+            if isinstance(spec[key], dict):
+                config[key] = {}
+                self.recursive_config_fill(config[key], conf, spec[key], new_base_path)
+            else:
+                extracted_value = self.get_xml_value(conf, new_base_path)
+                if extracted_value is not None:
+                    config[key] = extracted_value
 
     def render_config(self, spec, conf):
         """
@@ -108,14 +125,8 @@ class SystemFacts(object):
         :rtype: dictionary
         :returns: The generated config
         """
-        config = deepcopy(spec)
-        system = self._get_xml_dict(conf)["system"]
-        config["name"] = utils.get_xml_conf_arg(conf, "name")
-
+        if isinstance(conf, str):
+            conf = etree.fromstring(conf)
+        config = {}
+        self.recursive_config_fill(config, conf, spec)
         return utils.remove_empties(config)
-
-    def _get_xml_dict(self, xml_root):
-        if not HAS_XMLTODICT:
-            self._module.fail_json(msg=missing_required_lib("xmltodict"))
-        xml_dict = xmltodict.parse(etree.tostring(xml_root), dict_constructor=dict)
-        return xml_dict

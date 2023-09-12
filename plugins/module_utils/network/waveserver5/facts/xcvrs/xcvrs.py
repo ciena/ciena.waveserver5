@@ -88,7 +88,6 @@ class XcvrsFacts(object):
         data = fromstring(to_bytes(stripped, errors="surrogate_then_replace"))
 
         resources = data.xpath("/rpc-reply/data/waveserver-xcvrs/xcvrs")
-
         objs = []
         for resource in resources:
             if resource:
@@ -106,6 +105,23 @@ class XcvrsFacts(object):
         ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts
 
+    def get_xml_value(self, xml_obj, xpath):
+        result = xml_obj.xpath(xpath)
+        return result[0].text if result else None
+
+    def recursive_config_fill(self, config, conf, spec, xml_base_path=""):
+        for key, _ in spec.items():
+            modified_key = key.replace("_", "-")
+            new_base_path = f"{xml_base_path}/{modified_key}" if xml_base_path else modified_key
+
+            if isinstance(spec[key], dict):
+                config[key] = {}
+                self.recursive_config_fill(config[key], conf, spec[key], new_base_path)
+            else:
+                extracted_value = self.get_xml_value(conf, new_base_path)
+                if extracted_value is not None:
+                    config[key] = extracted_value
+
     def render_config(self, spec, conf):
         """
         Render config as dictionary structure and delete keys
@@ -116,17 +132,8 @@ class XcvrsFacts(object):
         :rtype: dictionary
         :returns: The generated config
         """
-        config = deepcopy(spec)
-        config["xcvr_id"] = utils.get_xml_conf_arg(conf, "xcvr-id")
-        config["state"] = {}
-        config["state"]['admin_state'] = utils.get_xml_conf_arg(conf, "state/admin-state")
-        config["properties"] = {}
-        config["properties"]['mode'] = utils.get_xml_conf_arg(conf, "properties/mode")
-
+        if isinstance(conf, str):
+            conf = etree.fromstring(conf)
+        config = {}
+        self.recursive_config_fill(config, conf, spec)
         return utils.remove_empties(config)
-
-    def _get_xml_dict(self, xml_root):
-        if not HAS_XMLTODICT:
-            self._module.fail_json(msg=missing_required_lib("xmltodict"))
-        xml_dict = xmltodict.parse(etree.tostring(xml_root), dict_constructor=dict)
-        return xml_dict
