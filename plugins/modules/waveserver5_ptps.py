@@ -146,12 +146,12 @@ options:
     type: list
   state:
     choices:
-    - gathered
-    - merged
-    - overridden
+      - gathered
+      - merged
+      - overridden
     default: merged
     description:
-    - The state the configuration should be left in
+      - The state the configuration should be left in
     type: str
 """
 EXAMPLES = """
