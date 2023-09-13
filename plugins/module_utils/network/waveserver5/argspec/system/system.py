@@ -40,7 +40,145 @@ class SystemArgs(object):  # pylint: disable=R0903
     argument_spec = {
         "config": {
             "options": {
-                "host_name": {"options": {"config_host_name": {"required": True, "type": "str"}}, "type": "dict"}
+                "host_name": {"options": {"config_host_name": {"required": True, "type": "str"}}, "type": "dict"},
+                "server_config": {
+                    "options": {
+                        "global_inactivity_timeout": {"required": True, "type": "int"},
+                        "global_inactivity_timer": {
+                            "choices": ["enabled", "disabled"],
+                            "required": True,
+                            "type": "str",
+                        },
+                        "grpc": {
+                            "options": {
+                                "admin_state": {"choices": ["enabled", "disabled"], "required": True, "type": "str"},
+                                "certificate_verification": {
+                                    "options": {
+                                        "certificate_name": {"required": True, "type": "str"},
+                                        "mutual_authentication": {
+                                            "options": {
+                                                "admin_state": {
+                                                    "choices": ["enabled", "disabled"],
+                                                    "required": True,
+                                                    "type": "str",
+                                                }
+                                            },
+                                            "type": "dict",
+                                        },
+                                    },
+                                    "type": "dict",
+                                },
+                            },
+                            "type": "dict",
+                        },
+                        "https": {
+                            "options": {
+                                "admin_state": {"choices": ["enabled", "disabled"], "required": True, "type": "str"},
+                                "certificate_verification": {
+                                    "options": {
+                                        "certificate_name": {"required": True, "type": "str"},
+                                        "mutual_authentication": {
+                                            "options": {
+                                                "admin_state": {
+                                                    "choices": ["enabled", "disabled"],
+                                                    "required": True,
+                                                    "type": "str",
+                                                }
+                                            },
+                                            "type": "dict",
+                                        },
+                                        "ocsp": {
+                                            "options": {
+                                                "admin_state": {
+                                                    "choices": ["enabled", "disabled"],
+                                                    "required": True,
+                                                    "type": "str",
+                                                },
+                                                "default_responder": {"required": True, "type": "str"},
+                                                "nonce": {"choices": ["on", "off"], "required": True, "type": "str"},
+                                                "responder_preference": {"required": True, "type": "str"},
+                                            },
+                                            "type": "dict",
+                                        },
+                                        "trusted_dns": {"required": True, "type": "str"},
+                                    },
+                                    "type": "dict",
+                                },
+                                "inactivity_timeout": {"required": True, "type": "int"},
+                                "web_ui_file_transfer_admin_state": {
+                                    "choices": ["enabled", "disabled"],
+                                    "required": True,
+                                    "type": "str",
+                                },
+                            },
+                            "type": "dict",
+                        },
+                        "netconf_server_state": {"choices": ["enabled", "disabled"], "required": True, "type": "str"},
+                        "scp_server_state": {"choices": ["enabled", "disabled"], "required": True, "type": "str"},
+                        "sftp_server_state": {"choices": ["enabled", "disabled"], "required": True, "type": "str"},
+                        "ssh": {
+                            "options": {
+                                "algorithms": {
+                                    "options": {
+                                        "encryption": {
+                                            "options": {
+                                                "admin_state": {
+                                                    "choices": ["enabled", "disabled"],
+                                                    "required": True,
+                                                    "type": "str",
+                                                },
+                                                "algorithm_name": {"required": True, "type": "str"},
+                                            },
+                                            "type": "list",
+                                        },
+                                        "key_exchange": {
+                                            "options": {
+                                                "admin_state": {
+                                                    "choices": ["enabled", "disabled"],
+                                                    "required": True,
+                                                    "type": "str",
+                                                },
+                                                "algorithm_name": {"required": True, "type": "str"},
+                                            },
+                                            "type": "list",
+                                        },
+                                        "message-authentication_code": {
+                                            "options": {
+                                                "admin_state": {
+                                                    "choices": ["enabled", "disabled"],
+                                                    "required": True,
+                                                    "type": "str",
+                                                },
+                                                "algorithm_name": {"required": True, "type": "str"},
+                                            },
+                                            "type": "list",
+                                        },
+                                        "public_key_authentication": {
+                                            "options": {
+                                                "admin_state": {
+                                                    "choices": ["enabled", "disabled"],
+                                                    "required": True,
+                                                    "type": "str",
+                                                },
+                                                "algorithm_name": {"required": True, "type": "str"},
+                                            },
+                                            "type": "list",
+                                        },
+                                    },
+                                    "type": "dict",
+                                },
+                                "allowed_clients": {
+                                    "options": {"ip_address": {"required": True, "type": "str"}},
+                                    "type": "list",
+                                },
+                                "authentication_retries": {"required": True, "type": "int"},
+                                "listener_port": {"required": True, "type": "int"},
+                            },
+                            "type": "dict",
+                        },
+                    },
+                    "type": "dict",
+                },
             },
             "type": "dict",
         },

@@ -79,11 +79,258 @@ Parameters
                     <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">cienawstypes:xcvr-mode</span>
+                        <span style="color: purple">string</span>
                          / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>blank</li>
+                                    <li>OCH</li>
+                                    <li>OTM</li>
+                                    <li>OSC</li>
+                                    <li>OSC-Add-Drop</li>
+                                    <li>10GE</li>
+                                    <li>4x10GE</li>
+                                    <li>40GE</li>
+                                    <li>100GE</li>
+                                    <li>400GE</li>
+                                    <li>4x100GE</li>
+                                    <li>4x100GE-ZR</li>
+                                    <li>OTL4.4</li>
+                                    <li>OTLC.4</li>
+                                    <li>FOIC1.4</li>
+                                    <li>FOIC4.8</li>
+                                    <li>35-100</li>
+                                    <li>35-150</li>
+                                    <li>35-200</li>
+                                    <li>35-250</li>
+                                    <li>56-100</li>
+                                    <li>56-150</li>
+                                    <li>56-200</li>
+                                    <li>56-250</li>
+                                    <li>56-300</li>
+                                    <li>56-350</li>
+                                    <li>56-400</li>
+                                    <li>95-200-O</li>
+                                    <li>95-250-O</li>
+                                    <li>95-300-O</li>
+                                    <li>95-350-O</li>
+                                    <li>95-400-O</li>
+                                    <li>95-450-O</li>
+                                    <li>95-500-O</li>
+                                    <li>95-550-O</li>
+                                    <li>95-600-O</li>
+                                    <li>95-650-O</li>
+                                    <li>95-700-O</li>
+                                    <li>95-750-O</li>
+                                    <li>95-800-O</li>
+                                    <li>95-200-E</li>
+                                    <li>95-250-E</li>
+                                    <li>95-300-E</li>
+                                    <li>95-350-E</li>
+                                    <li>95-400-E</li>
+                                    <li>95-450-E</li>
+                                    <li>95-500-E</li>
+                                    <li>95-550-E</li>
+                                    <li>95-600-E</li>
+                                    <li>95-650-E</li>
+                                    <li>95-700-E</li>
+                                    <li>95-750-E</li>
+                                    <li>95-800-E</li>
+                                    <li>91.6-200-O</li>
+                                    <li>91.6-250-O</li>
+                                    <li>91.6-300-O</li>
+                                    <li>91.6-350-O</li>
+                                    <li>91.6-400-O</li>
+                                    <li>91.6-450-O</li>
+                                    <li>91.6-500-O</li>
+                                    <li>91.6-550-O</li>
+                                    <li>91.6-600-O</li>
+                                    <li>91.6-650-O</li>
+                                    <li>91.6-700-O</li>
+                                    <li>91.6-750-O</li>
+                                    <li>91.6-800-O</li>
+                                    <li>91.6-200-E</li>
+                                    <li>91.6-250-E</li>
+                                    <li>91.6-300-E</li>
+                                    <li>91.6-350-E</li>
+                                    <li>91.6-400-E</li>
+                                    <li>91.6-450-E</li>
+                                    <li>91.6-500-E</li>
+                                    <li>91.6-550-E</li>
+                                    <li>91.6-600-E</li>
+                                    <li>91.6-650-E</li>
+                                    <li>91.6-700-E</li>
+                                    <li>91.6-750-E</li>
+                                    <li>91.6-800-E</li>
+                                    <li>89.3-200-O</li>
+                                    <li>89.3-250-O</li>
+                                    <li>89.3-300-O</li>
+                                    <li>89.3-350-O</li>
+                                    <li>89.3-400-O</li>
+                                    <li>89.3-450-O</li>
+                                    <li>89.3-500-O</li>
+                                    <li>89.3-550-O</li>
+                                    <li>89.3-600-O</li>
+                                    <li>89.3-650-O</li>
+                                    <li>89.3-700-O</li>
+                                    <li>89.3-750-O</li>
+                                    <li>89.3-800-O</li>
+                                    <li>89.3-200-E</li>
+                                    <li>89.3-250-E</li>
+                                    <li>89.3-300-E</li>
+                                    <li>89.3-350-E</li>
+                                    <li>89.3-400-E</li>
+                                    <li>89.3-450-E</li>
+                                    <li>89.3-500-E</li>
+                                    <li>89.3-550-E</li>
+                                    <li>89.3-600-E</li>
+                                    <li>89.3-650-E</li>
+                                    <li>89.3-700-E</li>
+                                    <li>89.3-750-E</li>
+                                    <li>89.3-800-E</li>
+                                    <li>71.3-200-O</li>
+                                    <li>71.3-250-O</li>
+                                    <li>71.3-300-O</li>
+                                    <li>71.3-350-O</li>
+                                    <li>71.3-400-O</li>
+                                    <li>71.3-450-O</li>
+                                    <li>71.3-500-O</li>
+                                    <li>71.3-550-O</li>
+                                    <li>71.3-600-O</li>
+                                    <li>71.3-200-E</li>
+                                    <li>71.3-250-E</li>
+                                    <li>71.3-300-E</li>
+                                    <li>71.3-350-E</li>
+                                    <li>71.3-400-E</li>
+                                    <li>71.3-450-E</li>
+                                    <li>71.3-500-E</li>
+                                    <li>71.3-550-E</li>
+                                    <li>71.3-600-E</li>
+                                    <li>69.5-200-O</li>
+                                    <li>69.5-250-O</li>
+                                    <li>69.5-300-O</li>
+                                    <li>69.5-350-O</li>
+                                    <li>69.5-400-O</li>
+                                    <li>69.5-450-O</li>
+                                    <li>69.5-500-O</li>
+                                    <li>69.5-550-O</li>
+                                    <li>69.5-600-O</li>
+                                    <li>69.5-200-E</li>
+                                    <li>69.5-250-E</li>
+                                    <li>69.5-300-E</li>
+                                    <li>69.5-350-E</li>
+                                    <li>69.5-400-E</li>
+                                    <li>69.5-450-E</li>
+                                    <li>69.5-500-E</li>
+                                    <li>69.5-550-E</li>
+                                    <li>69.5-600-E</li>
+                                    <li>93.3-200-O</li>
+                                    <li>93.3-250-O</li>
+                                    <li>93.3-300-O</li>
+                                    <li>93.3-350-O</li>
+                                    <li>93.3-400-O</li>
+                                    <li>93.3-450-O</li>
+                                    <li>93.3-500-O</li>
+                                    <li>93.3-550-O</li>
+                                    <li>93.3-600-O</li>
+                                    <li>93.3-650-O</li>
+                                    <li>93.3-700-O</li>
+                                    <li>93.3-750-O</li>
+                                    <li>93.3-800-O</li>
+                                    <li>93.3-200-E</li>
+                                    <li>93.3-250-E</li>
+                                    <li>93.3-300-E</li>
+                                    <li>93.3-350-E</li>
+                                    <li>93.3-400-E</li>
+                                    <li>93.3-450-E</li>
+                                    <li>93.3-500-E</li>
+                                    <li>93.3-550-E</li>
+                                    <li>93.3-600-E</li>
+                                    <li>93.3-650-E</li>
+                                    <li>93.3-700-E</li>
+                                    <li>93.3-750-E</li>
+                                    <li>93.3-800-E</li>
+                                    <li>90-200-O</li>
+                                    <li>90-250-O</li>
+                                    <li>90-300-O</li>
+                                    <li>90-350-O</li>
+                                    <li>90-400-O</li>
+                                    <li>90-450-O</li>
+                                    <li>90-500-O</li>
+                                    <li>90-550-O</li>
+                                    <li>90-600-O</li>
+                                    <li>90-650-O</li>
+                                    <li>90-700-O</li>
+                                    <li>90-750-O</li>
+                                    <li>90-800-O</li>
+                                    <li>90-200-E</li>
+                                    <li>90-250-E</li>
+                                    <li>90-300-E</li>
+                                    <li>90-350-E</li>
+                                    <li>90-400-E</li>
+                                    <li>90-450-E</li>
+                                    <li>90-500-E</li>
+                                    <li>90-550-E</li>
+                                    <li>90-600-E</li>
+                                    <li>90-650-E</li>
+                                    <li>90-700-E</li>
+                                    <li>90-750-E</li>
+                                    <li>90-800-E</li>
+                                    <li>85-200-O</li>
+                                    <li>85-250-O</li>
+                                    <li>85-300-O</li>
+                                    <li>85-350-O</li>
+                                    <li>85-400-O</li>
+                                    <li>85-450-O</li>
+                                    <li>85-500-O</li>
+                                    <li>85-550-O</li>
+                                    <li>85-600-O</li>
+                                    <li>85-650-O</li>
+                                    <li>85-700-O</li>
+                                    <li>85-750-O</li>
+                                    <li>85-800-O</li>
+                                    <li>85-200-E</li>
+                                    <li>85-250-E</li>
+                                    <li>85-300-E</li>
+                                    <li>85-350-E</li>
+                                    <li>85-400-E</li>
+                                    <li>85-450-E</li>
+                                    <li>85-500-E</li>
+                                    <li>85-550-E</li>
+                                    <li>85-600-E</li>
+                                    <li>85-650-E</li>
+                                    <li>85-700-E</li>
+                                    <li>85-750-E</li>
+                                    <li>85-800-E</li>
+                                    <li>82-200-O</li>
+                                    <li>82-250-O</li>
+                                    <li>82-300-O</li>
+                                    <li>82-350-O</li>
+                                    <li>82-400-O</li>
+                                    <li>82-450-O</li>
+                                    <li>82-500-O</li>
+                                    <li>82-550-O</li>
+                                    <li>82-600-O</li>
+                                    <li>82-650-O</li>
+                                    <li>82-700-O</li>
+                                    <li>82-750-O</li>
+                                    <li>82-800-O</li>
+                                    <li>82-200-E</li>
+                                    <li>82-250-E</li>
+                                    <li>82-300-E</li>
+                                    <li>82-350-E</li>
+                                    <li>82-400-E</li>
+                                    <li>82-450-E</li>
+                                    <li>82-500-E</li>
+                                    <li>82-550-E</li>
+                                    <li>82-600-E</li>
+                                    <li>82-650-E</li>
+                                    <li>82-700-E</li>
+                                    <li>82-750-E</li>
+                                    <li>82-800-E</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Mode of the XCVR.</div>
@@ -114,11 +361,15 @@ Parameters
                     <b>admin_state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">cienawstypes:enabled-disabled-enum</span>
+                        <span style="color: purple">string</span>
                          / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>disabled</li>
+                                    <li>enabled</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Whether Admin State is enabled or disabled for this XCVR&#x27;s PTP.</div>
@@ -132,7 +383,7 @@ Parameters
                     <b>xcvr_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">cienawstypes:name-string</span>
+                        <span style="color: purple">string</span>
                          / <span style="color: red">required</span>
                     </div>
                 </td>
