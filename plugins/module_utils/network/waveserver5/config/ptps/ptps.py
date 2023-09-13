@@ -184,10 +184,10 @@ class Ptps(ConfigBase):
         if not want:
             want = have
         for config in want:
-            xcvr_root = build_root_xml_node("xcvr")
-            build_child_xml_node(xcvr_root, "ptp_id", config["ptp_id"])
-            xcvr_root.attrib["operation"] = "remove"
-            ptps_xml.append(xcvr_root)
+            ptp_root = build_root_xml_node("ptp")
+            build_child_xml_node(ptp_root, "ptp_id", config["ptp_id"])
+            ptp_root.attrib["operation"] = "remove"
+            ptps_xml.append(ptp_root)
         return ptps_xml
 
     def _state_merged(self, want, have):
