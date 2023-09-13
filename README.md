@@ -31,6 +31,7 @@ Name | Description
 Name | Description
 --- | ---
 [ciena.waveserver5.waveserver5_facts](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_facts_module.rst)|Get facts about waveserver5 devices.
+[ciena.waveserver5.waveserver5_ptp](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_ptp_module.rst)|Waveserver PTP configuration data and operational data.
 [ciena.waveserver5.waveserver5_system](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_system_module.rst)|Waveserver System configuration data and operational data.
 [ciena.waveserver5.waveserver5_xcvr](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_xcvr_module.rst)|Waveserver Transceiver configuration data and operational data.
 

@@ -23,11 +23,15 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.xcvrs.xcvrs import (
     XcvrsFacts,
 )
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.ptps.ptps import (
+    PtpsFacts,
+)
 
 FACT_LEGACY_SUBSETS = dict(default=Default, config=Config)
 FACT_RESOURCE_SUBSETS = dict(
     system=SystemFacts,
     xcvrs=XcvrsFacts,
+    ptps=PtpsFacts,
 )
 
 
