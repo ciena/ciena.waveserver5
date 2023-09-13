@@ -391,7 +391,7 @@ Examples
         state: merged
 
 
-    # Using merged
+    # Using overridden
 
     - name: Configure ptp
       ciena.waveserver5.waveserver5_ptps:
