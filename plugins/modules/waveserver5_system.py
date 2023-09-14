@@ -304,7 +304,6 @@ options:
                 type: int
             type: dict
         type: dict
-
   state:
     choices:
     - merged

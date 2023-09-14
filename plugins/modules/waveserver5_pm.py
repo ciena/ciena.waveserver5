@@ -47,6 +47,7 @@ requirements:
 options:
   config:
     description: Waveserver performance monitoring configuration and operational data.
+    type: dict
     suboptions:
       encryption_gcm_performance_instances:
         description: Channel Encryption-GCM PM instances.
@@ -59,14 +60,12 @@ options:
             description: PM instance properties.
             suboptions:
               tca_profile_15_min:
-                description:
-                  TCA profile name that is attached to the current 15 minute
+                description: TCA profile name that is attached to the current 15 minute
                   bin
                 required: true
                 type: str
               tca_profile_24_hr:
-                description:
-                  TCA profile name that is attached to the current 24 hour
+                description: TCA profile name that is attached to the current 24 hour
                   bin
                 required: true
                 type: str
@@ -105,14 +104,12 @@ options:
             description: PM instance properties.
             suboptions:
               tca_profile_15_min:
-                description:
-                  TCA profile name that is attached to the current 15 minute
+                description: TCA profile name that is attached to the current 15 minute
                   bin
                 required: true
                 type: str
               tca_profile_24_hr:
-                description:
-                  TCA profile name that is attached to the current 24 hour
+                description: TCA profile name that is attached to the current 24 hour
                   bin
                 required: true
                 type: str
@@ -170,9 +167,8 @@ options:
             choices:
               - disabled
               - enabled
-            description:
-              Global configuration for clearing untimed bin stats on a get
-              request.
+            description: Global configuration for clearing untimed bin stats on a
+              get request.
             required: true
             type: str
         type: dict
@@ -187,14 +183,12 @@ options:
             description: PM instance properties.
             suboptions:
               tca_profile_15_min:
-                description:
-                  TCA profile name that is attached to the current 15 minute
+                description: TCA profile name that is attached to the current 15 minute
                   bin
                 required: true
                 type: str
               tca_profile_24_hr:
-                description:
-                  TCA profile name that is attached to the current 24 hour
+                description: TCA profile name that is attached to the current 24 hour
                   bin
                 required: true
                 type: str
@@ -233,14 +227,12 @@ options:
             description: PM instance properties.
             suboptions:
               tca_profile_15_min:
-                description:
-                  TCA profile name that is attached to the current 15 minute
+                description: TCA profile name that is attached to the current 15 minute
                   bin
                 required: true
                 type: str
               tca_profile_24_hr:
-                description:
-                  TCA profile name that is attached to the current 24 hour
+                description: TCA profile name that is attached to the current 24 hour
                   bin
                 required: true
                 type: str
@@ -279,14 +271,12 @@ options:
             description: PM instance properties.
             suboptions:
               tca_profile_15_min:
-                description:
-                  TCA profile name that is attached to the current 15 minute
+                description: TCA profile name that is attached to the current 15 minute
                   bin
                 required: true
                 type: str
               tca_profile_24_hr:
-                description:
-                  TCA profile name that is attached to the current 24 hour
+                description: TCA profile name that is attached to the current 24 hour
                   bin
                 required: true
                 type: str
@@ -325,14 +315,12 @@ options:
             description: PM instance properties.
             suboptions:
               tca_profile_15_min:
-                description:
-                  TCA profile name that is attached to the current 15 minute
+                description: TCA profile name that is attached to the current 15 minute
                   bin
                 required: true
                 type: str
               tca_profile_24_hr:
-                description:
-                  TCA profile name that is attached to the current 24 hour
+                description: TCA profile name that is attached to the current 24 hour
                   bin
                 required: true
                 type: str
@@ -371,14 +359,12 @@ options:
             description: PM instance properties.
             suboptions:
               tca_profile_15_min:
-                description:
-                  TCA profile name that is attached to the current 15 minute
+                description: TCA profile name that is attached to the current 15 minute
                   bin
                 required: true
                 type: str
               tca_profile_24_hr:
-                description:
-                  TCA profile name that is attached to the current 24 hour
+                description: TCA profile name that is attached to the current 24 hour
                   bin
                 required: true
                 type: str
@@ -406,7 +392,6 @@ options:
                 type: str
             type: dict
         type: list
-    type: dict
   state:
     choices:
       - merged

@@ -32,6 +32,7 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.pm.pm import (
     PmFacts,
 )
+
 FACT_LEGACY_SUBSETS = dict(default=Default, config=Config)
 FACT_RESOURCE_SUBSETS = dict(
     system=SystemFacts,

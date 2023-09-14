@@ -47,6 +47,7 @@ requirements:
 options:
   config:
     description: List of PTP objects.
+    type: list
     suboptions:
       properties:
         description: All the configurable and operational data of this PTP instance.
@@ -144,7 +145,6 @@ options:
             required: true
             type: str
         type: dict
-    type: list
   state:
     choices:
       - gathered
