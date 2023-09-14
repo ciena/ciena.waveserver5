@@ -13,6 +13,7 @@
           - xcvrs
           - ptps
           - ports
+          - pm
     - name: Test System
       ansible.builtin.include_tasks: test-system.yml
     # - name: Test Chassis
