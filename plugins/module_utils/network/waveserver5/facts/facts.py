@@ -35,11 +35,11 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 
 FACT_LEGACY_SUBSETS = dict(default=Default, config=Config)
 FACT_RESOURCE_SUBSETS = dict(
-    system=SystemFacts,
-    xcvrs=XcvrsFacts,
-    ptps=PtpsFacts,
-    ports=PortsFacts,
     pm=PmFacts,
+    ports=PortsFacts,
+    ptps=PtpsFacts,
+    xcvrs=XcvrsFacts,
+    system=SystemFacts,
 )
 
 
