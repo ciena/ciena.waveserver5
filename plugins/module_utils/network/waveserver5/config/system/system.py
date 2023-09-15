@@ -211,11 +211,9 @@ class System(ConfigBase):
                 else:
                     element.extend(self._state_merged(value, {}))
             else:
-                # If the value is not a dictionary, create a new element and set its text
                 element = etree.Element(key)
                 element.text = str(value)
-
-            # Add the element to the list
-            xml_elements.append(element)
+            if element.text != "None":
+                xml_elements.append(element)
 
         return xml_elements
