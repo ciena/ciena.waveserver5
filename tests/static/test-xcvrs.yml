@@ -1,0 +1,4 @@
+---
+- name: Gather Xcvrs information
+  ciena.waveserver5.waveserver5_xcvrs:
+    state: gathered

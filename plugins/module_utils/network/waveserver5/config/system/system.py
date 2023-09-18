@@ -77,77 +77,67 @@ class System(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        existing_system_facts = self.get_system_facts()
-        config_xmls = self.set_config(existing_system_facts)
+        have = self.get_system_facts()
+        config_dict = self.set_config(have)
 
-        if config_xmls and self.state in self.ACTION_STATES:
-            for config_xml in to_list(config_xmls):
-                config = f"<config>{config_xml}</config>"
-                kwargs = {
-                    "config": config,
-                    "target": "running",
-                    "default_operation": "merge",
-                    "format": "xml",
-                }
+        if config_dict:
+            config_xml = self.create_xml_config(config_dict)
+            if not self.validate_xml(config_xml):
+                raise ValueError("Generated XML is not valid.")
+
+            kwargs = {"config": f"<config>{config_xml}</config>", "target": "running"}
+            try:
                 self._module._connection.edit_config(**kwargs)
-            result["changed"] = True
-            result["xml"] = config_xmls
+            except Exception as e:
+                return {"failed": True, "msg": str(e)}
 
+            result["changed"] = True
+            result["xml"] = config_xml
         changed_system_facts = self.get_system_facts()
 
-        result["changed"] = config_is_diff(existing_system_facts, changed_system_facts)
+        result["changed"] = config_is_diff(have, changed_system_facts)
 
-        result["before"] = existing_system_facts
+        result["before"] = have
         if self.state in self.ACTION_STATES:
-            result["before"] = existing_system_facts
             if result["changed"]:
                 result["after"] = changed_system_facts
 
         elif self.state == "gathered":
-            result["gathered"] = existing_system_facts
+            result["gathered"] = have
 
         return result
 
-    def set_config(self, existing_system_facts):
-        """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
-
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
+    def set_config(self, have):
         want = self._module.params["config"]
-        have = existing_system_facts
-        resp = self.set_state(want, have)
-        return to_list(resp)
-
-    def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
-
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        key = "waveserver-system"
-        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
-        nsmap = {None: namespace}
-        root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
         state = self._module.params["state"]
         state_methods = {
             "overridden": self._state_overridden,
-            "deleted": self._state_deleted,
             "merged": self._state_merged,
             "replaced": self._state_replaced,
         }
-        config_xmls = []
-        if state in state_methods:
-            config_xmls = state_methods.get(state)(want, have)
-        for xml in config_xmls:
-            root.append(xml)
 
-        return tostring(root)
+        config_dict = state_methods[state](want, have) if state in self.ACTION_STATES else {}
+        return config_dict
+
+    def create_element(self, key, value, parent):
+        sanitized_key = key.replace("_", "-")
+        subelem = etree.Element(sanitized_key)
+        if isinstance(value, dict):
+            for subkey, subvalue in value.items():
+                self.create_element(subkey, subvalue, subelem)
+        else:
+            subelem.text = str(value)
+        if value is not None:
+            parent.append(subelem)
+
+    def create_xml_config(self, config_dict):
+        key = "waveserver-system"
+        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
+        nsmap = {None: namespace}
+        root = etree.Element(f"{{{namespace}}}{key}", nsmap=nsmap)
+        for key, value in config_dict.items():
+            self.create_element(key, value, root)
+        return etree.tostring(root).decode()
 
     def _state_replaced(self, want, have):
         """The command generator when state is replaced
@@ -173,47 +163,17 @@ class System(ConfigBase):
         system_xml.extend(self._state_merged(want, have))
         return system_xml
 
-    def _state_deleted(self, want, have):
-        """The command generator when state is deleted
-
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        system_xml = []
-        if not want:
-            want = have
-        for config in want:
-            system_root = build_root_xml_node("system")
-            build_child_xml_node(system_root, "name", config["name"])
-            system_root.attrib["operation"] = "remove"
-            system_xml.append(system_root)
-        return system_xml
-
     def _state_merged(self, want, have):
-        """The command generator when state is merged
-
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        # Create an empty list to hold the XML elements
-        xml_elements = []
-
-        # Iterate over the 'want' dictionary
+        merged_dict = {}
         for key, value in want.items():
-            key = key.replace("_", "-")
-            if isinstance(value, dict):
-                # If the value is a dictionary, create a new element and recursively add its children
-                element = etree.Element(key)
-                if isinstance(want.get(key), dict):
-                    element.extend(self._state_merged(value, want.get(key)))
-                else:
-                    element.extend(self._state_merged(value, {}))
-            else:
-                element = etree.Element(key)
-                element.text = str(value)
-            if element.text != "None":
-                xml_elements.append(element)
+            if key in have and have[key] == value:
+                continue
+            merged_dict[key] = value
+        return merged_dict
 
-        return xml_elements
+    def validate_xml(self, xml_str):
+        try:
+            etree.fromstring(xml_str.encode())
+        except etree.XMLSyntaxError:
+            return False
+        return True

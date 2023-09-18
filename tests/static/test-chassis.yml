@@ -1,4 +1,0 @@
----
-- name: Gather Chassis information
-  ciena.waveserver5.waveserver5_chassis:
-    state: gathered
