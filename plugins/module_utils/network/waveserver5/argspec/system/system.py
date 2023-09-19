@@ -142,7 +142,7 @@ class SystemArgs(object):  # pylint: disable=R0903
                                             },
                                             "type": "list",
                                         },
-                                        "message-authentication_code": {
+                                        "message_authentication_code": {
                                             "options": {
                                                 "admin_state": {
                                                     "choices": ["enabled", "disabled"],

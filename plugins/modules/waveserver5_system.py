@@ -249,7 +249,7 @@ options:
                         required: true
                         type: str
                     type: list
-                  message-authentication_code:
+                  message_authentication_code:
                     description: List of SSH message authentication code algorithms.
                       The algorithm names are system assigned.
                     suboptions:
