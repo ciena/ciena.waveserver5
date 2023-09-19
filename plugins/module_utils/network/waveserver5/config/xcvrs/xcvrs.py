@@ -26,22 +26,9 @@ except ImportError:
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
-    tostring,
-)
-
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.facts import (
     Facts,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
-    build_root_xml_node,
-    build_child_xml_node,
-)
-
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.utils.utils import (
     config_is_diff,
 )
@@ -77,38 +64,38 @@ class Xcvrs(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        existing_xcvrs_facts = self.get_xcvrs_facts()
-        config_xmls = self.set_config(existing_xcvrs_facts)
+        have = self.get_xcvrs_facts()
+        config_dict = self.set_config(have)
 
-        if config_xmls and self.state in self.ACTION_STATES:
-            for config_xml in to_list(config_xmls):
-                config = f"<config>{config_xml}</config>"
-                kwargs = {
-                    "config": config,
-                    "target": "running",
-                    "default_operation": "merge",
-                    "format": "xml",
-                }
+        if config_dict:
+            config_xml = self.create_xml_config(config_dict)
+            if not self.validate_xml(config_xml):
+                raise ValueError("Generated XML is not valid.")
+
+            kwargs = {"config": f"<config>{config_xml}</config>", "target": "running"}
+            try:
                 self._module._connection.edit_config(**kwargs)
+            except Exception as e:
+                return {"failed": True, "msg": str(e)}
+
             result["changed"] = True
-            result["xml"] = config_xmls
+            result["xml"] = config_xml
 
         changed_xcvrs_facts = self.get_xcvrs_facts()
 
-        result["changed"] = config_is_diff(existing_xcvrs_facts, changed_xcvrs_facts)
+        result["changed"] = config_is_diff(have, changed_xcvrs_facts)
 
-        result["before"] = existing_xcvrs_facts
+        result["before"] = have
         if self.state in self.ACTION_STATES:
-            result["before"] = existing_xcvrs_facts
             if result["changed"]:
                 result["after"] = changed_xcvrs_facts
 
         elif self.state == "gathered":
-            result["gathered"] = existing_xcvrs_facts
+            result["gathered"] = have
 
         return result
 
-    def set_config(self, existing_xcvrs_facts):
+    def set_config(self, have):
         """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
@@ -117,105 +104,80 @@ class Xcvrs(ConfigBase):
                   to the desired configuration
         """
         want = self._module.params["config"]
-        have = existing_xcvrs_facts
-        resp = self.set_state(want, have)
-        return to_list(resp)
+        state = self._module.params["state"]
+        state_methods = {
+            "merged": self._state_merged,
+        }
+        config_dict = state_methods[state](want, have) if state in self.ACTION_STATES else {}
+        return config_dict
 
-    def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+    def create_element(self, key, value, parent):
+        sanitized_key = key.replace("_", "-")
+        if isinstance(value, dict):
+            subelem = etree.Element(sanitized_key)
+            for subkey, subvalue in value.items():
+                self.create_element(subkey, subvalue, subelem)
+            if value:
+                parent.append(subelem)
+        elif isinstance(value, list):
+            for list_item in value:
+                subelem = etree.Element(sanitized_key)
+                for subkey, subvalue in list_item.items():
+                    self.create_element(subkey, subvalue, subelem)
+                parent.append(subelem)
+        else:
+            subelem = etree.Element(sanitized_key)
+            subelem.text = str(value)
+            if value is not None:
+                parent.append(subelem)
 
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
+    def create_xml_config(self, config_dict_or_list):
         key = "waveserver-xcvrs"
         namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr"
         nsmap = {None: namespace}
         root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
-        state = self._module.params["state"]
-        state_methods = {
-            "overridden": self._state_overridden,
-            "deleted": self._state_deleted,
-            "merged": self._state_merged,
-            "replaced": self._state_replaced,
-        }
-        config_xmls = []
-        if state in state_methods:
-            config_xmls = state_methods.get(state)(want, have)
-        for xml in config_xmls:
-            root.append(xml)
 
-        return tostring(root)
+        if isinstance(config_dict_or_list, dict):
+            for key, value in config_dict_or_list.items():
+                self.create_element(key, value, root)
+        elif isinstance(config_dict_or_list, list):
+            for list_item in config_dict_or_list:
+                if not isinstance(list_item, dict):
+                    raise ValueError("List items must be dictionaries.")
+                parent_for_list_item = etree.Element("xcvrs")
+                for key, value in list_item.items():
+                    self.create_element(key, value, parent_for_list_item)
+                root.append(parent_for_list_item)
+        else:
+            raise TypeError("Expected a dictionary or a list, got a {}".format(type(config_dict_or_list)))
 
-    def _state_replaced(self, want, have):
-        """The command generator when state is replaced
-
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        xcvrs_xml = []
-        xcvrs_xml.extend(self._state_deleted(want, have))
-        xcvrs_xml.extend(self._state_merged(want, have))
-        return xcvrs_xml
-
-    def _state_overridden(self, want, have):
-        """The command generator when state is overridden
-
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        xcvrs_xml = []
-        xcvrs_xml.extend(self._state_deleted(have, have))
-        xcvrs_xml.extend(self._state_merged(want, have))
-        return xcvrs_xml
-
-    def _state_deleted(self, want, have):
-        """The command generator when state is deleted
-
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        xcvrs_xml = []
-        if not want:
-            want = have
-        for config in want:
-            xcvr_root = build_root_xml_node("xcvr")
-            build_child_xml_node(xcvr_root, "xcvr_id", config["xcvr_id"])
-            xcvr_root.attrib["operation"] = "remove"
-            xcvrs_xml.append(xcvr_root)
-        return xcvrs_xml
+        return etree.tostring(root).decode()
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        if isinstance(want, list):
+            return self._state_merged_list(want, have)
+        elif isinstance(want, dict):
+            return self._state_merged_dict(want, have)
 
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        # Create an empty list to hold the XML elements
-        xml_elements = []
-
-        # Iterate over the 'want' dictionary
+    def _state_merged_dict(self, want, have):
+        response = {}
         for key, value in want.items():
-            key = key.replace("_", "-")
-            if isinstance(value, dict):
-                # If the value is a dictionary, create a new element and recursively add its children
-                element = etree.Element(key)
-                if isinstance(want.get(key), dict):
-                    element.extend(self._state_merged(value, want.get(key)))
-                else:
-                    element.extend(self._state_merged(value, {}))
-            else:
-                # If the value is not a dictionary, create a new element and set its text
-                element = etree.Element(key)
-                element.text = str(value)
+            if key in have and have[key] == value:
+                continue
+            response[key] = value
+        return response
 
-            # Add the element to the list
-            xml_elements.append(element)
+    def _state_merged_list(self, want, have):
+        merged_list = []
+        for w_item in want:
+            if w_item in have:
+                continue
+            merged_list.append(w_item)
+        return merged_list
 
-        return xml_elements
+    def validate_xml(self, xml_str):
+        try:
+            etree.fromstring(xml_str.encode())
+        except etree.XMLSyntaxError:
+            return False
+        return True
