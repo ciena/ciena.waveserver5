@@ -2,3 +2,17 @@
 - name: Gather Ports information
   ciena.waveserver5.waveserver5_ports:
     state: gathered
+- name: Disable port
+  ciena.waveserver5.waveserver5_ports:
+    config:
+      - port_id: 5-1
+        state:
+          admin_state: disabled
+    state: merged
+- name: Enable port
+  ciena.waveserver5.waveserver5_ports:
+    config:
+      - port_id: 5-1
+        state:
+          admin_state: enabled
+    state: merged

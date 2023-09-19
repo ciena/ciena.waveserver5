@@ -33,6 +33,10 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
     config_is_diff,
 )
 
+NAMESPACE = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr"
+ROOT_KEY = "waveserver-xcvrs"
+RESOURCE = "xcvrs"
+XML_ITEMS= "xcvrs"
 
 class Xcvrs(ConfigBase):
     """
@@ -40,22 +44,22 @@ class Xcvrs(ConfigBase):
     """
 
     gather_subset = ["!all", "!min"]
-    gather_network_resources = ["xcvrs"]
+    gather_network_resources = [RESOURCE]
 
     def __init__(self, module):
         super(Xcvrs, self).__init__(module)
 
-    def get_xcvrs_facts(self):
+    def get_facts(self):
         """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(self.gather_subset, self.gather_network_resources)
-        xcvrs_facts = facts["ansible_network_resources"].get("xcvrs")
-        if not xcvrs_facts:
+        result = facts["ansible_network_resources"].get(RESOURCE)
+        if not result:
             return []
-        return xcvrs_facts
+        return result
 
     def execute_module(self):
         """Execute the module
@@ -64,11 +68,11 @@ class Xcvrs(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        have = self.get_xcvrs_facts()
+        have = self.get_facts()
         config_dict = self.set_config(have)
 
         if config_dict:
-            config_xml = self.create_xml_config(config_dict)
+            config_xml = self._create_xml_config_generic(config_dict)
             if not self.validate_xml(config_xml):
                 raise ValueError("Generated XML is not valid.")
 
@@ -81,14 +85,14 @@ class Xcvrs(ConfigBase):
             result["changed"] = True
             result["xml"] = config_xml
 
-        changed_xcvrs_facts = self.get_xcvrs_facts()
+        changed_facts = self.get_facts()
 
-        result["changed"] = config_is_diff(have, changed_xcvrs_facts)
+        result["changed"] = config_is_diff(have, changed_facts)
 
         result["before"] = have
         if self.state in self.ACTION_STATES:
             if result["changed"]:
-                result["after"] = changed_xcvrs_facts
+                result["after"] = changed_facts
 
         elif self.state == "gathered":
             result["gathered"] = have
@@ -111,46 +115,45 @@ class Xcvrs(ConfigBase):
         config_dict = state_methods[state](want, have) if state in self.ACTION_STATES else {}
         return config_dict
 
-    def create_element(self, key, value, parent):
-        sanitized_key = key.replace("_", "-")
-        if isinstance(value, dict):
-            subelem = etree.Element(sanitized_key)
-            for subkey, subvalue in value.items():
-                self.create_element(subkey, subvalue, subelem)
-            if value:
-                parent.append(subelem)
-        elif isinstance(value, list):
-            for list_item in value:
+    def _populate_xml_subtree(self, parent: etree.Element, data: dict):
+        for key, value in data.items():
+            sanitized_key = key.replace("_", "-")
+            if isinstance(value, dict):
                 subelem = etree.Element(sanitized_key)
-                for subkey, subvalue in list_item.items():
-                    self.create_element(subkey, subvalue, subelem)
+                self._populate_xml_subtree(subelem, value)
                 parent.append(subelem)
-        else:
-            subelem = etree.Element(sanitized_key)
-            subelem.text = str(value)
-            if value is not None:
+            elif isinstance(value, list):
+                for list_item in value:
+                    subelem = etree.Element(sanitized_key)
+                    self._populate_xml_subtree(subelem, list_item)
+                    parent.append(subelem)
+            else:
+                subelem = etree.Element(sanitized_key)
+                subelem.text = str(value)
                 parent.append(subelem)
 
-    def create_xml_config(self, config_dict_or_list):
-        key = "waveserver-xcvrs"
-        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr"
-        nsmap = {None: namespace}
-        root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
-
+    def _create_xml_config_generic(self, config_dict_or_list):
         if isinstance(config_dict_or_list, dict):
-            for key, value in config_dict_or_list.items():
-                self.create_element(key, value, root)
+            return self.create_xml_config_from_dict(config_dict_or_list)
         elif isinstance(config_dict_or_list, list):
-            for list_item in config_dict_or_list:
-                if not isinstance(list_item, dict):
-                    raise ValueError("List items must be dictionaries.")
-                parent_for_list_item = etree.Element("xcvrs")
-                for key, value in list_item.items():
-                    self.create_element(key, value, parent_for_list_item)
-                root.append(parent_for_list_item)
+            return self.create_xml_config_from_list(config_dict_or_list)
         else:
-            raise TypeError("Expected a dictionary or a list, got a {}".format(type(config_dict_or_list)))
+            raise TypeError(f"Expected a dictionary or a list, got a {type(config_dict_or_list)}")
 
+    def _init_xml_root(self):
+        return etree.Element("{%s}%s" % (NAMESPACE, ROOT_KEY), nsmap={None: NAMESPACE})
+
+    def create_xml_config_from_dict(self, config_dict: dict) -> str:
+        return self._create_xml_config_generic(config_dict)
+
+    def create_xml_config_from_list(self, config_list: list) -> str:
+        root = self._init_xml_root()
+        for list_item in config_list:
+            if not isinstance(list_item, dict):
+                raise ValueError("List items must be dictionaries.")
+            subroot = etree.Element(XML_ITEMS)
+            self._populate_xml_subtree(subroot, list_item)
+            root.append(subroot)
         return etree.tostring(root).decode()
 
     def _state_merged(self, want, have):
@@ -168,12 +171,12 @@ class Xcvrs(ConfigBase):
         return response
 
     def _state_merged_list(self, want, have):
-        merged_list = []
+        response = []
         for w_item in want:
             if w_item in have:
                 continue
-            merged_list.append(w_item)
-        return merged_list
+            response.append(w_item)
+        return response
 
     def validate_xml(self, xml_str):
         try:

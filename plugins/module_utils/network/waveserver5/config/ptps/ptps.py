@@ -26,26 +26,17 @@ except ImportError:
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
-    tostring,
-)
-
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.facts import (
     Facts,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
-    build_root_xml_node,
-    build_child_xml_node,
-)
-
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.utils.utils import (
     config_is_diff,
 )
 
+NAMESPACE = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-ptp"
+ROOT_KEY = "waveserver-ptps"
+RESOURCE = "ptps"
+XML_ITEMS= "ptps"
 
 class Ptps(ConfigBase):
     """
@@ -53,22 +44,22 @@ class Ptps(ConfigBase):
     """
 
     gather_subset = ["!all", "!min"]
-    gather_network_resources = ["ptps"]
+    gather_network_resources = [RESOURCE]
 
     def __init__(self, module):
         super(Ptps, self).__init__(module)
 
-    def get_ptps_facts(self):
+    def get_facts(self):
         """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(self.gather_subset, self.gather_network_resources)
-        ptps_facts = facts["ansible_network_resources"].get("ptps")
-        if not ptps_facts:
+        result = facts["ansible_network_resources"].get(RESOURCE)
+        if not result:
             return []
-        return ptps_facts
+        return result
 
     def execute_module(self):
         """Execute the module
@@ -77,38 +68,38 @@ class Ptps(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        existing_ptps_facts = self.get_ptps_facts()
-        config_xmls = self.set_config(existing_ptps_facts)
+        have = self.get_facts()
+        config_dict = self.set_config(have)
 
-        if config_xmls and self.state in self.ACTION_STATES:
-            for config_xml in to_list(config_xmls):
-                config = f"<config>{config_xml}</config>"
-                kwargs = {
-                    "config": config,
-                    "target": "running",
-                    "default_operation": "merge",
-                    "format": "xml",
-                }
+        if config_dict:
+            config_xml = self._create_xml_config_generic(config_dict)
+            if not self.validate_xml(config_xml):
+                raise ValueError("Generated XML is not valid.")
+
+            kwargs = {"config": f"<config>{config_xml}</config>", "target": "running"}
+            try:
                 self._module._connection.edit_config(**kwargs)
+            except Exception as e:
+                return {"failed": True, "msg": str(e)}
+
             result["changed"] = True
-            result["xml"] = config_xmls
+            result["xml"] = config_xml
 
-        changed_ptps_facts = self.get_ptps_facts()
+        changed_facts = self.get_facts()
 
-        result["changed"] = config_is_diff(existing_ptps_facts, changed_ptps_facts)
+        result["changed"] = config_is_diff(have, changed_facts)
 
-        result["before"] = existing_ptps_facts
+        result["before"] = have
         if self.state in self.ACTION_STATES:
-            result["before"] = existing_ptps_facts
             if result["changed"]:
-                result["after"] = changed_ptps_facts
+                result["after"] = changed_facts
 
         elif self.state == "gathered":
-            result["gathered"] = existing_ptps_facts
+            result["gathered"] = have
 
         return result
 
-    def set_config(self, existing_ptps_facts):
+    def set_config(self, have):
         """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
@@ -117,105 +108,79 @@ class Ptps(ConfigBase):
                   to the desired configuration
         """
         want = self._module.params["config"]
-        have = existing_ptps_facts
-        resp = self.set_state(want, have)
-        return to_list(resp)
-
-    def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
-
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        key = "waveserver-ptps"
-        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-ptp"
-        nsmap = {None: namespace}
-        root = etree.Element("{%s}%s" % (namespace, key), nsmap=nsmap)
         state = self._module.params["state"]
         state_methods = {
-            "overridden": self._state_overridden,
-            "deleted": self._state_deleted,
             "merged": self._state_merged,
-            "replaced": self._state_replaced,
         }
-        config_xmls = []
-        if state in state_methods:
-            config_xmls = state_methods.get(state)(want, have)
-        for xml in config_xmls:
-            root.append(xml)
+        config_dict = state_methods[state](want, have) if state in self.ACTION_STATES else {}
+        return config_dict
 
-        return tostring(root)
+    def _populate_xml_subtree(self, parent: etree.Element, data: dict):
+        for key, value in data.items():
+            sanitized_key = key.replace("_", "-")
+            if isinstance(value, dict):
+                subelem = etree.Element(sanitized_key)
+                self._populate_xml_subtree(subelem, value)
+                parent.append(subelem)
+            elif isinstance(value, list):
+                for list_item in value:
+                    subelem = etree.Element(sanitized_key)
+                    self._populate_xml_subtree(subelem, list_item)
+                    parent.append(subelem)
+            else:
+                subelem = etree.Element(sanitized_key)
+                subelem.text = str(value)
+                parent.append(subelem)
 
-    def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+    def _create_xml_config_generic(self, config_dict_or_list):
+        if isinstance(config_dict_or_list, dict):
+            return self.create_xml_config_from_dict(config_dict_or_list)
+        elif isinstance(config_dict_or_list, list):
+            return self.create_xml_config_from_list(config_dict_or_list)
+        else:
+            raise TypeError(f"Expected a dictionary or a list, got a {type(config_dict_or_list)}")
 
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        ptps_xml = []
-        ptps_xml.extend(self._state_deleted(want, have))
-        ptps_xml.extend(self._state_merged(want, have))
-        return ptps_xml
+    def _init_xml_root(self):
+        return etree.Element("{%s}%s" % (NAMESPACE, ROOT_KEY), nsmap={None: NAMESPACE})
 
-    def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+    def create_xml_config_from_dict(self, config_dict: dict) -> str:
+        return self._create_xml_config_generic(config_dict)
 
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        ptps_xml = []
-        ptps_xml.extend(self._state_deleted(have, have))
-        ptps_xml.extend(self._state_merged(want, have))
-        return ptps_xml
-
-    def _state_deleted(self, want, have):
-        """The command generator when state is deleted
-
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        ptps_xml = []
-        if not want:
-            want = have
-        for config in want:
-            ptp_root = build_root_xml_node("ptp")
-            build_child_xml_node(ptp_root, "ptp_id", config["ptp_id"])
-            ptp_root.attrib["operation"] = "remove"
-            ptps_xml.append(ptp_root)
-        return ptps_xml
+    def create_xml_config_from_list(self, config_list: list) -> str:
+        root = self._init_xml_root()
+        for list_item in config_list:
+            if not isinstance(list_item, dict):
+                raise ValueError("List items must be dictionaries.")
+            subroot = etree.Element(XML_ITEMS)
+            self._populate_xml_subtree(subroot, list_item)
+            root.append(subroot)
+        return etree.tostring(root).decode()
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        if isinstance(want, list):
+            return self._state_merged_list(want, have)
+        elif isinstance(want, dict):
+            return self._state_merged_dict(want, have)
 
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        # Create an empty list to hold the XML elements
-        xml_elements = []
-
-        # Iterate over the 'want' dictionary
+    def _state_merged_dict(self, want, have):
+        response = {}
         for key, value in want.items():
-            key = key.replace("_", "-")
-            if isinstance(value, dict):
-                # If the value is a dictionary, create a new element and recursively add its children
-                element = etree.Element(key)
-                if isinstance(want.get(key), dict):
-                    element.extend(self._state_merged(value, want.get(key)))
-                else:
-                    element.extend(self._state_merged(value, {}))
-            else:
-                # If the value is not a dictionary, create a new element and set its text
-                element = etree.Element(key)
-                element.text = str(value)
+            if key in have and have[key] == value:
+                continue
+            response[key] = value
+        return response
 
-            # Add the element to the list
-            xml_elements.append(element)
+    def _state_merged_list(self, want, have):
+        response = []
+        for w_item in want:
+            if w_item in have:
+                continue
+            response.append(w_item)
+        return response
 
-        return xml_elements
+    def validate_xml(self, xml_str):
+        try:
+            etree.fromstring(xml_str.encode())
+        except etree.XMLSyntaxError:
+            return False
+        return True
