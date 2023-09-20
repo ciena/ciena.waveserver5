@@ -57,10 +57,10 @@ class System(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(self.gather_subset, self.gather_network_resources)
-        system_facts = facts["ansible_network_resources"].get(RESOURCE)
-        if not system_facts:
+        result = facts["ansible_network_resources"].get(RESOURCE)
+        if not result:
             return []
-        return system_facts
+        return result
 
     def execute_module(self):
         """Execute the module
@@ -101,12 +101,18 @@ class System(ConfigBase):
         return result
 
     def set_config(self, have):
+        """Collect the configuration from the args passed to the module,
+            collect the current configuration (as a dict from facts)
+
+        :rtype: A list
+        :returns: the commands necessary to migrate the current configuration
+                  to the desired configuration
+        """
         want = self._module.params["config"]
         state = self._module.params["state"]
         state_methods = {
             "merged": self._state_merged,
         }
-
         config_dict = state_methods[state](want, have) if state in self.ACTION_STATES else {}
         return config_dict
 
@@ -160,7 +166,7 @@ class System(ConfigBase):
         elif isinstance(want, dict):
             return self._state_merged_dict(want, have)
 
-    def _state_merged_dict(self, want, have):
+    def _state_merged_dict(self, want, have) -> dict:
         response = {}
         for key, value in want.items():
             if value is None:
@@ -170,7 +176,7 @@ class System(ConfigBase):
             response[key] = value
         return response
 
-    def _state_merged_list(self, want, have):
+    def _state_merged_list(self, want, have) -> list:
         response = []
         for w_item in want:
             if w_item in have:
@@ -178,7 +184,7 @@ class System(ConfigBase):
             response.append(w_item)
         return response
 
-    def validate_xml(self, xml_str):
+    def validate_xml(self, xml_str) -> bool:
         try:
             etree.fromstring(xml_str.encode())
         except etree.XMLSyntaxError:

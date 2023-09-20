@@ -36,7 +36,8 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 NAMESPACE = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-ptp"
 ROOT_KEY = "waveserver-ptps"
 RESOURCE = "ptps"
-XML_ITEMS= "ptps"
+XML_ITEMS = "ptps"
+
 
 class Ptps(ConfigBase):
     """
@@ -130,7 +131,8 @@ class Ptps(ConfigBase):
             else:
                 subelem = etree.Element(sanitized_key)
                 subelem.text = str(value)
-                parent.append(subelem)
+                if value is not None:
+                    parent.append(subelem)
 
     def _create_xml_config_generic(self, config_dict_or_list):
         if isinstance(config_dict_or_list, dict):
@@ -144,7 +146,9 @@ class Ptps(ConfigBase):
         return etree.Element("{%s}%s" % (NAMESPACE, ROOT_KEY), nsmap={None: NAMESPACE})
 
     def create_xml_config_from_dict(self, config_dict: dict) -> str:
-        return self._create_xml_config_generic(config_dict)
+        root = self._init_xml_root()
+        self._populate_xml_subtree(root, config_dict)
+        return etree.tostring(root).decode()
 
     def create_xml_config_from_list(self, config_list: list) -> str:
         root = self._init_xml_root()
@@ -162,15 +166,17 @@ class Ptps(ConfigBase):
         elif isinstance(want, dict):
             return self._state_merged_dict(want, have)
 
-    def _state_merged_dict(self, want, have):
+    def _state_merged_dict(self, want, have) -> dict:
         response = {}
         for key, value in want.items():
+            if value is None:
+                continue
             if key in have and have[key] == value:
                 continue
             response[key] = value
         return response
 
-    def _state_merged_list(self, want, have):
+    def _state_merged_list(self, want, have) -> list:
         response = []
         for w_item in want:
             if w_item in have:
@@ -178,7 +184,7 @@ class Ptps(ConfigBase):
             response.append(w_item)
         return response
 
-    def validate_xml(self, xml_str):
+    def validate_xml(self, xml_str) -> bool:
         try:
             etree.fromstring(xml_str.encode())
         except etree.XMLSyntaxError:
