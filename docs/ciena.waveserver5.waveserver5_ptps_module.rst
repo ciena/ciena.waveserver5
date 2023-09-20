@@ -1,9 +1,9 @@
-.. _ciena.waveserver5.waveserver5_ptp_module:
+.. _ciena.waveserver5.waveserver5_ptps_module:
 
 
-*********************************
-ciena.waveserver5.waveserver5_ptp
-*********************************
+**********************************
+ciena.waveserver5.waveserver5_ptps
+**********************************
 
 **Waveserver PTP configuration data and operational data.**
 
@@ -412,24 +412,20 @@ Examples
 
     # Using merged
 
-    - name: Configure ptp
+    - name: Disable ptp
       ciena.waveserver5.waveserver5_ptps:
         config:
-          - ptp_id: 7-1
+          - ptp_id: 5-1
+            state:
+              admin_state: disabled
+        state: merged
+    - name: Enable ptp
+      ciena.waveserver5.waveserver5_ptps:
+        config:
+          - ptp_id: 5-1
             state:
               admin_state: enabled
         state: merged
-
-
-    # Using overridden
-
-    - name: Configure ptp
-      ciena.waveserver5.waveserver5_ptps:
-        config:
-          - ptp_id: 7-1
-            state:
-              admin_state: enabled
-        state: overridden
 
 
 

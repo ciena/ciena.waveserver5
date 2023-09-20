@@ -1,9 +1,9 @@
-.. _ciena.waveserver5.waveserver5_xcvr_module:
+.. _ciena.waveserver5.waveserver5_xcvrs_module:
 
 
-**********************************
-ciena.waveserver5.waveserver5_xcvr
-**********************************
+***********************************
+ciena.waveserver5.waveserver5_xcvrs
+***********************************
 
 **Waveserver Transceiver configuration data and operational data.**
 
@@ -428,22 +428,20 @@ Examples
 
     # Using merged
 
-    - name: Configure xcvr
-      ciena.waveserver5.waveserver5_xcvr:
+    - name: Disable xcvr
+      ciena.waveserver5.waveserver5_xcvrs:
         config:
-          host-name:
-            config-host-name: foo
+          - xcvr_id: 5-1
+            state:
+              admin_state: disabled
         state: merged
-
-
-    # Using overridden
-
-    - name: Configure Transceiver enable
-      ciena.waveserver5.waveserver5_xcvr:
+    - name: Enable xcvr
+      ciena.waveserver5.waveserver5_xcvrs:
         config:
-          host-name:
-            config-host-name: foo
-        state: overridden
+          - xcvr_id: 5-1
+            state:
+              admin_state: enabled
+        state: merged
 
 
 

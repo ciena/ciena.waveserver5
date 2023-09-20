@@ -32,10 +32,10 @@ Name | Description
 --- | ---
 [ciena.waveserver5.waveserver5_facts](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_facts_module.rst)|Get facts about waveserver5 devices.
 [ciena.waveserver5.waveserver5_pm](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_pm_module.rst)|Waveserver System configuration data and operational data.
-[ciena.waveserver5.waveserver5_port](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_port_module.rst)|Waveserver Port configuration data and operational data.
-[ciena.waveserver5.waveserver5_ptp](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_ptp_module.rst)|Waveserver PTP configuration data and operational data.
+[ciena.waveserver5.waveserver5_ports](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_ports_module.rst)|Waveserver Port configuration data and operational data.
+[ciena.waveserver5.waveserver5_ptps](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_ptps_module.rst)|Waveserver PTP configuration data and operational data.
 [ciena.waveserver5.waveserver5_system](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_system_module.rst)|Waveserver System configuration data and operational data.
-[ciena.waveserver5.waveserver5_xcvr](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_xcvr_module.rst)|Waveserver Transceiver configuration data and operational data.
+[ciena.waveserver5.waveserver5_xcvrs](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_xcvrs_module.rst)|Waveserver Transceiver configuration data and operational data.
 
 <!--end collection content-->
 

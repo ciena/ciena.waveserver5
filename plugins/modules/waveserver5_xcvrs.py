@@ -34,7 +34,7 @@ ANSIBLE_METADATA = {"metadata_version": "1.1", "status": ["preview"], "supported
 
 DOCUMENTATION = """
 ---
-module: waveserver5_xcvr
+module: waveserver5_xcvrs
 version_added: 1.1.0
 short_description: Waveserver Transceiver configuration data and operational data.
 description: Waveserver Transceiver configuration data and operational data.
@@ -47,12 +47,33 @@ requirements:
 options:
   config:
     description: Waveserver transceiver (XCVR) list.
+    type: list
     elements: dict
     suboptions:
+      xcvr_id:
+        description: Unique, access identifier string of the XCVR (e.g. '1-1'). Key
+          value for the XCVR List.
+        type: str
+        required: true
+      state:
+        description: State information of this XCVR instance.
+        type: dict
+        suboptions:
+          admin_state:
+            description: Whether Admin State is enabled or disabled for this XCVR's
+              PTP.
+            type: str
+            choices:
+              - disabled
+              - enabled
+            required: true
       properties:
         description: All the Configurable and operational data of this XCVR instance.
+        type: dict
         suboptions:
           mode:
+            description: Mode of the XCVR.
+            type: str
             choices:
               - blank
               - OCH
@@ -299,30 +320,7 @@ options:
               - 82-700-E
               - 82-750-E
               - 82-800-E
-            description: Mode of the XCVR.
             required: true
-            type: str
-        type: dict
-      state:
-        description: State information of this XCVR instance.
-        suboptions:
-          admin_state:
-            choices:
-              - disabled
-              - enabled
-            description:
-              Whether Admin State is enabled or disabled for this XCVR's
-              PTP.
-            required: true
-            type: str
-        type: dict
-      xcvr_id:
-        description:
-          Unique, access identifier string of the XCVR (e.g. '1-1').
-          Key value for the XCVR List.
-        required: true
-        type: str
-    type: list
   state:
     choices:
       - gathered
@@ -336,22 +334,20 @@ options:
 EXAMPLES = """
 # Using merged
 
-- name: Configure xcvr
-  ciena.waveserver5.waveserver5_xcvr:
+- name: Disable xcvr
+  ciena.waveserver5.waveserver5_xcvrs:
     config:
-      host-name:
-        config-host-name: foo
+      - xcvr_id: 5-1
+        state:
+          admin_state: disabled
     state: merged
-
-
-# Using overridden
-
-- name: Configure Transceiver enable
-  ciena.waveserver5.waveserver5_xcvr:
+- name: Enable xcvr
+  ciena.waveserver5.waveserver5_xcvrs:
     config:
-      host-name:
-        config-host-name: foo
-    state: overridden
+      - xcvr_id: 5-1
+        state:
+          admin_state: enabled
+    state: merged
 
 
 """

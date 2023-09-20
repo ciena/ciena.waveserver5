@@ -1,9 +1,9 @@
-.. _ciena.waveserver5.waveserver5_port_module:
+.. _ciena.waveserver5.waveserver5_ports_module:
 
 
-**********************************
-ciena.waveserver5.waveserver5_port
-**********************************
+***********************************
+ciena.waveserver5.waveserver5_ports
+***********************************
 
 **Waveserver Port configuration data and operational data.**
 
@@ -1307,24 +1307,20 @@ Examples
 
     # Using merged
 
-    - name: Configure port
-      ciena.waveserver5.waveserver5_port:
+    - name: Disable port
+      ciena.waveserver5.waveserver5_ports:
         config:
-          - port_id: 7/1
+          - port_id: 5-1
             state:
               admin_state: disabled
         state: merged
-
-
-    # Using overridden
-
-    - name: Configure port
-      ciena.waveserver5.waveserver5_port:
+    - name: Enable port
+      ciena.waveserver5.waveserver5_ports:
         config:
-          - port_id: 7/1
+          - port_id: 5-1
             state:
-              admin_state: disabled
-        state: overridden
+              admin_state: enabled
+        state: merged
 
 
 
