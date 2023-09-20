@@ -50,7 +50,7 @@ class System(ConfigBase):
     def __init__(self, module):
         super(System, self).__init__(module)
 
-    def get_system_facts(self):
+    def get_facts(self):
         """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
@@ -69,7 +69,7 @@ class System(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        have = self.get_system_facts()
+        have = self.get_facts()
         config_dict = self.set_config(have)
 
         if config_dict:
@@ -85,14 +85,15 @@ class System(ConfigBase):
 
             result["changed"] = True
             result["xml"] = config_xml
-        changed_system_facts = self.get_system_facts()
 
-        result["changed"] = config_is_diff(have, changed_system_facts)
+        changed_facts = self.get_facts()
+
+        result["changed"] = config_is_diff(have, changed_facts)
 
         result["before"] = have
         if self.state in self.ACTION_STATES:
             if result["changed"]:
-                result["after"] = changed_system_facts
+                result["after"] = changed_facts
 
         elif self.state == "gathered":
             result["gathered"] = have
@@ -125,7 +126,15 @@ class System(ConfigBase):
                 subelem = etree.Element(sanitized_key)
                 subelem.text = str(value)
                 if value is not None:
-                    parent.append(subelem)                
+                    parent.append(subelem)
+
+    def _create_xml_config_generic(self, config_dict_or_list):
+        if isinstance(config_dict_or_list, dict):
+            return self.create_xml_config_from_dict(config_dict_or_list)
+        elif isinstance(config_dict_or_list, list):
+            return self.create_xml_config_from_list(config_dict_or_list)
+        else:
+            raise TypeError(f"Expected a dictionary or a list, got a {type(config_dict_or_list)}")
 
     def _init_xml_root(self):
         return etree.Element("{%s}%s" % (NAMESPACE, ROOT_KEY), nsmap={None: NAMESPACE})
@@ -144,14 +153,6 @@ class System(ConfigBase):
             self._populate_xml_subtree(subroot, list_item)
             root.append(subroot)
         return etree.tostring(root).decode()
-
-    def _create_xml_config_generic(self, config_dict_or_list):
-        if isinstance(config_dict_or_list, dict):
-            return self.create_xml_config_from_dict(config_dict_or_list)
-        elif isinstance(config_dict_or_list, list):
-            return self.create_xml_config_from_list(config_dict_or_list)
-        else:
-            raise TypeError(f"Expected a dictionary or a list, got a {type(config_dict_or_list)}")
 
     def _state_merged(self, want, have):
         if isinstance(want, list):

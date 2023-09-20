@@ -36,7 +36,8 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 NAMESPACE = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr"
 ROOT_KEY = "waveserver-xcvrs"
 RESOURCE = "xcvrs"
-XML_ITEMS= "xcvrs"
+XML_ITEMS = "xcvrs"
+
 
 class Xcvrs(ConfigBase):
     """
@@ -130,7 +131,8 @@ class Xcvrs(ConfigBase):
             else:
                 subelem = etree.Element(sanitized_key)
                 subelem.text = str(value)
-                parent.append(subelem)
+                if value is not None:
+                    parent.append(subelem)
 
     def _create_xml_config_generic(self, config_dict_or_list):
         if isinstance(config_dict_or_list, dict):
@@ -167,6 +169,8 @@ class Xcvrs(ConfigBase):
     def _state_merged_dict(self, want, have) -> dict:
         response = {}
         for key, value in want.items():
+            if value is None:
+                continue
             if key in have and have[key] == value:
                 continue
             response[key] = value
