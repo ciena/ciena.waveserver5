@@ -39,10 +39,15 @@ class PtpsArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "elements": "dict",
             "options": {
                 "properties": {
                     "options": {
-                        "forward_error_correction": {"required": True, "type": "str"},
+                        "forward_error_correction": {
+                            "choices": ["disabled", "enabled"],
+                            "required": True,
+                            "type": "str",
+                        },
                         "is_coherent": {"required": True, "type": "bool"},
                         "thresholds": {
                             "options": {
@@ -52,7 +57,16 @@ class PtpsArgs(object):  # pylint: disable=R0903
                             },
                             "type": "dict",
                         },
-                        "transmitter": {"options": {"state": {"required": True, "type": "str"}}, "type": "dict"},
+                        "transmitter": {
+                            "options": {
+                                "state": {
+                                    "choices": ["disabled", "enabled", "not-applicable"],
+                                    "required": True,
+                                    "type": "str",
+                                }
+                            },
+                            "type": "dict",
+                        },
                         "type": {
                             "choices": [
                                 "unknown",
@@ -75,15 +89,30 @@ class PtpsArgs(object):  # pylint: disable=R0903
                             "required": True,
                             "type": "str",
                         },
-                        "xcvr_type": {"required": True, "type": "str"},
+                        "xcvr_type": {
+                            "choices": [
+                                "not-available",
+                                "unsupported",
+                                "QSFPplus",
+                                "QSFP28",
+                                "WaveLogic " "3 " "Extreme",
+                                "WaveLogic " "Ai",
+                                "SFP",
+                                "none",
+                                "QSFP-DD",
+                                "WaveLogic " "5e",
+                            ],
+                            "required": True,
+                            "type": "str",
+                        },
                     },
                     "type": "dict",
                 },
                 "ptp_id": {"required": True, "type": "str"},
                 "state": {
                     "options": {
-                        "admin_state": {"required": True, "type": "str"},
-                        "spli_management": {"required": True, "type": "str"},
+                        "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                        "spli_management": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
                     },
                     "type": "dict",
                 },

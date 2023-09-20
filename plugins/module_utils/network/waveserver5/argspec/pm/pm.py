@@ -41,6 +41,7 @@ class PmArgs(object):  # pylint: disable=R0903
         "config": {
             "options": {
                 "encryption_gcm_performance_instances": {
+                    "elements": "dict",
                     "options": {
                         "instance_name": {"required": True, "type": "str"},
                         "properties": {
@@ -66,6 +67,7 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                 },
                 "ethernet_performance_instances": {
+                    "elements": "dict",
                     "options": {
                         "instance_name": {"required": True, "type": "str"},
                         "properties": {
@@ -104,6 +106,7 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                 },
                 "modem_performance_instances": {
+                    "elements": "dict",
                     "options": {
                         "instance_name": {"required": True, "type": "str"},
                         "properties": {
@@ -129,6 +132,7 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                 },
                 "odu_performance_instances": {
+                    "elements": "dict",
                     "options": {
                         "instance_name": {"required": True, "type": "str"},
                         "properties": {
@@ -154,6 +158,7 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                 },
                 "optical_power_instances": {
+                    "elements": "dict",
                     "options": {
                         "instance_name": {"required": True, "type": "str"},
                         "properties": {
@@ -179,6 +184,7 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                 },
                 "otu_performance_instances": {
+                    "elements": "dict",
                     "options": {
                         "instance_name": {"required": True, "type": "str"},
                         "properties": {
@@ -204,6 +210,7 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                 },
                 "photonics_instances": {
+                    "elements": "dict",
                     "options": {
                         "instance_name": {"required": True, "type": "str"},
                         "properties": {

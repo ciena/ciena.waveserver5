@@ -47,6 +47,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -84,6 +85,10 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>disabled</li>
+                                    <li>enabled</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Forward error correction.</div>
@@ -217,6 +222,11 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>disabled</li>
+                                    <li>enabled</li>
+                                    <li>not-applicable</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Transmitter state (enabled or disabled) of the PTP. PTP Admin State cannot be changed to enabled unless the transmitter state is enabled.</div>
@@ -272,6 +282,18 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>not-available</li>
+                                    <li>unsupported</li>
+                                    <li>QSFPplus</li>
+                                    <li>QSFP28</li>
+                                    <li>WaveLogic 3 Extreme</li>
+                                    <li>WaveLogic Ai</li>
+                                    <li>SFP</li>
+                                    <li>none</li>
+                                    <li>QSFP-DD</li>
+                                    <li>WaveLogic 5e</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Transceiver type of the XCVR that&#x27;s associated with this PTP. Type depends on what is physically plugged in. Read only attribute.</div>
@@ -324,6 +346,10 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>disabled</li>
+                                    <li>enabled</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Administrative state (enabled or disabled) of the PTP. If Admin State is set to enabled, majority of the PTP fields will no longer be modifiable. When PTP Transmitter State is Disabled, PTP Admin State cannot be changed from Disabled to Enabled.</div>
@@ -342,6 +368,10 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>disabled</li>
+                                    <li>enabled</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Whether or not Service Photonic Layer Interoperations management protocol is enabled on this PTP.</div>

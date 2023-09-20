@@ -47,6 +47,7 @@ requirements:
 options:
   config:
     description: Waveserver transceiver (XCVR) list.
+    elements: dict
     suboptions:
       properties:
         description: All the Configurable and operational data of this XCVR instance.
@@ -324,12 +325,12 @@ options:
     type: list
   state:
     choices:
-    - gathered
-    - merged
-    - overridden
+      - gathered
+      - merged
+      - overridden
     default: merged
     description:
-    - The state the configuration should be left in
+      - The state the configuration should be left in
     type: str
 """
 EXAMPLES = """

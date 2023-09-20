@@ -39,6 +39,7 @@ class XcvrsArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "elements": "dict",
             "options": {
                 "properties": {
                     "options": {

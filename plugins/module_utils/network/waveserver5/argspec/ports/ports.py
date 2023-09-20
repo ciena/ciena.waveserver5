@@ -39,8 +39,10 @@ class PortsArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "elements": "dict",
             "options": {
                 "channels": {
+                    "elements": "dict",
                     "options": {
                         "channel_id": {"required": True, "type": "int"},
                         "id": {"options": {"label": {"required": True, "type": "str"}}, "type": "dict"},
@@ -99,7 +101,11 @@ class PortsArgs(object):  # pylint: disable=R0903
                 "port_id": {"required": True, "type": "str"},
                 "properties": {
                     "options": {
-                        "connection_peer": {"options": {"peer_id": {"required": True, "type": "str"}}, "type": "list"},
+                        "connection_peer": {
+                            "elements": "dict",
+                            "options": {"peer_id": {"required": True, "type": "str"}},
+                            "type": "list",
+                        },
                         "connection_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
                         "ethernet": {
                             "options": {

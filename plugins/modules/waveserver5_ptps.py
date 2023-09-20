@@ -47,12 +47,15 @@ requirements:
 options:
   config:
     description: List of PTP objects.
-    type: list
+    elements: dict
     suboptions:
       properties:
         description: All the configurable and operational data of this PTP instance.
         suboptions:
           forward_error_correction:
+            choices:
+              - disabled
+              - enabled
             description: Forward error correction.
             required: true
             type: str
@@ -86,6 +89,10 @@ options:
             description: PTP transmitter related config and operational data fields.
             suboptions:
               state:
+                choices:
+                  - disabled
+                  - enabled
+                  - not-applicable
                 description:
                   Transmitter state (enabled or disabled) of the PTP.
                   PTP Admin State cannot be changed to enabled unless the transmitter
@@ -115,6 +122,17 @@ options:
             required: true
             type: str
           xcvr_type:
+            choices:
+              - not-available
+              - unsupported
+              - QSFPplus
+              - QSFP28
+              - WaveLogic 3 Extreme
+              - WaveLogic Ai
+              - SFP
+              - none
+              - QSFP-DD
+              - WaveLogic 5e
             description:
               Transceiver type of the XCVR that's associated with this
               PTP. Type depends on what is physically plugged in. Read only attribute.
@@ -131,6 +149,9 @@ options:
         description: State information of this PTP instance.
         suboptions:
           admin_state:
+            choices:
+              - disabled
+              - enabled
             description:
               Administrative state (enabled or disabled) of the PTP.
               If Admin State is set to enabled, majority of the PTP fields will
@@ -139,12 +160,16 @@ options:
             required: true
             type: str
           spli_management:
+            choices:
+              - disabled
+              - enabled
             description:
               Whether or not Service Photonic Layer Interoperations management
               protocol is enabled on this PTP.
             required: true
             type: str
         type: dict
+    type: list
   state:
     choices:
       - gathered

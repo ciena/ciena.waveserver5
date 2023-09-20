@@ -47,10 +47,11 @@ requirements:
 options:
   config:
     description: Configuration and operational data for the port.
-    type: list
+    elements: dict
     suboptions:
       channels:
         description: List of ODU4 channels within the parent OTU port object.
+        elements: dict
         suboptions:
           channel_id:
             description:
@@ -215,6 +216,7 @@ options:
                 required: true
                 type: str
             type: list
+            elements: dict
           connection_state:
             choices:
               - disabled
@@ -488,6 +490,7 @@ options:
             required: true
             type: str
         type: dict
+    type: list
   state:
     choices:
       - gathered

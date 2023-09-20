@@ -51,6 +51,7 @@ options:
     suboptions:
       encryption_gcm_performance_instances:
         description: Channel Encryption-GCM PM instances.
+        elements: dict
         suboptions:
           instance_name:
             description: Unique name for PM instance.
@@ -95,6 +96,7 @@ options:
         type: list
       ethernet_performance_instances:
         description: Ethernet port PM instances.
+        elements: dict
         suboptions:
           instance_name:
             description: Unique name for PM instance.
@@ -174,6 +176,7 @@ options:
         type: dict
       modem_performance_instances:
         description: PTP Modem PM instances.
+        elements: dict
         suboptions:
           instance_name:
             description: Unique name for PM instance.
@@ -218,6 +221,7 @@ options:
         type: list
       odu_performance_instances:
         description: Port/channel ODU PM instances.
+        elements: dict
         suboptions:
           instance_name:
             description: Unique name for PM instance.
@@ -262,6 +266,7 @@ options:
         type: list
       optical_power_instances:
         description: PTP Optical Power PM instances.
+        elements: dict
         suboptions:
           instance_name:
             description: Unique name for PM instance.
@@ -306,6 +311,7 @@ options:
         type: list
       otu_performance_instances:
         description: Port OTU PM instances.
+        elements: dict
         suboptions:
           instance_name:
             description: Unique name for PM instance.
@@ -350,6 +356,7 @@ options:
         type: list
       photonics_instances:
         description: PTP Photonics PM instances.
+        elements: dict
         suboptions:
           instance_name:
             description: Unique name for PM instance.
