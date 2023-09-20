@@ -2,6 +2,10 @@
 - name: Gather Ports information
   ciena.waveserver5.waveserver5_ports:
     state: gathered
+  register: gathered_ports
+- name: Gathered Port information
+  debug:
+    var: gathered_ports['gathered']
 - name: Disable port
   ciena.waveserver5.waveserver5_ports:
     config:
@@ -9,6 +13,15 @@
         state:
           admin_state: disabled
     state: merged
+- name: Gather Ports information for validation
+  ciena.waveserver5.waveserver5_ports:
+    state: gathered
+  register: gathered_ports
+- name: Assert that port 5-1 is disabled
+  assert:
+    that: "'disabled' in {{ gathered_ports['gathered'] | json_query(query) }}"
+  vars:
+    query: "[?port_id=='5-1'].state.admin_state"
 - name: Enable port
   ciena.waveserver5.waveserver5_ports:
     config:
