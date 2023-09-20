@@ -26,25 +26,17 @@ except ImportError:
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.waveserver5 import (
-    tostring,
-)
-
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.facts import (
     Facts,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
-    build_root_xml_node,
-    build_child_xml_node,
-)
-
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.utils.utils import (
     config_is_diff,
 )
+
+NAMESPACE = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
+ROOT_KEY = "waveserver-system"
+RESOURCE = "system"
+XML_ITEMS = "N/A"
 
 
 class System(ConfigBase):
@@ -53,7 +45,7 @@ class System(ConfigBase):
     """
 
     gather_subset = ["!all", "!min"]
-    gather_network_resources = ["system"]
+    gather_network_resources = [RESOURCE]
 
     def __init__(self, module):
         super(System, self).__init__(module)
@@ -65,7 +57,7 @@ class System(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(self.gather_subset, self.gather_network_resources)
-        system_facts = facts["ansible_network_resources"].get("system")
+        system_facts = facts["ansible_network_resources"].get(RESOURCE)
         if not system_facts:
             return []
         return system_facts
@@ -81,7 +73,7 @@ class System(ConfigBase):
         config_dict = self.set_config(have)
 
         if config_dict:
-            config_xml = self.create_xml_config(config_dict)
+            config_xml = self._create_xml_config_generic(config_dict)
             if not self.validate_xml(config_xml):
                 raise ValueError("Generated XML is not valid.")
 
@@ -111,65 +103,79 @@ class System(ConfigBase):
         want = self._module.params["config"]
         state = self._module.params["state"]
         state_methods = {
-            "overridden": self._state_overridden,
             "merged": self._state_merged,
-            "replaced": self._state_replaced,
         }
 
         config_dict = state_methods[state](want, have) if state in self.ACTION_STATES else {}
         return config_dict
 
-    def create_element(self, key, value, parent):
-        sanitized_key = key.replace("_", "-")
-        subelem = etree.Element(sanitized_key)
-        if isinstance(value, dict):
-            for subkey, subvalue in value.items():
-                self.create_element(subkey, subvalue, subelem)
-        else:
-            subelem.text = str(value)
-        if value is not None:
-            parent.append(subelem)
+    def _populate_xml_subtree(self, parent: etree.Element, data: dict):
+        for key, value in data.items():
+            sanitized_key = key.replace("_", "-")
+            if isinstance(value, dict):
+                subelem = etree.Element(sanitized_key)
+                self._populate_xml_subtree(subelem, value)
+                parent.append(subelem)
+            elif isinstance(value, list):
+                for list_item in value:
+                    subelem = etree.Element(sanitized_key)
+                    self._populate_xml_subtree(subelem, list_item)
+                    parent.append(subelem)
+            else:
+                subelem = etree.Element(sanitized_key)
+                subelem.text = str(value)
+                if value is not None:
+                    parent.append(subelem)                
 
-    def create_xml_config(self, config_dict):
-        key = "waveserver-system"
-        namespace = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
-        nsmap = {None: namespace}
-        root = etree.Element(f"{{{namespace}}}{key}", nsmap=nsmap)
-        for key, value in config_dict.items():
-            self.create_element(key, value, root)
+    def _init_xml_root(self):
+        return etree.Element("{%s}%s" % (NAMESPACE, ROOT_KEY), nsmap={None: NAMESPACE})
+
+    def create_xml_config_from_dict(self, config_dict: dict) -> str:
+        root = self._init_xml_root()
+        self._populate_xml_subtree(root, config_dict)
         return etree.tostring(root).decode()
 
-    def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+    def create_xml_config_from_list(self, config_list: list) -> str:
+        root = self._init_xml_root()
+        for list_item in config_list:
+            if not isinstance(list_item, dict):
+                raise ValueError("List items must be dictionaries.")
+            subroot = etree.Element(XML_ITEMS)
+            self._populate_xml_subtree(subroot, list_item)
+            root.append(subroot)
+        return etree.tostring(root).decode()
 
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        system_xml = []
-        system_xml.extend(self._state_deleted(want, have))
-        system_xml.extend(self._state_merged(want, have))
-        return system_xml
-
-    def _state_overridden(self, want, have):
-        """The command generator when state is overridden
-
-        :rtype: A list
-        :returns: the xml necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        system_xml = []
-        system_xml.extend(self._state_deleted(have, have))
-        system_xml.extend(self._state_merged(want, have))
-        return system_xml
+    def _create_xml_config_generic(self, config_dict_or_list):
+        if isinstance(config_dict_or_list, dict):
+            return self.create_xml_config_from_dict(config_dict_or_list)
+        elif isinstance(config_dict_or_list, list):
+            return self.create_xml_config_from_list(config_dict_or_list)
+        else:
+            raise TypeError(f"Expected a dictionary or a list, got a {type(config_dict_or_list)}")
 
     def _state_merged(self, want, have):
-        merged_dict = {}
+        if isinstance(want, list):
+            return self._state_merged_list(want, have)
+        elif isinstance(want, dict):
+            return self._state_merged_dict(want, have)
+
+    def _state_merged_dict(self, want, have):
+        response = {}
         for key, value in want.items():
+            if value is None:
+                continue
             if key in have and have[key] == value:
                 continue
-            merged_dict[key] = value
-        return merged_dict
+            response[key] = value
+        return response
+
+    def _state_merged_list(self, want, have):
+        response = []
+        for w_item in want:
+            if w_item in have:
+                continue
+            response.append(w_item)
+        return response
 
     def validate_xml(self, xml_str):
         try:

@@ -144,7 +144,9 @@ class Xcvrs(ConfigBase):
         return etree.Element("{%s}%s" % (NAMESPACE, ROOT_KEY), nsmap={None: NAMESPACE})
 
     def create_xml_config_from_dict(self, config_dict: dict) -> str:
-        return self._create_xml_config_generic(config_dict)
+        root = self._init_xml_root()
+        self._populate_xml_subtree(root, config_dict)
+        return etree.tostring(root).decode()
 
     def create_xml_config_from_list(self, config_list: list) -> str:
         root = self._init_xml_root()
@@ -162,7 +164,7 @@ class Xcvrs(ConfigBase):
         elif isinstance(want, dict):
             return self._state_merged_dict(want, have)
 
-    def _state_merged_dict(self, want, have):
+    def _state_merged_dict(self, want, have) -> dict:
         response = {}
         for key, value in want.items():
             if key in have and have[key] == value:
@@ -170,7 +172,7 @@ class Xcvrs(ConfigBase):
             response[key] = value
         return response
 
-    def _state_merged_list(self, want, have):
+    def _state_merged_list(self, want, have) -> list:
         response = []
         for w_item in want:
             if w_item in have:
@@ -178,7 +180,7 @@ class Xcvrs(ConfigBase):
             response.append(w_item)
         return response
 
-    def validate_xml(self, xml_str):
+    def validate_xml(self, xml_str) -> bool:
         try:
             etree.fromstring(xml_str.encode())
         except etree.XMLSyntaxError:
