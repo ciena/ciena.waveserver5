@@ -119,7 +119,7 @@ class SystemArgs(object):  # pylint: disable=R0903
                                                     "choices": ["aia", "default-responder"],
                                                 },
                                                 "default_responder": {"type": "str"},
-                                                "nonce": {"type": "str", "choices": [false, true]},
+                                                "nonce": {"type": "str", "choices": ["off", "on"]},
                                             },
                                         },
                                     },

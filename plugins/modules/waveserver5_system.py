@@ -311,8 +311,8 @@ options:
                           turned on.
                         type: str
                         choices:
-                          - off
-                          - on
+                          - "off"
+                          - "on"
                         required: false
           grpc:
             description: gRPC server configuration.

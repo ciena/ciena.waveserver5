@@ -2591,8 +2591,8 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
+                                    <li>off</li>
+                                    <li>on</li>
                         </ul>
                 </td>
                 <td>
