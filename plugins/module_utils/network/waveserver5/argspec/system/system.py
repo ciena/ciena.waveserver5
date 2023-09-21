@@ -46,109 +46,80 @@ class SystemArgs(object):  # pylint: disable=R0903
                     "options": {
                         "network": {
                             "type": "dict",
-                            "options": {
-                                "description": {"type": "str", "required": True},
-                                "id": {"type": "int", "required": True},
-                                "name": {"type": "str", "required": True},
-                            },
+                            "options": {"description": {"type": "str"}, "id": {"type": "int"}, "name": {"type": "str"}},
                         },
                         "site": {
                             "type": "dict",
                             "options": {
-                                "description": {"type": "str", "required": True},
-                                "id": {"type": "int", "required": True},
-                                "name": {"type": "str", "required": True},
-                                "latitude": {"type": "float", "required": True},
-                                "longitude": {"type": "float", "required": True},
-                                "address": {"type": "str", "required": True},
+                                "description": {"type": "str"},
+                                "id": {"type": "int"},
+                                "name": {"type": "str"},
+                                "latitude": {"type": "float"},
+                                "longitude": {"type": "float"},
+                                "address": {"type": "str"},
                             },
                         },
                         "group": {
                             "type": "dict",
-                            "options": {
-                                "description": {"type": "str", "required": True},
-                                "id": {"type": "int", "required": True},
-                                "name": {"type": "str", "required": True},
-                            },
+                            "options": {"description": {"type": "str"}, "id": {"type": "int"}, "name": {"type": "str"}},
                         },
                         "member": {
                             "type": "dict",
                             "options": {
-                                "description": {"type": "str", "required": True},
-                                "id": {"type": "int", "required": True},
-                                "name": {"type": "str", "required": True},
-                                "frame_identification": {"type": "str", "required": True},
-                                "rack_unit_number": {"type": "int", "required": True},
-                                "cluster_enrollment": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
+                                "description": {"type": "str"},
+                                "id": {"type": "int"},
+                                "name": {"type": "str"},
+                                "frame_identification": {"type": "str"},
+                                "rack_unit_number": {"type": "int"},
+                                "cluster_enrollment": {"type": "str", "choices": ["disabled", "enabled"]},
                             },
                         },
                     },
                 },
-                "host_name": {"type": "dict", "options": {"config_host_name": {"type": "str", "required": True}}},
-                "domain_name": {"type": "dict", "options": {"config_domain_name": {"type": "str", "required": True}}},
+                "host_name": {"type": "dict", "options": {"config_host_name": {"type": "str"}}},
+                "domain_name": {"type": "dict", "options": {"config_domain_name": {"type": "str"}}},
                 "time_config": {
                     "type": "dict",
                     "options": {
-                        "time_offset": {"type": "int", "required": True},
-                        "time_stamp": {"type": "str", "choices": ["utc", "local"], "required": True},
+                        "time_offset": {"type": "int"},
+                        "time_stamp": {"type": "str", "choices": ["utc", "local"]},
                     },
                 },
                 "server_config": {
                     "type": "dict",
                     "options": {
-                        "sftp_server_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "scp_server_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "netconf_server_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "global_inactivity_timer": {
-                            "type": "str",
-                            "choices": ["disabled", "enabled"],
-                            "required": True,
-                        },
-                        "global_inactivity_timeout": {"type": "int", "required": True},
+                        "sftp_server_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "scp_server_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "netconf_server_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "global_inactivity_timer": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "global_inactivity_timeout": {"type": "int"},
                         "https": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "web_ui_file_transfer_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
-                                "inactivity_timeout": {"type": "int", "required": True},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "web_ui_file_transfer_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "inactivity_timeout": {"type": "int"},
                                 "certificate_verification": {
                                     "type": "dict",
                                     "options": {
-                                        "certificate_name": {"type": "str", "required": True},
-                                        "trusted_dns": {"type": "str", "required": True},
+                                        "certificate_name": {"type": "str"},
+                                        "trusted_dns": {"type": "str"},
                                         "mutual_authentication": {
                                             "type": "dict",
                                             "options": {
-                                                "admin_state": {
-                                                    "type": "str",
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                }
+                                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]}
                                             },
                                         },
                                         "ocsp": {
                                             "type": "dict",
                                             "options": {
-                                                "admin_state": {
-                                                    "type": "str",
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                },
+                                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                                                 "responder_preference": {
                                                     "type": "str",
                                                     "choices": ["aia", "default-responder"],
-                                                    "required": True,
                                                 },
-                                                "default_responder": {"type": "str", "required": True},
-                                                "nonce": {"type": "str", "choices": ["off", "on"], "required": True},
+                                                "default_responder": {"type": "str"},
+                                                "nonce": {"type": "str", "choices": [false, true]},
                                             },
                                         },
                                     },
@@ -158,19 +129,15 @@ class SystemArgs(object):  # pylint: disable=R0903
                         "grpc": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                                 "certificate_verification": {
                                     "type": "dict",
                                     "options": {
-                                        "certificate_name": {"type": "str", "required": True},
+                                        "certificate_name": {"type": "str"},
                                         "mutual_authentication": {
                                             "type": "dict",
                                             "options": {
-                                                "admin_state": {
-                                                    "type": "str",
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                }
+                                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]}
                                             },
                                         },
                                     },
@@ -180,12 +147,12 @@ class SystemArgs(object):  # pylint: disable=R0903
                         "ssh": {
                             "type": "dict",
                             "options": {
-                                "authentication_retries": {"type": "int", "required": True},
-                                "listener_port": {"type": "int", "required": True},
+                                "authentication_retries": {"type": "int"},
+                                "listener_port": {"type": "int"},
                                 "allowed_clients": {
                                     "type": "list",
                                     "elements": "dict",
-                                    "options": {"ip_address": {"type": "str", "required": True}},
+                                    "options": {"ip_address": {"type": "str"}},
                                 },
                                 "algorithms": {
                                     "type": "dict",
@@ -194,48 +161,32 @@ class SystemArgs(object):  # pylint: disable=R0903
                                             "type": "list",
                                             "elements": "dict",
                                             "options": {
-                                                "algorithm_name": {"type": "str", "required": True},
-                                                "admin_state": {
-                                                    "type": "str",
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                },
+                                                "algorithm_name": {"type": "str"},
+                                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                                             },
                                         },
                                         "encryption": {
                                             "type": "list",
                                             "elements": "dict",
                                             "options": {
-                                                "algorithm_name": {"type": "str", "required": True},
-                                                "admin_state": {
-                                                    "type": "str",
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                },
+                                                "algorithm_name": {"type": "str"},
+                                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                                             },
                                         },
                                         "message_authentication_code": {
                                             "type": "list",
                                             "elements": "dict",
                                             "options": {
-                                                "algorithm_name": {"type": "str", "required": True},
-                                                "admin_state": {
-                                                    "type": "str",
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                },
+                                                "algorithm_name": {"type": "str"},
+                                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                                             },
                                         },
                                         "public_key_authentication": {
                                             "type": "list",
                                             "elements": "dict",
                                             "options": {
-                                                "algorithm_name": {"type": "str", "required": True},
-                                                "admin_state": {
-                                                    "type": "str",
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                },
+                                                "algorithm_name": {"type": "str"},
+                                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                                             },
                                         },
                                     },
@@ -250,24 +201,24 @@ class SystemArgs(object):  # pylint: disable=R0903
                         "dhcp": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "interface_type": {"type": "str", "choices": ["remote", "active"], "required": True},
-                                "discovery_interval": {"type": "int", "required": True},
-                                "requested_lease_time": {"type": "int", "required": True},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "interface_type": {"type": "str", "choices": ["remote", "active"]},
+                                "discovery_interval": {"type": "int"},
+                                "requested_lease_time": {"type": "int"},
                                 "options": {
                                     "type": "dict",
                                     "options": {
-                                        "subnet_mask": {"type": "bool", "required": True},
-                                        "time_offset": {"type": "bool", "required": True},
-                                        "router": {"type": "bool", "required": True},
-                                        "domain_server": {"type": "bool", "required": True},
-                                        "log_server": {"type": "bool", "required": True},
-                                        "host_name": {"type": "bool", "required": True},
-                                        "domain_name": {"type": "bool", "required": True},
-                                        "ntp_servers": {"type": "bool", "required": True},
-                                        "lease_time": {"type": "bool", "required": True},
-                                        "tftp_server_name": {"type": "bool", "required": True},
-                                        "bootfile_name": {"type": "bool", "required": True},
+                                        "subnet_mask": {"type": "bool"},
+                                        "time_offset": {"type": "bool"},
+                                        "router": {"type": "bool"},
+                                        "domain_server": {"type": "bool"},
+                                        "log_server": {"type": "bool"},
+                                        "host_name": {"type": "bool"},
+                                        "domain_name": {"type": "bool"},
+                                        "ntp_servers": {"type": "bool"},
+                                        "lease_time": {"type": "bool"},
+                                        "tftp_server_name": {"type": "bool"},
+                                        "bootfile_name": {"type": "bool"},
                                     },
                                 },
                             },
@@ -275,29 +226,17 @@ class SystemArgs(object):  # pylint: disable=R0903
                         "ntp": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "authentication_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
-                                "autokey_authentication_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
-                                "mode": {
-                                    "type": "str",
-                                    "choices": ["polling", "broadcast", "multicast"],
-                                    "required": True,
-                                },
-                                "polling_interval": {"type": "int", "required": True},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "authentication_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "autokey_authentication_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "mode": {"type": "str", "choices": ["polling", "broadcast", "multicast"]},
+                                "polling_interval": {"type": "int"},
                                 "ntp_key": {
                                     "type": "list",
                                     "elements": "dict",
                                     "options": {
                                         "key_id": {"type": "int", "required": True},
-                                        "key_value": {"type": "str", "required": True},
+                                        "key_value": {"type": "str"},
                                     },
                                 },
                                 "server": {
@@ -305,41 +244,29 @@ class SystemArgs(object):  # pylint: disable=R0903
                                     "elements": "dict",
                                     "options": {
                                         "address": {"type": "str", "required": True},
-                                        "autokey_authentication": {
-                                            "type": "str",
-                                            "choices": ["disabled", "enabled"],
-                                            "required": True,
-                                        },
-                                        "admin_state": {
-                                            "type": "str",
-                                            "choices": ["disabled", "enabled"],
-                                            "required": True,
-                                        },
-                                        "key_id": {"type": "str", "required": True},
+                                        "autokey_authentication": {"type": "str", "choices": ["disabled", "enabled"]},
+                                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                        "key_id": {"type": "str"},
                                     },
                                 },
                                 "multicast_server": {
                                     "type": "list",
                                     "elements": "dict",
-                                    "options": {"ip_address": {"type": "str", "required": True}},
+                                    "options": {"ip_address": {"type": "str"}},
                                 },
                             },
                         },
                         "dns": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                                 "server": {
                                     "type": "list",
                                     "elements": "dict",
                                     "options": {
-                                        "ip_address": {"type": "str", "required": True},
-                                        "admin_state": {
-                                            "type": "str",
-                                            "choices": ["disabled", "enabled"],
-                                            "required": True,
-                                        },
-                                        "user_priority": {"type": "int", "required": True},
+                                        "ip_address": {"type": "str"},
+                                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                        "user_priority": {"type": "int"},
                                     },
                                 },
                             },
@@ -349,33 +276,33 @@ class SystemArgs(object):  # pylint: disable=R0903
                 "xftp_config": {
                     "type": "dict",
                     "options": {
-                        "mode": {"type": "str", "choices": ["none", "tftp", "ftp", "sftp", "scp"], "required": True},
-                        "tftp": {"type": "dict", "options": {"config_host_name": {"type": "str", "required": True}}},
+                        "mode": {"type": "str", "choices": ["none", "tftp", "ftp", "sftp", "scp"]},
+                        "tftp": {"type": "dict", "options": {"config_host_name": {"type": "str"}}},
                         "ftp": {
                             "type": "dict",
                             "options": {
-                                "host_name": {"type": "str", "required": True},
-                                "user_name": {"type": "str", "required": True},
-                                "password": {"type": "str", "required": True},
-                                "secret": {"type": "str", "required": True},
+                                "host_name": {"type": "str"},
+                                "user_name": {"type": "str"},
+                                "password": {"type": "str"},
+                                "secret": {"type": "str"},
                             },
                         },
                         "sftp": {
                             "type": "dict",
                             "options": {
-                                "host_name": {"type": "str", "required": True},
-                                "user_name": {"type": "str", "required": True},
-                                "password": {"type": "str", "required": True},
-                                "secret": {"type": "str", "required": True},
+                                "host_name": {"type": "str"},
+                                "user_name": {"type": "str"},
+                                "password": {"type": "str"},
+                                "secret": {"type": "str"},
                             },
                         },
                         "scp": {
                             "type": "dict",
                             "options": {
-                                "host_name": {"type": "str", "required": True},
-                                "user_name": {"type": "str", "required": True},
-                                "password": {"type": "str", "required": True},
-                                "secret": {"type": "str", "required": True},
+                                "host_name": {"type": "str"},
+                                "user_name": {"type": "str"},
+                                "password": {"type": "str"},
+                                "secret": {"type": "str"},
                             },
                         },
                     },
@@ -385,23 +312,17 @@ class SystemArgs(object):  # pylint: disable=R0903
                     "options": {
                         "line_config": {
                             "type": "dict",
-                            "options": {
-                                "line_protection": {
-                                    "type": "str",
-                                    "choices": ["unprotected", "trunk-ops"],
-                                    "required": True,
-                                }
-                            },
+                            "options": {"line_protection": {"type": "str", "choices": ["unprotected", "trunk-ops"]}},
                         }
                     },
                 },
                 "lamp_test": {
                     "type": "dict",
                     "options": {
-                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "target_type": {"type": "str", "choices": ["chassis", "slot", "port"], "required": True},
-                        "target_id": {"type": "str", "required": True},
-                        "timeout": {"type": "int", "required": True},
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "target_type": {"type": "str", "choices": ["chassis", "slot", "port"]},
+                        "target_id": {"type": "str"},
+                        "timeout": {"type": "int"},
                     },
                 },
                 "management": {
@@ -410,18 +331,9 @@ class SystemArgs(object):  # pylint: disable=R0903
                         "query_limits": {
                             "type": "dict",
                             "options": {
-                                "netconf": {
-                                    "type": "dict",
-                                    "options": {"pm_history_bins": {"type": "int", "required": True}},
-                                },
-                                "rest": {
-                                    "type": "dict",
-                                    "options": {"pm_history_bins": {"type": "int", "required": True}},
-                                },
-                                "gnmi": {
-                                    "type": "dict",
-                                    "options": {"pm_history_bins": {"type": "int", "required": True}},
-                                },
+                                "netconf": {"type": "dict", "options": {"pm_history_bins": {"type": "int"}}},
+                                "rest": {"type": "dict", "options": {"pm_history_bins": {"type": "int"}}},
+                                "gnmi": {"type": "dict", "options": {"pm_history_bins": {"type": "int"}}},
                             },
                         },
                         "root_scope": {
@@ -430,46 +342,22 @@ class SystemArgs(object):  # pylint: disable=R0903
                                 "netconf": {
                                     "type": "dict",
                                     "options": {
-                                        "get": {
-                                            "type": "str",
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                        },
-                                        "replace": {
-                                            "type": "str",
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                        },
+                                        "get": {"type": "str", "choices": ["native", "openconfig", "all"]},
+                                        "replace": {"type": "str", "choices": ["native", "openconfig", "all"]},
                                     },
                                 },
                                 "rest": {
                                     "type": "dict",
                                     "options": {
-                                        "get": {
-                                            "type": "str",
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                        },
-                                        "replace": {
-                                            "type": "str",
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                        },
+                                        "get": {"type": "str", "choices": ["native", "openconfig", "all"]},
+                                        "replace": {"type": "str", "choices": ["native", "openconfig", "all"]},
                                     },
                                 },
                                 "gnmi": {
                                     "type": "dict",
                                     "options": {
-                                        "get": {
-                                            "type": "str",
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                        },
-                                        "replace": {
-                                            "type": "str",
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                        },
+                                        "get": {"type": "str", "choices": ["native", "openconfig", "all"]},
+                                        "replace": {"type": "str", "choices": ["native", "openconfig", "all"]},
                                     },
                                 },
                             },
@@ -479,18 +367,12 @@ class SystemArgs(object):  # pylint: disable=R0903
                 "environment": {
                     "type": "dict",
                     "options": {
-                        "root": {
-                            "type": "dict",
-                            "options": {
-                                "password": {"type": "str", "required": True},
-                                "secret": {"type": "str", "required": True},
-                            },
-                        },
+                        "root": {"type": "dict", "options": {"password": {"type": "str"}, "secret": {"type": "str"}}},
                         "diag": {
                             "type": "dict",
                             "options": {
-                                "shell": {"type": "str", "choices": ["cli", "system"], "required": True},
-                                "sudo": {"type": "bool", "required": True},
+                                "shell": {"type": "str", "choices": ["cli", "system"]},
+                                "sudo": {"type": "bool"},
                             },
                         },
                     },
@@ -498,14 +380,10 @@ class SystemArgs(object):  # pylint: disable=R0903
                 "auto_config_recovery": {
                     "type": "dict",
                     "options": {
-                        "config_mismatch_detection_state": {
-                            "type": "str",
-                            "choices": ["disabled", "enabled"],
-                            "required": True,
-                        },
-                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "passphrase": {"type": "str", "required": True},
-                        "audit_interval": {"type": "int", "required": True},
+                        "config_mismatch_detection_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "passphrase": {"type": "str"},
+                        "audit_interval": {"type": "int"},
                     },
                 },
                 "ssl": {
@@ -515,8 +393,8 @@ class SystemArgs(object):  # pylint: disable=R0903
                             "type": "list",
                             "elements": "dict",
                             "options": {
-                                "algorithm_name": {"type": "str", "required": True},
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "algorithm_name": {"type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                             },
                         }
                     },
@@ -524,15 +402,11 @@ class SystemArgs(object):  # pylint: disable=R0903
                 "shell": {
                     "type": "dict",
                     "options": {
-                        "more": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "more_lines": {"type": "int", "required": True},
-                        "login_authentication_message": {
-                            "type": "str",
-                            "choices": ["disabled", "enabled"],
-                            "required": True,
-                        },
-                        "login_banner_file": {"type": "str", "required": True},
-                        "welcome_banner_file": {"type": "str", "required": True},
+                        "more": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "more_lines": {"type": "int"},
+                        "login_authentication_message": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "login_banner_file": {"type": "str"},
+                        "welcome_banner_file": {"type": "str"},
                     },
                 },
                 "default_settings": {
@@ -544,12 +418,11 @@ class SystemArgs(object):  # pylint: disable=R0903
                                 "type": {
                                     "type": "str",
                                     "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
-                                    "required": True,
                                 },
-                                "holdoff": {"type": "int", "required": True},
+                                "holdoff": {"type": "int"},
                             },
                         },
-                        "terrestrial_reach_limit": {"type": "int", "required": True},
+                        "terrestrial_reach_limit": {"type": "int"},
                     },
                 },
             },

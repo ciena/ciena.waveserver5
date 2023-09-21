@@ -41,29 +41,15 @@ class PmArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "dict",
             "options": {
-                "encryption_gcm_performance_instances": {
-                    "type": "list",
-                    "elements": "dict",
+                "global_config": {
+                    "type": "dict",
                     "options": {
-                        "instance_name": {"type": "str", "required": True},
-                        "properties": {
-                            "type": "dict",
-                            "options": {
-                                "tca_profile_15_min": {"type": "str", "required": True},
-                                "tca_profile_24_hr": {"type": "str", "required": True},
-                                "tca_profile_untimed": {"type": "str", "required": True},
-                            },
-                        },
-                        "state": {
-                            "type": "dict",
-                            "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "tca_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
-                            },
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "untimed_read_and_clear": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "tca_notification_type": {
+                            "type": "str",
+                            "choices": ["summary-event", "summary-alarm", "event", "alarm"],
                         },
                     },
                 },
@@ -71,89 +57,20 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"type": "str", "required": True},
-                        "properties": {
-                            "type": "dict",
-                            "options": {
-                                "tca_profile_15_min": {"type": "str", "required": True},
-                                "tca_profile_24_hr": {"type": "str", "required": True},
-                                "tca_profile_untimed": {"type": "str", "required": True},
-                            },
-                        },
+                        "instance_name": {"type": "str"},
                         "state": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "tca_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                             },
                         },
-                    },
-                },
-                "global_config": {
-                    "type": "dict",
-                    "options": {
-                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "tca_notification_type": {
-                            "type": "str",
-                            "choices": ["summary-event", "summary-alarm", "event", "alarm"],
-                            "required": True,
-                        },
-                        "untimed_read_and_clear": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                    },
-                },
-                "modem_performance_instances": {
-                    "type": "list",
-                    "elements": "dict",
-                    "options": {
-                        "instance_name": {"type": "str", "required": True},
                         "properties": {
                             "type": "dict",
                             "options": {
-                                "tca_profile_15_min": {"type": "str", "required": True},
-                                "tca_profile_24_hr": {"type": "str", "required": True},
-                                "tca_profile_untimed": {"type": "str", "required": True},
-                            },
-                        },
-                        "state": {
-                            "type": "dict",
-                            "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "tca_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
-                            },
-                        },
-                    },
-                },
-                "odu_performance_instances": {
-                    "type": "list",
-                    "elements": "dict",
-                    "options": {
-                        "instance_name": {"type": "str", "required": True},
-                        "properties": {
-                            "type": "dict",
-                            "options": {
-                                "tca_profile_15_min": {"type": "str", "required": True},
-                                "tca_profile_24_hr": {"type": "str", "required": True},
-                                "tca_profile_untimed": {"type": "str", "required": True},
-                            },
-                        },
-                        "state": {
-                            "type": "dict",
-                            "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "tca_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
+                                "tca_profile_15_min": {"type": "str"},
+                                "tca_profile_24_hr": {"type": "str"},
+                                "tca_profile_untimed": {"type": "str"},
                             },
                         },
                     },
@@ -162,50 +79,20 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"type": "str", "required": True},
-                        "properties": {
-                            "type": "dict",
-                            "options": {
-                                "tca_profile_15_min": {"type": "str", "required": True},
-                                "tca_profile_24_hr": {"type": "str", "required": True},
-                                "tca_profile_untimed": {"type": "str", "required": True},
-                            },
-                        },
+                        "instance_name": {"type": "str"},
                         "state": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "tca_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
                             },
                         },
-                    },
-                },
-                "otu_performance_instances": {
-                    "type": "list",
-                    "elements": "dict",
-                    "options": {
-                        "instance_name": {"type": "str", "required": True},
                         "properties": {
                             "type": "dict",
                             "options": {
-                                "tca_profile_15_min": {"type": "str", "required": True},
-                                "tca_profile_24_hr": {"type": "str", "required": True},
-                                "tca_profile_untimed": {"type": "str", "required": True},
-                            },
-                        },
-                        "state": {
-                            "type": "dict",
-                            "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "tca_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
+                                "tca_profile_15_min": {"type": "str"},
+                                "tca_profile_24_hr": {"type": "str"},
+                                "tca_profile_untimed": {"type": "str"},
                             },
                         },
                     },
@@ -214,24 +101,108 @@ class PmArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"type": "str", "required": True},
-                        "properties": {
-                            "type": "dict",
-                            "options": {
-                                "tca_profile_15_min": {"type": "str", "required": True},
-                                "tca_profile_24_hr": {"type": "str", "required": True},
-                                "tca_profile_untimed": {"type": "str", "required": True},
-                            },
-                        },
+                        "instance_name": {"type": "str"},
                         "state": {
                             "type": "dict",
                             "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                                "tca_admin_state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                },
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                            },
+                        },
+                        "properties": {
+                            "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str"},
+                                "tca_profile_24_hr": {"type": "str"},
+                                "tca_profile_untimed": {"type": "str"},
+                            },
+                        },
+                    },
+                },
+                "modem_performance_instances": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "instance_name": {"type": "str"},
+                        "state": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                            },
+                        },
+                        "properties": {
+                            "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str"},
+                                "tca_profile_24_hr": {"type": "str"},
+                                "tca_profile_untimed": {"type": "str"},
+                            },
+                        },
+                    },
+                },
+                "otu_performance_instances": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "instance_name": {"type": "str"},
+                        "state": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                            },
+                        },
+                        "properties": {
+                            "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str"},
+                                "tca_profile_24_hr": {"type": "str"},
+                                "tca_profile_untimed": {"type": "str"},
+                            },
+                        },
+                    },
+                },
+                "odu_performance_instances": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "instance_name": {"type": "str"},
+                        "state": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                            },
+                        },
+                        "properties": {
+                            "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str"},
+                                "tca_profile_24_hr": {"type": "str"},
+                                "tca_profile_untimed": {"type": "str"},
+                            },
+                        },
+                    },
+                },
+                "encryption_gcm_performance_instances": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "instance_name": {"type": "str"},
+                        "state": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                                "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                            },
+                        },
+                        "properties": {
+                            "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str"},
+                                "tca_profile_24_hr": {"type": "str"},
+                                "tca_profile_untimed": {"type": "str"},
                             },
                         },
                     },
