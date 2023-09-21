@@ -34,21 +34,13 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 )
 
 try:
-    from lxml import etree
     from lxml.etree import tostring as xml_to_string, fromstring
 
     HAS_LXML = True
 except ImportError:
-    from xml.etree.ElementTree import fromstring, tostring as xml_to_string
+    from xml.etree.ElementTree import tostring as xml_to_string, fromstring
 
     HAS_LXML = False
-
-try:
-    import xmltodict
-
-    HAS_XMLTODICT = True
-except ImportError:
-    HAS_XMLTODICT = False
 
 
 class PmFacts(object):
@@ -126,7 +118,7 @@ class PmFacts(object):
         :returns: The generated config
         """
         if isinstance(conf, str):
-            conf = etree.fromstring(conf)
+            conf = fromstring(conf)
         config = {}
         self.recursive_config_fill(config, conf, spec)
         return utils.remove_empties(config)
