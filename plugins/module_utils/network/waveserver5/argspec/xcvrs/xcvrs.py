@@ -39,11 +39,19 @@ class XcvrsArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "type": "list",
             "elements": "dict",
             "options": {
+                "xcvr_id": {"type": "str", "required": True},
+                "state": {
+                    "type": "dict",
+                    "options": {"admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True}},
+                },
                 "properties": {
+                    "type": "dict",
                     "options": {
                         "mode": {
+                            "type": "str",
                             "choices": [
                                 "blank",
                                 "OCH",
@@ -292,18 +300,10 @@ class XcvrsArgs(object):  # pylint: disable=R0903
                                 "82-800-E",
                             ],
                             "required": True,
-                            "type": "str",
                         }
                     },
-                    "type": "dict",
                 },
-                "state": {
-                    "options": {"admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"}},
-                    "type": "dict",
-                },
-                "xcvr_id": {"required": True, "type": "str"},
             },
-            "type": "list",
         },
-        "state": {"choices": ["gathered", "merged", "overridden"], "default": "merged", "type": "str"},
+        "state": {"type": "str", "default": "merged", "choices": ["gathered", "merged", "overridden"]},
     }  # pylint: disable=C0301

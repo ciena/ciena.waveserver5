@@ -420,16 +420,6 @@ EXAMPLES = """
     state: merged
 
 
-# Using overridden
-
-- name: Configure pm
-  ciena.waveserver5.waveserver5_pm:
-    config:
-      encryption_gcm_performance_instances:
-        instance_name: foo
-    state: overridden
-
-
 """
 RETURN = """
 before:

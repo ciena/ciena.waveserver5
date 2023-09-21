@@ -39,204 +39,204 @@ class PmArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "type": "dict",
             "options": {
                 "encryption_gcm_performance_instances": {
+                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"required": True, "type": "str"},
+                        "instance_name": {"type": "str", "required": True},
                         "properties": {
-                            "options": {
-                                "tca_profile_15_min": {"required": True, "type": "str"},
-                                "tca_profile_24_hr": {"required": True, "type": "str"},
-                                "tca_profile_untimed": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str", "required": True},
+                                "tca_profile_24_hr": {"type": "str", "required": True},
+                                "tca_profile_untimed": {"type": "str", "required": True},
+                            },
                         },
                         "state": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                                 "tca_admin_state": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
                         },
                     },
-                    "type": "list",
                 },
                 "ethernet_performance_instances": {
+                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"required": True, "type": "str"},
+                        "instance_name": {"type": "str", "required": True},
                         "properties": {
-                            "options": {
-                                "tca_profile_15_min": {"required": True, "type": "str"},
-                                "tca_profile_24_hr": {"required": True, "type": "str"},
-                                "tca_profile_untimed": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str", "required": True},
+                                "tca_profile_24_hr": {"type": "str", "required": True},
+                                "tca_profile_untimed": {"type": "str", "required": True},
+                            },
                         },
                         "state": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                                 "tca_admin_state": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
                         },
                     },
-                    "type": "list",
                 },
                 "global_config": {
+                    "type": "dict",
                     "options": {
-                        "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "tca_admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "tca_admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                         "tca_notification_type": {
+                            "type": "str",
                             "choices": ["summary-event", "summary-alarm", "event", "alarm"],
                             "required": True,
-                            "type": "str",
                         },
-                        "untimed_read_and_clear": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                        "untimed_read_and_clear": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                     },
-                    "type": "dict",
                 },
                 "modem_performance_instances": {
+                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"required": True, "type": "str"},
+                        "instance_name": {"type": "str", "required": True},
                         "properties": {
-                            "options": {
-                                "tca_profile_15_min": {"required": True, "type": "str"},
-                                "tca_profile_24_hr": {"required": True, "type": "str"},
-                                "tca_profile_untimed": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str", "required": True},
+                                "tca_profile_24_hr": {"type": "str", "required": True},
+                                "tca_profile_untimed": {"type": "str", "required": True},
+                            },
                         },
                         "state": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                                 "tca_admin_state": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
                         },
                     },
-                    "type": "list",
                 },
                 "odu_performance_instances": {
+                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"required": True, "type": "str"},
+                        "instance_name": {"type": "str", "required": True},
                         "properties": {
-                            "options": {
-                                "tca_profile_15_min": {"required": True, "type": "str"},
-                                "tca_profile_24_hr": {"required": True, "type": "str"},
-                                "tca_profile_untimed": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str", "required": True},
+                                "tca_profile_24_hr": {"type": "str", "required": True},
+                                "tca_profile_untimed": {"type": "str", "required": True},
+                            },
                         },
                         "state": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                                 "tca_admin_state": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
                         },
                     },
-                    "type": "list",
                 },
                 "optical_power_instances": {
+                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"required": True, "type": "str"},
+                        "instance_name": {"type": "str", "required": True},
                         "properties": {
-                            "options": {
-                                "tca_profile_15_min": {"required": True, "type": "str"},
-                                "tca_profile_24_hr": {"required": True, "type": "str"},
-                                "tca_profile_untimed": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str", "required": True},
+                                "tca_profile_24_hr": {"type": "str", "required": True},
+                                "tca_profile_untimed": {"type": "str", "required": True},
+                            },
                         },
                         "state": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                                 "tca_admin_state": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
                         },
                     },
-                    "type": "list",
                 },
                 "otu_performance_instances": {
+                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"required": True, "type": "str"},
+                        "instance_name": {"type": "str", "required": True},
                         "properties": {
-                            "options": {
-                                "tca_profile_15_min": {"required": True, "type": "str"},
-                                "tca_profile_24_hr": {"required": True, "type": "str"},
-                                "tca_profile_untimed": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str", "required": True},
+                                "tca_profile_24_hr": {"type": "str", "required": True},
+                                "tca_profile_untimed": {"type": "str", "required": True},
+                            },
                         },
                         "state": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                                 "tca_admin_state": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
                         },
                     },
-                    "type": "list",
                 },
                 "photonics_instances": {
+                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "instance_name": {"required": True, "type": "str"},
+                        "instance_name": {"type": "str", "required": True},
                         "properties": {
-                            "options": {
-                                "tca_profile_15_min": {"required": True, "type": "str"},
-                                "tca_profile_24_hr": {"required": True, "type": "str"},
-                                "tca_profile_untimed": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "tca_profile_15_min": {"type": "str", "required": True},
+                                "tca_profile_24_hr": {"type": "str", "required": True},
+                                "tca_profile_untimed": {"type": "str", "required": True},
+                            },
                         },
                         "state": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
                                 "tca_admin_state": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
                         },
                     },
-                    "type": "list",
                 },
             },
-            "type": "dict",
         },
-        "state": {"choices": ["merged", "overridden", "gathered"], "default": "merged", "type": "str"},
+        "state": {"type": "str", "default": "merged", "choices": ["merged", "overridden", "gathered"]},
     }  # pylint: disable=C0301

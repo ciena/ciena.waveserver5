@@ -39,35 +39,22 @@ class PtpsArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "type": "list",
             "elements": "dict",
             "options": {
-                "properties": {
+                "ptp_id": {"type": "str", "required": True},
+                "state": {
+                    "type": "dict",
                     "options": {
-                        "forward_error_correction": {
-                            "choices": ["disabled", "enabled"],
-                            "required": True,
-                            "type": "str",
-                        },
-                        "is_coherent": {"required": True, "type": "bool"},
-                        "thresholds": {
-                            "options": {
-                                "hccs_db": {"required": True, "type": "float"},
-                                "pre_fec_sd_db": {"required": True, "type": "float"},
-                                "pre_fec_sf_db": {"required": True, "type": "float"},
-                            },
-                            "type": "dict",
-                        },
-                        "transmitter": {
-                            "options": {
-                                "state": {
-                                    "choices": ["disabled", "enabled", "not-applicable"],
-                                    "required": True,
-                                    "type": "str",
-                                }
-                            },
-                            "type": "dict",
-                        },
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "spli_management": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                    },
+                },
+                "properties": {
+                    "type": "dict",
+                    "options": {
                         "type": {
+                            "type": "str",
                             "choices": [
                                 "unknown",
                                 "WLAi",
@@ -87,37 +74,50 @@ class PtpsArgs(object):  # pylint: disable=R0903
                                 "400ZR",
                             ],
                             "required": True,
-                            "type": "str",
                         },
                         "xcvr_type": {
+                            "type": "str",
                             "choices": [
                                 "not-available",
                                 "unsupported",
                                 "QSFPplus",
                                 "QSFP28",
-                                "WaveLogic " "3 " "Extreme",
-                                "WaveLogic " "Ai",
+                                "WaveLogic 3 Extreme",
+                                "WaveLogic Ai",
                                 "SFP",
                                 "none",
                                 "QSFP-DD",
-                                "WaveLogic " "5e",
+                                "WaveLogic 5e",
                             ],
                             "required": True,
+                        },
+                        "is_coherent": {"type": "bool", "required": True},
+                        "forward_error_correction": {
                             "type": "str",
+                            "choices": ["disabled", "enabled"],
+                            "required": True,
+                        },
+                        "thresholds": {
+                            "type": "dict",
+                            "options": {
+                                "pre_fec_sf_db": {"type": "float", "required": True},
+                                "pre_fec_sd_db": {"type": "float", "required": True},
+                                "hccs_db": {"type": "float", "required": True},
+                            },
+                        },
+                        "transmitter": {
+                            "type": "dict",
+                            "options": {
+                                "state": {
+                                    "type": "str",
+                                    "choices": ["disabled", "enabled", "not-applicable"],
+                                    "required": True,
+                                }
+                            },
                         },
                     },
-                    "type": "dict",
-                },
-                "ptp_id": {"required": True, "type": "str"},
-                "state": {
-                    "options": {
-                        "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "spli_management": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                    },
-                    "type": "dict",
                 },
             },
-            "type": "list",
         },
-        "state": {"choices": ["gathered", "merged", "overridden"], "default": "merged", "type": "str"},
+        "state": {"type": "str", "default": "merged", "choices": ["gathered", "merged", "overridden"]},
     }  # pylint: disable=C0301

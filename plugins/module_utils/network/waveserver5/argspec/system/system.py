@@ -39,520 +39,520 @@ class SystemArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "type": "dict",
             "options": {
-                "auto_config_recovery": {
-                    "options": {
-                        "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "audit_interval": {"required": True, "type": "int"},
-                        "config_mismatch_detection_state": {
-                            "choices": ["disabled", "enabled"],
-                            "required": True,
-                            "type": "str",
-                        },
-                        "passphrase": {"required": True, "type": "str"},
-                    },
-                    "type": "dict",
-                },
-                "client_config": {
-                    "options": {
-                        "dhcp": {
-                            "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                                "discovery_interval": {"required": True, "type": "int"},
-                                "interface_type": {"choices": ["remote", "active"], "required": True, "type": "str"},
-                                "options": {
-                                    "options": {
-                                        "bootfile_name": {"required": True, "type": "bool"},
-                                        "domain_name": {"required": True, "type": "bool"},
-                                        "domain_server": {"required": True, "type": "bool"},
-                                        "host_name": {"required": True, "type": "bool"},
-                                        "lease_time": {"required": True, "type": "bool"},
-                                        "log_server": {"required": True, "type": "bool"},
-                                        "ntp_servers": {"required": True, "type": "bool"},
-                                        "router": {"required": True, "type": "bool"},
-                                        "subnet_mask": {"required": True, "type": "bool"},
-                                        "tftp_server_name": {"required": True, "type": "bool"},
-                                        "time_offset": {"required": True, "type": "bool"},
-                                    },
-                                    "type": "dict",
-                                },
-                                "requested_lease_time": {"required": True, "type": "int"},
-                            },
-                            "type": "dict",
-                        },
-                        "dns": {
-                            "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                                "server": {
-                                    "elements": "dict",
-                                    "options": {
-                                        "admin_state": {
-                                            "choices": ["disabled", "enabled"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "ip_address": {"required": True, "type": "str"},
-                                        "user_priority": {"required": True, "type": "int"},
-                                    },
-                                    "type": "list",
-                                },
-                            },
-                            "type": "dict",
-                        },
-                        "ntp": {
-                            "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                                "authentication_state": {
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                                "autokey_authentication_state": {
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                                "mode": {
-                                    "choices": ["polling", "broadcast", "multicast"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                                "multicast_server": {
-                                    "elements": "dict",
-                                    "options": {"ip_address": {"required": True, "type": "str"}},
-                                    "type": "list",
-                                },
-                                "ntp_key": {
-                                    "elements": "dict",
-                                    "options": {
-                                        "key_id": {"required": True, "type": "int"},
-                                        "key_value": {"required": True, "type": "str"},
-                                    },
-                                    "type": "list",
-                                },
-                                "polling_interval": {"required": True, "type": "int"},
-                                "server": {
-                                    "elements": "dict",
-                                    "options": {
-                                        "address": {"required": True, "type": "str"},
-                                        "admin_state": {
-                                            "choices": ["disabled", "enabled"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "autokey_authentication": {
-                                            "choices": ["disabled", "enabled"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "key_id": {"required": True, "type": "str"},
-                                    },
-                                    "type": "list",
-                                },
-                            },
-                            "type": "dict",
-                        },
-                    },
-                    "type": "dict",
-                },
-                "default_settings": {
-                    "options": {
-                        "conditioning": {
-                            "options": {
-                                "holdoff": {"required": True, "type": "int"},
-                                "type": {
-                                    "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                            },
-                            "type": "dict",
-                        },
-                        "terrestrial_reach_limit": {"required": True, "type": "int"},
-                    },
-                    "type": "dict",
-                },
-                "domain_name": {"options": {"config_domain_name": {"required": True, "type": "str"}}, "type": "dict"},
-                "environment": {
-                    "options": {
-                        "diag": {
-                            "options": {
-                                "shell": {"choices": ["cli", "system"], "required": True, "type": "str"},
-                                "sudo": {"required": True, "type": "bool"},
-                            },
-                            "type": "dict",
-                        },
-                        "root": {
-                            "options": {
-                                "password": {"required": True, "type": "str"},
-                                "secret": {"required": True, "type": "str"},
-                            },
-                            "type": "dict",
-                        },
-                    },
-                    "type": "dict",
-                },
-                "global_provisioning": {
-                    "options": {
-                        "line_config": {
-                            "options": {
-                                "line_protection": {
-                                    "choices": ["unprotected", "trunk-ops"],
-                                    "required": True,
-                                    "type": "str",
-                                }
-                            },
-                            "type": "dict",
-                        }
-                    },
-                    "type": "dict",
-                },
-                "host_name": {"options": {"config_host_name": {"required": True, "type": "str"}}, "type": "dict"},
                 "id": {
+                    "type": "dict",
                     "options": {
-                        "group": {
-                            "options": {
-                                "description": {"required": True, "type": "str"},
-                                "id": {"required": True, "type": "int"},
-                                "name": {"required": True, "type": "str"},
-                            },
-                            "type": "dict",
-                        },
-                        "member": {
-                            "options": {
-                                "cluster_enrollment": {
-                                    "choices": ["disabled", "enabled"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                                "description": {"required": True, "type": "str"},
-                                "frame_identification": {"required": True, "type": "str"},
-                                "id": {"required": True, "type": "int"},
-                                "name": {"required": True, "type": "str"},
-                                "rack_unit_number": {"required": True, "type": "int"},
-                            },
-                            "type": "dict",
-                        },
                         "network": {
-                            "options": {
-                                "description": {"required": True, "type": "str"},
-                                "id": {"required": True, "type": "int"},
-                                "name": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "description": {"type": "str", "required": True},
+                                "id": {"type": "int", "required": True},
+                                "name": {"type": "str", "required": True},
+                            },
                         },
                         "site": {
-                            "options": {
-                                "address": {"required": True, "type": "str"},
-                                "description": {"required": True, "type": "str"},
-                                "id": {"required": True, "type": "int"},
-                                "latitude": {"required": True, "type": "float"},
-                                "longitude": {"required": True, "type": "float"},
-                                "name": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
-                        },
-                    },
-                    "type": "dict",
-                },
-                "lamp_test": {
-                    "options": {
-                        "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "target_id": {"required": True, "type": "str"},
-                        "target_type": {"choices": ["chassis", "slot", "port"], "required": True, "type": "str"},
-                        "timeout": {"required": True, "type": "int"},
-                    },
-                    "type": "dict",
-                },
-                "management": {
-                    "options": {
-                        "query_limits": {
                             "options": {
-                                "gnmi": {
-                                    "options": {"pm_history_bins": {"required": True, "type": "int"}},
-                                    "type": "dict",
-                                },
-                                "netconf": {
-                                    "options": {"pm_history_bins": {"required": True, "type": "int"}},
-                                    "type": "dict",
-                                },
-                                "rest": {
-                                    "options": {"pm_history_bins": {"required": True, "type": "int"}},
-                                    "type": "dict",
-                                },
+                                "description": {"type": "str", "required": True},
+                                "id": {"type": "int", "required": True},
+                                "name": {"type": "str", "required": True},
+                                "latitude": {"type": "float", "required": True},
+                                "longitude": {"type": "float", "required": True},
+                                "address": {"type": "str", "required": True},
                             },
-                            "type": "dict",
                         },
-                        "root_scope": {
+                        "group": {
+                            "type": "dict",
                             "options": {
-                                "gnmi": {
-                                    "options": {
-                                        "get": {
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "replace": {
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                    },
-                                    "type": "dict",
-                                },
-                                "netconf": {
-                                    "options": {
-                                        "get": {
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "replace": {
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                    },
-                                    "type": "dict",
-                                },
-                                "rest": {
-                                    "options": {
-                                        "get": {
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "replace": {
-                                            "choices": ["native", "openconfig", "all"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                    },
-                                    "type": "dict",
-                                },
+                                "description": {"type": "str", "required": True},
+                                "id": {"type": "int", "required": True},
+                                "name": {"type": "str", "required": True},
                             },
+                        },
+                        "member": {
                             "type": "dict",
-                        },
-                    },
-                    "type": "dict",
-                },
-                "server_config": {
-                    "options": {
-                        "global_inactivity_timeout": {"required": True, "type": "int"},
-                        "global_inactivity_timer": {
-                            "choices": ["disabled", "enabled"],
-                            "required": True,
-                            "type": "str",
-                        },
-                        "grpc": {
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                                "certificate_verification": {
-                                    "options": {
-                                        "certificate_name": {"required": True, "type": "str"},
-                                        "mutual_authentication": {
-                                            "options": {
-                                                "admin_state": {
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                }
-                                            },
-                                            "type": "dict",
-                                        },
-                                    },
-                                    "type": "dict",
-                                },
-                            },
-                            "type": "dict",
-                        },
-                        "https": {
-                            "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                                "certificate_verification": {
-                                    "options": {
-                                        "certificate_name": {"required": True, "type": "str"},
-                                        "mutual_authentication": {
-                                            "options": {
-                                                "admin_state": {
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                }
-                                            },
-                                            "type": "dict",
-                                        },
-                                        "ocsp": {
-                                            "options": {
-                                                "admin_state": {
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "default_responder": {"required": True, "type": "str"},
-                                                "nonce": {"choices": ["off", "on"], "required": True, "type": "str"},
-                                                "responder_preference": {
-                                                    "choices": ["aia", "default-responder"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                            },
-                                            "type": "dict",
-                                        },
-                                        "trusted_dns": {"required": True, "type": "str"},
-                                    },
-                                    "type": "dict",
-                                },
-                                "inactivity_timeout": {"required": True, "type": "int"},
-                                "web_ui_file_transfer_admin_state": {
+                                "description": {"type": "str", "required": True},
+                                "id": {"type": "int", "required": True},
+                                "name": {"type": "str", "required": True},
+                                "frame_identification": {"type": "str", "required": True},
+                                "rack_unit_number": {"type": "int", "required": True},
+                                "cluster_enrollment": {
+                                    "type": "str",
                                     "choices": ["disabled", "enabled"],
                                     "required": True,
-                                    "type": "str",
                                 },
                             },
-                            "type": "dict",
-                        },
-                        "netconf_server_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "scp_server_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "sftp_server_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "ssh": {
-                            "options": {
-                                "algorithms": {
-                                    "options": {
-                                        "encryption": {
-                                            "elements": "dict",
-                                            "options": {
-                                                "admin_state": {
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "algorithm_name": {"required": True, "type": "str"},
-                                            },
-                                            "type": "list",
-                                        },
-                                        "key_exchange": {
-                                            "elements": "dict",
-                                            "options": {
-                                                "admin_state": {
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "algorithm_name": {"required": True, "type": "str"},
-                                            },
-                                            "type": "list",
-                                        },
-                                        "message_authentication_code": {
-                                            "elements": "dict",
-                                            "options": {
-                                                "admin_state": {
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "algorithm_name": {"required": True, "type": "str"},
-                                            },
-                                            "type": "list",
-                                        },
-                                        "public_key_authentication": {
-                                            "elements": "dict",
-                                            "options": {
-                                                "admin_state": {
-                                                    "choices": ["disabled", "enabled"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "algorithm_name": {"required": True, "type": "str"},
-                                            },
-                                            "type": "list",
-                                        },
-                                    },
-                                    "type": "dict",
-                                },
-                                "allowed_clients": {
-                                    "elements": "dict",
-                                    "options": {"ip_address": {"required": True, "type": "str"}},
-                                    "type": "list",
-                                },
-                                "authentication_retries": {"required": True, "type": "int"},
-                                "listener_port": {"required": True, "type": "int"},
-                            },
-                            "type": "dict",
                         },
                     },
-                    "type": "dict",
                 },
-                "shell": {
+                "host_name": {"type": "dict", "options": {"config_host_name": {"type": "str", "required": True}}},
+                "domain_name": {"type": "dict", "options": {"config_domain_name": {"type": "str", "required": True}}},
+                "time_config": {
+                    "type": "dict",
                     "options": {
-                        "login_authentication_message": {
+                        "time_offset": {"type": "int", "required": True},
+                        "time_stamp": {"type": "str", "choices": ["utc", "local"], "required": True},
+                    },
+                },
+                "server_config": {
+                    "type": "dict",
+                    "options": {
+                        "sftp_server_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "scp_server_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "netconf_server_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "global_inactivity_timer": {
+                            "type": "str",
                             "choices": ["disabled", "enabled"],
                             "required": True,
-                            "type": "str",
                         },
-                        "login_banner_file": {"required": True, "type": "str"},
-                        "more": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "more_lines": {"required": True, "type": "int"},
-                        "welcome_banner_file": {"required": True, "type": "str"},
-                    },
-                    "type": "dict",
-                },
-                "ssl": {
-                    "options": {
-                        "tls_cipher_suite_algorithms": {
-                            "elements": "dict",
+                        "global_inactivity_timeout": {"type": "int", "required": True},
+                        "https": {
+                            "type": "dict",
                             "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                                "algorithm_name": {"required": True, "type": "str"},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "web_ui_file_transfer_admin_state": {
+                                    "type": "str",
+                                    "choices": ["disabled", "enabled"],
+                                    "required": True,
+                                },
+                                "inactivity_timeout": {"type": "int", "required": True},
+                                "certificate_verification": {
+                                    "type": "dict",
+                                    "options": {
+                                        "certificate_name": {"type": "str", "required": True},
+                                        "trusted_dns": {"type": "str", "required": True},
+                                        "mutual_authentication": {
+                                            "type": "dict",
+                                            "options": {
+                                                "admin_state": {
+                                                    "type": "str",
+                                                    "choices": ["disabled", "enabled"],
+                                                    "required": True,
+                                                }
+                                            },
+                                        },
+                                        "ocsp": {
+                                            "type": "dict",
+                                            "options": {
+                                                "admin_state": {
+                                                    "type": "str",
+                                                    "choices": ["disabled", "enabled"],
+                                                    "required": True,
+                                                },
+                                                "responder_preference": {
+                                                    "type": "str",
+                                                    "choices": ["aia", "default-responder"],
+                                                    "required": True,
+                                                },
+                                                "default_responder": {"type": "str", "required": True},
+                                                "nonce": {"type": "str", "choices": ["off", "on"], "required": True},
+                                            },
+                                        },
+                                    },
+                                },
                             },
-                            "type": "list",
-                        }
+                        },
+                        "grpc": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "certificate_verification": {
+                                    "type": "dict",
+                                    "options": {
+                                        "certificate_name": {"type": "str", "required": True},
+                                        "mutual_authentication": {
+                                            "type": "dict",
+                                            "options": {
+                                                "admin_state": {
+                                                    "type": "str",
+                                                    "choices": ["disabled", "enabled"],
+                                                    "required": True,
+                                                }
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        "ssh": {
+                            "type": "dict",
+                            "options": {
+                                "authentication_retries": {"type": "int", "required": True},
+                                "listener_port": {"type": "int", "required": True},
+                                "allowed_clients": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {"ip_address": {"type": "str", "required": True}},
+                                },
+                                "algorithms": {
+                                    "type": "dict",
+                                    "options": {
+                                        "key_exchange": {
+                                            "type": "list",
+                                            "elements": "dict",
+                                            "options": {
+                                                "algorithm_name": {"type": "str", "required": True},
+                                                "admin_state": {
+                                                    "type": "str",
+                                                    "choices": ["disabled", "enabled"],
+                                                    "required": True,
+                                                },
+                                            },
+                                        },
+                                        "encryption": {
+                                            "type": "list",
+                                            "elements": "dict",
+                                            "options": {
+                                                "algorithm_name": {"type": "str", "required": True},
+                                                "admin_state": {
+                                                    "type": "str",
+                                                    "choices": ["disabled", "enabled"],
+                                                    "required": True,
+                                                },
+                                            },
+                                        },
+                                        "message_authentication_code": {
+                                            "type": "list",
+                                            "elements": "dict",
+                                            "options": {
+                                                "algorithm_name": {"type": "str", "required": True},
+                                                "admin_state": {
+                                                    "type": "str",
+                                                    "choices": ["disabled", "enabled"],
+                                                    "required": True,
+                                                },
+                                            },
+                                        },
+                                        "public_key_authentication": {
+                                            "type": "list",
+                                            "elements": "dict",
+                                            "options": {
+                                                "algorithm_name": {"type": "str", "required": True},
+                                                "admin_state": {
+                                                    "type": "str",
+                                                    "choices": ["disabled", "enabled"],
+                                                    "required": True,
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     },
-                    "type": "dict",
                 },
-                "time_config": {
-                    "options": {
-                        "time_offset": {"required": True, "type": "int"},
-                        "time_stamp": {"choices": ["utc", "local"], "required": True, "type": "str"},
-                    },
+                "client_config": {
                     "type": "dict",
+                    "options": {
+                        "dhcp": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "interface_type": {"type": "str", "choices": ["remote", "active"], "required": True},
+                                "discovery_interval": {"type": "int", "required": True},
+                                "requested_lease_time": {"type": "int", "required": True},
+                                "options": {
+                                    "type": "dict",
+                                    "options": {
+                                        "subnet_mask": {"type": "bool", "required": True},
+                                        "time_offset": {"type": "bool", "required": True},
+                                        "router": {"type": "bool", "required": True},
+                                        "domain_server": {"type": "bool", "required": True},
+                                        "log_server": {"type": "bool", "required": True},
+                                        "host_name": {"type": "bool", "required": True},
+                                        "domain_name": {"type": "bool", "required": True},
+                                        "ntp_servers": {"type": "bool", "required": True},
+                                        "lease_time": {"type": "bool", "required": True},
+                                        "tftp_server_name": {"type": "bool", "required": True},
+                                        "bootfile_name": {"type": "bool", "required": True},
+                                    },
+                                },
+                            },
+                        },
+                        "ntp": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "authentication_state": {
+                                    "type": "str",
+                                    "choices": ["disabled", "enabled"],
+                                    "required": True,
+                                },
+                                "autokey_authentication_state": {
+                                    "type": "str",
+                                    "choices": ["disabled", "enabled"],
+                                    "required": True,
+                                },
+                                "mode": {
+                                    "type": "str",
+                                    "choices": ["polling", "broadcast", "multicast"],
+                                    "required": True,
+                                },
+                                "polling_interval": {"type": "int", "required": True},
+                                "ntp_key": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "key_id": {"type": "int", "required": True},
+                                        "key_value": {"type": "str", "required": True},
+                                    },
+                                },
+                                "server": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "address": {"type": "str", "required": True},
+                                        "autokey_authentication": {
+                                            "type": "str",
+                                            "choices": ["disabled", "enabled"],
+                                            "required": True,
+                                        },
+                                        "admin_state": {
+                                            "type": "str",
+                                            "choices": ["disabled", "enabled"],
+                                            "required": True,
+                                        },
+                                        "key_id": {"type": "str", "required": True},
+                                    },
+                                },
+                                "multicast_server": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {"ip_address": {"type": "str", "required": True}},
+                                },
+                            },
+                        },
+                        "dns": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                                "server": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "ip_address": {"type": "str", "required": True},
+                                        "admin_state": {
+                                            "type": "str",
+                                            "choices": ["disabled", "enabled"],
+                                            "required": True,
+                                        },
+                                        "user_priority": {"type": "int", "required": True},
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
                 "xftp_config": {
+                    "type": "dict",
                     "options": {
+                        "mode": {"type": "str", "choices": ["none", "tftp", "ftp", "sftp", "scp"], "required": True},
+                        "tftp": {"type": "dict", "options": {"config_host_name": {"type": "str", "required": True}}},
                         "ftp": {
-                            "options": {
-                                "host_name": {"required": True, "type": "str"},
-                                "password": {"required": True, "type": "str"},
-                                "secret": {"required": True, "type": "str"},
-                                "user_name": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
-                        },
-                        "mode": {"choices": ["none", "tftp", "ftp", "sftp", "scp"], "required": True, "type": "str"},
-                        "scp": {
                             "options": {
-                                "host_name": {"required": True, "type": "str"},
-                                "password": {"required": True, "type": "str"},
-                                "secret": {"required": True, "type": "str"},
-                                "user_name": {"required": True, "type": "str"},
+                                "host_name": {"type": "str", "required": True},
+                                "user_name": {"type": "str", "required": True},
+                                "password": {"type": "str", "required": True},
+                                "secret": {"type": "str", "required": True},
                             },
-                            "type": "dict",
                         },
                         "sftp": {
-                            "options": {
-                                "host_name": {"required": True, "type": "str"},
-                                "password": {"required": True, "type": "str"},
-                                "secret": {"required": True, "type": "str"},
-                                "user_name": {"required": True, "type": "str"},
-                            },
                             "type": "dict",
+                            "options": {
+                                "host_name": {"type": "str", "required": True},
+                                "user_name": {"type": "str", "required": True},
+                                "password": {"type": "str", "required": True},
+                                "secret": {"type": "str", "required": True},
+                            },
                         },
-                        "tftp": {"options": {"config_host_name": {"required": True, "type": "str"}}, "type": "dict"},
+                        "scp": {
+                            "type": "dict",
+                            "options": {
+                                "host_name": {"type": "str", "required": True},
+                                "user_name": {"type": "str", "required": True},
+                                "password": {"type": "str", "required": True},
+                                "secret": {"type": "str", "required": True},
+                            },
+                        },
                     },
+                },
+                "global_provisioning": {
                     "type": "dict",
+                    "options": {
+                        "line_config": {
+                            "type": "dict",
+                            "options": {
+                                "line_protection": {
+                                    "type": "str",
+                                    "choices": ["unprotected", "trunk-ops"],
+                                    "required": True,
+                                }
+                            },
+                        }
+                    },
+                },
+                "lamp_test": {
+                    "type": "dict",
+                    "options": {
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "target_type": {"type": "str", "choices": ["chassis", "slot", "port"], "required": True},
+                        "target_id": {"type": "str", "required": True},
+                        "timeout": {"type": "int", "required": True},
+                    },
+                },
+                "management": {
+                    "type": "dict",
+                    "options": {
+                        "query_limits": {
+                            "type": "dict",
+                            "options": {
+                                "netconf": {
+                                    "type": "dict",
+                                    "options": {"pm_history_bins": {"type": "int", "required": True}},
+                                },
+                                "rest": {
+                                    "type": "dict",
+                                    "options": {"pm_history_bins": {"type": "int", "required": True}},
+                                },
+                                "gnmi": {
+                                    "type": "dict",
+                                    "options": {"pm_history_bins": {"type": "int", "required": True}},
+                                },
+                            },
+                        },
+                        "root_scope": {
+                            "type": "dict",
+                            "options": {
+                                "netconf": {
+                                    "type": "dict",
+                                    "options": {
+                                        "get": {
+                                            "type": "str",
+                                            "choices": ["native", "openconfig", "all"],
+                                            "required": True,
+                                        },
+                                        "replace": {
+                                            "type": "str",
+                                            "choices": ["native", "openconfig", "all"],
+                                            "required": True,
+                                        },
+                                    },
+                                },
+                                "rest": {
+                                    "type": "dict",
+                                    "options": {
+                                        "get": {
+                                            "type": "str",
+                                            "choices": ["native", "openconfig", "all"],
+                                            "required": True,
+                                        },
+                                        "replace": {
+                                            "type": "str",
+                                            "choices": ["native", "openconfig", "all"],
+                                            "required": True,
+                                        },
+                                    },
+                                },
+                                "gnmi": {
+                                    "type": "dict",
+                                    "options": {
+                                        "get": {
+                                            "type": "str",
+                                            "choices": ["native", "openconfig", "all"],
+                                            "required": True,
+                                        },
+                                        "replace": {
+                                            "type": "str",
+                                            "choices": ["native", "openconfig", "all"],
+                                            "required": True,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                "environment": {
+                    "type": "dict",
+                    "options": {
+                        "root": {
+                            "type": "dict",
+                            "options": {
+                                "password": {"type": "str", "required": True},
+                                "secret": {"type": "str", "required": True},
+                            },
+                        },
+                        "diag": {
+                            "type": "dict",
+                            "options": {
+                                "shell": {"type": "str", "choices": ["cli", "system"], "required": True},
+                                "sudo": {"type": "bool", "required": True},
+                            },
+                        },
+                    },
+                },
+                "auto_config_recovery": {
+                    "type": "dict",
+                    "options": {
+                        "config_mismatch_detection_state": {
+                            "type": "str",
+                            "choices": ["disabled", "enabled"],
+                            "required": True,
+                        },
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "passphrase": {"type": "str", "required": True},
+                        "audit_interval": {"type": "int", "required": True},
+                    },
+                },
+                "ssl": {
+                    "type": "dict",
+                    "options": {
+                        "tls_cipher_suite_algorithms": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "algorithm_name": {"type": "str", "required": True},
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                            },
+                        }
+                    },
+                },
+                "shell": {
+                    "type": "dict",
+                    "options": {
+                        "more": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "more_lines": {"type": "int", "required": True},
+                        "login_authentication_message": {
+                            "type": "str",
+                            "choices": ["disabled", "enabled"],
+                            "required": True,
+                        },
+                        "login_banner_file": {"type": "str", "required": True},
+                        "welcome_banner_file": {"type": "str", "required": True},
+                    },
+                },
+                "default_settings": {
+                    "type": "dict",
+                    "options": {
+                        "conditioning": {
+                            "type": "dict",
+                            "options": {
+                                "type": {
+                                    "type": "str",
+                                    "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
+                                    "required": True,
+                                },
+                                "holdoff": {"type": "int", "required": True},
+                            },
+                        },
+                        "terrestrial_reach_limit": {"type": "int", "required": True},
+                    },
                 },
             },
-            "type": "dict",
         },
-        "state": {"choices": ["merged", "overridden", "gathered"], "default": "merged", "type": "str"},
+        "state": {"type": "str", "default": "merged", "choices": ["merged", "overridden", "gathered"]},
     }  # pylint: disable=C0301

@@ -39,169 +39,169 @@ class PortsArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
+            "type": "list",
             "elements": "dict",
             "options": {
-                "channels": {
-                    "elements": "dict",
-                    "options": {
-                        "channel_id": {"required": True, "type": "int"},
-                        "id": {"options": {"label": {"required": True, "type": "str"}}, "type": "dict"},
-                        "properties": {
-                            "options": {
-                                "odu_sd_threshold": {"required": True, "type": "str"},
-                                "trace": {
-                                    "options": {
-                                        "exp_dapi": {"required": True, "type": "str"},
-                                        "exp_oper": {"required": True, "type": "str"},
-                                        "exp_sapi": {"required": True, "type": "str"},
-                                        "mismatch_fail_mode": {
-                                            "choices": ["none", "alarm-only", "squelch-traffic"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "mismatch_mode": {
-                                            "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "tx_dapi": {"required": True, "type": "str"},
-                                        "tx_oper": {"required": True, "type": "str"},
-                                        "tx_oper_mode": {
-                                            "choices": ["manual", "automatic"],
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                        "tx_sapi": {"required": True, "type": "str"},
-                                    },
-                                    "type": "dict",
-                                },
-                            },
-                            "type": "dict",
-                        },
-                        "state": {
-                            "options": {
-                                "admin_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"}
-                            },
-                            "type": "dict",
-                        },
-                    },
-                    "type": "list",
-                },
+                "port_id": {"type": "str", "required": True},
                 "id": {
+                    "type": "dict",
                     "options": {
-                        "label": {"required": True, "type": "str"},
                         "type": {
+                            "type": "str",
                             "choices": ["unknown", "ethernet", "otn", "OTUk", "OTUCn", "OTUCn-Flex"],
                             "required": True,
-                            "type": "str",
                         },
+                        "label": {"type": "str", "required": True},
                     },
-                    "type": "dict",
-                },
-                "port_id": {"required": True, "type": "str"},
-                "properties": {
-                    "options": {
-                        "connection_peer": {
-                            "elements": "dict",
-                            "options": {"peer_id": {"required": True, "type": "str"}},
-                            "type": "list",
-                        },
-                        "connection_state": {"choices": ["disabled", "enabled"], "required": True, "type": "str"},
-                        "ethernet": {
-                            "options": {
-                                "conditioning_holdoff": {"required": True, "type": "int"},
-                                "conditioning_type": {
-                                    "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                            },
-                            "type": "dict",
-                        },
-                        "loopback": {"choices": ["disabled", "rx", "tx"], "required": True, "type": "str"},
-                        "otn": {
-                            "options": {
-                                "conditioning_type": {
-                                    "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                                "odu_sd_threshold": {"required": True, "type": "str"},
-                                "odu_termination": {
-                                    "choices": ["terminated", "passthrough"],
-                                    "required": True,
-                                    "type": "str",
-                                },
-                                "otu_sd_threshold": {"required": True, "type": "str"},
-                                "trace": {
-                                    "options": {
-                                        "path": {
-                                            "options": {
-                                                "exp_dapi": {"required": True, "type": "str"},
-                                                "exp_oper": {"required": True, "type": "str"},
-                                                "exp_sapi": {"required": True, "type": "str"},
-                                                "mismatch_fail_mode": {
-                                                    "choices": ["none", "alarm-only", "squelch-traffic"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "mismatch_mode": {
-                                                    "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "tx_dapi": {"required": True, "type": "str"},
-                                                "tx_oper": {"required": True, "type": "str"},
-                                                "tx_oper_mode": {
-                                                    "choices": ["manual", "automatic"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "tx_sapi": {"required": True, "type": "str"},
-                                            },
-                                            "type": "dict",
-                                        },
-                                        "section": {
-                                            "options": {
-                                                "exp_dapi": {"required": True, "type": "str"},
-                                                "exp_oper": {"required": True, "type": "str"},
-                                                "exp_sapi": {"required": True, "type": "str"},
-                                                "mismatch_fail_mode": {
-                                                    "choices": ["none", "alarm-only", "squelch-traffic"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "mismatch_mode": {
-                                                    "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "tx_dapi": {"required": True, "type": "str"},
-                                                "tx_oper": {"required": True, "type": "str"},
-                                                "tx_oper_mode": {
-                                                    "choices": ["manual", "automatic"],
-                                                    "required": True,
-                                                    "type": "str",
-                                                },
-                                                "tx_sapi": {"required": True, "type": "str"},
-                                            },
-                                            "type": "dict",
-                                        },
-                                    },
-                                    "type": "dict",
-                                },
-                            },
-                            "type": "dict",
-                        },
-                    },
-                    "type": "dict",
                 },
                 "state": {
-                    "options": {"admin_state": {"choices": ["enabled", "disabled"], "required": True, "type": "str"}},
                     "type": "dict",
+                    "options": {"admin_state": {"type": "str", "choices": ["enabled", "disabled"], "required": True}},
+                },
+                "properties": {
+                    "type": "dict",
+                    "options": {
+                        "loopback": {"type": "str", "choices": ["disabled", "rx", "tx"], "required": True},
+                        "connection_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "connection_peer": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {"peer_id": {"type": "str", "required": True}},
+                        },
+                        "ethernet": {
+                            "type": "dict",
+                            "options": {
+                                "conditioning_type": {
+                                    "type": "str",
+                                    "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
+                                    "required": True,
+                                },
+                                "conditioning_holdoff": {"type": "int", "required": True},
+                            },
+                        },
+                        "otn": {
+                            "type": "dict",
+                            "options": {
+                                "odu_termination": {
+                                    "type": "str",
+                                    "choices": ["terminated", "passthrough"],
+                                    "required": True,
+                                },
+                                "otu_sd_threshold": {"type": "str", "required": True},
+                                "odu_sd_threshold": {"type": "str", "required": True},
+                                "conditioning_type": {
+                                    "type": "str",
+                                    "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
+                                    "required": True,
+                                },
+                                "trace": {
+                                    "type": "dict",
+                                    "options": {
+                                        "section": {
+                                            "type": "dict",
+                                            "options": {
+                                                "mismatch_mode": {
+                                                    "type": "str",
+                                                    "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
+                                                    "required": True,
+                                                },
+                                                "mismatch_fail_mode": {
+                                                    "type": "str",
+                                                    "choices": ["none", "alarm-only", "squelch-traffic"],
+                                                    "required": True,
+                                                },
+                                                "tx_sapi": {"type": "str", "required": True},
+                                                "tx_dapi": {"type": "str", "required": True},
+                                                "tx_oper": {"type": "str", "required": True},
+                                                "tx_oper_mode": {
+                                                    "type": "str",
+                                                    "choices": ["manual", "automatic"],
+                                                    "required": True,
+                                                },
+                                                "exp_sapi": {"type": "str", "required": True},
+                                                "exp_dapi": {"type": "str", "required": True},
+                                                "exp_oper": {"type": "str", "required": True},
+                                            },
+                                        },
+                                        "path": {
+                                            "type": "dict",
+                                            "options": {
+                                                "mismatch_mode": {
+                                                    "type": "str",
+                                                    "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
+                                                    "required": True,
+                                                },
+                                                "mismatch_fail_mode": {
+                                                    "type": "str",
+                                                    "choices": ["none", "alarm-only", "squelch-traffic"],
+                                                    "required": True,
+                                                },
+                                                "tx_sapi": {"type": "str", "required": True},
+                                                "tx_dapi": {"type": "str", "required": True},
+                                                "tx_oper": {"type": "str", "required": True},
+                                                "tx_oper_mode": {
+                                                    "type": "str",
+                                                    "choices": ["manual", "automatic"],
+                                                    "required": True,
+                                                },
+                                                "exp_sapi": {"type": "str", "required": True},
+                                                "exp_dapi": {"type": "str", "required": True},
+                                                "exp_oper": {"type": "str", "required": True},
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                "channels": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "channel_id": {"type": "int", "required": True},
+                        "id": {"type": "dict", "options": {"label": {"type": "str", "required": True}}},
+                        "state": {
+                            "type": "dict",
+                            "options": {
+                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True}
+                            },
+                        },
+                        "properties": {
+                            "type": "dict",
+                            "options": {
+                                "odu_sd_threshold": {"type": "str", "required": True},
+                                "trace": {
+                                    "type": "dict",
+                                    "options": {
+                                        "mismatch_mode": {
+                                            "type": "str",
+                                            "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
+                                            "required": True,
+                                        },
+                                        "mismatch_fail_mode": {
+                                            "type": "str",
+                                            "choices": ["none", "alarm-only", "squelch-traffic"],
+                                            "required": True,
+                                        },
+                                        "tx_sapi": {"type": "str", "required": True},
+                                        "tx_dapi": {"type": "str", "required": True},
+                                        "tx_oper": {"type": "str", "required": True},
+                                        "tx_oper_mode": {
+                                            "type": "str",
+                                            "choices": ["manual", "automatic"],
+                                            "required": True,
+                                        },
+                                        "exp_sapi": {"type": "str", "required": True},
+                                        "exp_dapi": {"type": "str", "required": True},
+                                        "exp_oper": {"type": "str", "required": True},
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
             },
-            "type": "list",
         },
-        "state": {"choices": ["gathered", "merged", "overridden"], "default": "merged", "type": "str"},
+        "state": {"type": "str", "default": "merged", "choices": ["gathered", "merged", "overridden"]},
     }  # pylint: disable=C0301
