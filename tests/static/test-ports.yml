@@ -4,7 +4,7 @@
     state: gathered
   register: gathered_ports
 - name: Gathered Port information
-  debug:
+  ansible.builtin.debug:
     var: gathered_ports['gathered']
 - name: Disable port
   ciena.waveserver5.waveserver5_ports:
@@ -18,7 +18,7 @@
     state: gathered
   register: gathered_ports
 - name: Assert that port 5-1 is disabled
-  assert:
+  ansible.builtin.assert:
     that: "'disabled' in {{ gathered_ports['gathered'] | json_query(query) }}"
   vars:
     query: "[?port_id=='5-1'].state.admin_state"
