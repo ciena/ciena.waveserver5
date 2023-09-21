@@ -45,7 +45,7 @@ class XcvrsArgs(object):  # pylint: disable=R0903
                 "xcvr_id": {"type": "str", "required": True},
                 "state": {
                     "type": "dict",
-                    "options": {"admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True}},
+                    "options": {"admin_state": {"type": "str", "choices": ["disabled", "enabled"]}},
                 },
                 "properties": {
                     "type": "dict",

@@ -66,7 +66,7 @@ options:
             choices:
               - disabled
               - enabled
-            required: true
+            required: false
       properties:
         description: All the Configurable and operational data of this XCVR instance.
         type: dict

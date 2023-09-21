@@ -54,7 +54,7 @@ options:
         description: Unique, access identifier string of the port in '<slot>-<port>'
           format.
         type: str
-        required: true
+        required: false
       id:
         description: Port identification attributes.
         type: dict
@@ -69,11 +69,11 @@ options:
               - OTUk
               - OTUCn
               - OTUCn-Flex
-            required: true
+            required: false
           label:
             description: The user-specified label string for this port interface.
             type: str
-            required: true
+            required: false
       state:
         description: Port administrative and operational states.
         type: dict
@@ -84,7 +84,7 @@ options:
             choices:
               - enabled
               - disabled
-            required: true
+            required: false
       properties:
         description: Port properties.
         type: dict
@@ -105,7 +105,7 @@ options:
               - disabled
               - rx
               - tx
-            required: true
+            required: false
           connection_state:
             description: Specifies whether the line-side bandwidth is allocated for
               the connection between this client port and its connection peer. For
@@ -119,7 +119,7 @@ options:
             choices:
               - disabled
               - enabled
-            required: true
+            required: false
           connection_peer:
             description: Port connection peer list. Indicates the client/line port/channel
               that may be connected to this line/client port. For certain client ports,
@@ -137,7 +137,7 @@ options:
                   connection mappings are static and provided by the system based
                   on XCVR configuration.
                 type: str
-                required: true
+                required: false
           ethernet:
             description: Ethernet-specific properties.
             type: dict
@@ -153,12 +153,12 @@ options:
                   - ethernet
                   - otn
                   - protocol-specific
-                required: true
+                required: false
               conditioning_holdoff:
                 description: Number of milliseconds to delay Egress UNI port consequent
                   action for an EPL service.
                 type: int
-                required: true
+                required: false
           otn:
             description: OTN-specific properties.
             type: dict
@@ -169,16 +169,16 @@ options:
                 choices:
                   - terminated
                   - passthrough
-                required: true
+                required: false
               otu_sd_threshold:
                 description: OTU Signal Degrade threshold value, e.g. '1E-06' to '1E-09'.
                 type: str
-                required: true
+                required: false
               odu_sd_threshold:
                 description: ODUk Signal Degrade threshold value, e.g. '1E-05' to
                   '1E-09'.
                 type: str
-                required: true
+                required: false
               conditioning_type:
                 description: Conditioning type for OTN ports. Supported values are
                   'laser-off' and 'otn'.
@@ -189,7 +189,7 @@ options:
                   - ethernet
                   - otn
                   - protocol-specific
-                required: true
+                required: false
               trace:
                 description: OTN port trace attributes
                 type: dict
@@ -208,7 +208,7 @@ options:
                           - sapi
                           - dapi
                           - sapi-and-dapi
-                        required: true
+                        required: false
                       mismatch_fail_mode:
                         description: The trail trace identifier (TTI) mismatch failure
                           mode. When TTI mismatch condition occurs, this indicates
@@ -219,27 +219,27 @@ options:
                           - none
                           - alarm-only
                           - squelch-traffic
-                        required: true
+                        required: false
                       tx_sapi:
                         description: The source access point identifier (SAPI) portion
                           of the transmitted trace string, up to 15 characters, excluding
                           the first byte in the TTI SAPI overhead, which is implicitly
                           always null.
                         type: str
-                        required: true
+                        required: false
                       tx_dapi:
                         description: The destination access point identifier (DAPI)
                           portion of the transmitted trace string, up to 15 characters,
                           excluding the first byte in the TTI DAPI overhead, which
                           is implicitly always null.
                         type: str
-                        required: true
+                        required: false
                       tx_oper:
                         description: The operator-specific portion of the transmitted
                           trace string, up to 32 characters. Ignored if tx-oper-mode
                           is 'automatic'.
                         type: str
-                        required: true
+                        required: false
                       tx_oper_mode:
                         description: Specifies whether to allow manual provisioning
                           of the transmitted TTI string, or let the system assign
@@ -248,26 +248,26 @@ options:
                         choices:
                           - manual
                           - automatic
-                        required: true
+                        required: false
                       exp_sapi:
                         description: The expected source access point identifier (SAPI)
                           portion of the received trace string, up to 15 characters,
                           excluding the first byte in the TTI SAPI overhead, which
                           is implicitly always null.
                         type: str
-                        required: true
+                        required: false
                       exp_dapi:
                         description: The expected destination access point identifier
                           (DAPI) portion of the received trace string, up to 15 characters,
                           excluding the first byte in the TTI DAPI overhead, which
                           is implicitly always null.
                         type: str
-                        required: true
+                        required: false
                       exp_oper:
                         description: The expected operator-specific portion of the
                           received trace string, up to 32 characters.
                         type: str
-                        required: true
+                        required: false
                   path:
                     description: ODUk path trace attributes for this port.
                     type: dict
@@ -282,7 +282,7 @@ options:
                           - sapi
                           - dapi
                           - sapi-and-dapi
-                        required: true
+                        required: false
                       mismatch_fail_mode:
                         description: The trail trace identifier (TTI) mismatch failure
                           mode. When TTI mismatch condition occurs, this indicates
@@ -293,27 +293,27 @@ options:
                           - none
                           - alarm-only
                           - squelch-traffic
-                        required: true
+                        required: false
                       tx_sapi:
                         description: The source access point identifier (SAPI) portion
                           of the transmitted trace string, up to 15 characters, excluding
                           the first byte in the TTI SAPI overhead, which is implicitly
                           always null.
                         type: str
-                        required: true
+                        required: false
                       tx_dapi:
                         description: The destination access point identifier (DAPI)
                           portion of the transmitted trace string, up to 15 characters,
                           excluding the first byte in the TTI DAPI overhead, which
                           is implicitly always null.
                         type: str
-                        required: true
+                        required: false
                       tx_oper:
                         description: The operator-specific portion of the transmitted
                           trace string, up to 32 characters. Ignored if tx-oper-mode
                           is 'automatic'.
                         type: str
-                        required: true
+                        required: false
                       tx_oper_mode:
                         description: Specifies whether to allow manual provisioning
                           of the transmitted TTI string, or let the system assign
@@ -322,26 +322,26 @@ options:
                         choices:
                           - manual
                           - automatic
-                        required: true
+                        required: false
                       exp_sapi:
                         description: The expected source access point identifier (SAPI)
                           portion of the received trace string, up to 15 characters,
                           excluding the first byte in the TTI SAPI overhead, which
                           is implicitly always null.
                         type: str
-                        required: true
+                        required: false
                       exp_dapi:
                         description: The expected destination access point identifier
                           (DAPI) portion of the received trace string, up to 15 characters,
                           excluding the first byte in the TTI DAPI overhead, which
                           is implicitly always null.
                         type: str
-                        required: true
+                        required: false
                       exp_oper:
                         description: The expected operator-specific portion of the
                           received trace string, up to 32 characters.
                         type: str
-                        required: true
+                        required: false
       channels:
         description: List of ODU4 channels within the parent OTU port object.
         type: list
@@ -351,7 +351,7 @@ options:
             description: Channel number or ODU4 tributary number within the parent
               OTU port object. Key value for the channels list.
             type: int
-            required: true
+            required: false
           id:
             description: Channel identification attributes.
             type: dict
@@ -359,7 +359,7 @@ options:
               label:
                 description: The user-specified label string for this channel object.
                 type: str
-                required: true
+                required: false
           state:
             description: Channel administrative and operational states.
             type: dict
@@ -370,7 +370,7 @@ options:
                 choices:
                   - disabled
                   - enabled
-                required: true
+                required: false
           properties:
             description: Channel properties.
             type: dict
@@ -378,7 +378,7 @@ options:
               odu_sd_threshold:
                 description: ODU4 Signal Degrade threshold value.
                 type: str
-                required: true
+                required: false
               trace:
                 description: ODU4 path trace attributes for this channel.
                 type: dict
@@ -393,7 +393,7 @@ options:
                       - sapi
                       - dapi
                       - sapi-and-dapi
-                    required: true
+                    required: false
                   mismatch_fail_mode:
                     description: The trail trace identifier (TTI) mismatch failure
                       mode. When TTI mismatch condition occurs, this indicates the
@@ -403,27 +403,27 @@ options:
                       - none
                       - alarm-only
                       - squelch-traffic
-                    required: true
+                    required: false
                   tx_sapi:
                     description: The source access point identifier (SAPI) portion
                       of the transmitted trace string, up to 15 characters, excluding
                       the first byte in the TTI SAPI overhead, which is implicitly
                       always null.
                     type: str
-                    required: true
+                    required: false
                   tx_dapi:
                     description: The destination access point identifier (DAPI) portion
                       of the transmitted trace string, up to 15 characters, excluding
                       the first byte in the TTI DAPI overhead, which is implicitly
                       always null.
                     type: str
-                    required: true
+                    required: false
                   tx_oper:
                     description: The operator-specific portion of the transmitted
                       trace string, up to 32 characters. Ignored if tx-oper-mode is
                       'automatic'.
                     type: str
-                    required: true
+                    required: false
                   tx_oper_mode:
                     description: Specifies whether to allow manual provisioning of
                       the transmitted TTI string, or let the system assign this value
@@ -432,26 +432,26 @@ options:
                     choices:
                       - manual
                       - automatic
-                    required: true
+                    required: false
                   exp_sapi:
                     description: The expected source access point identifier (SAPI)
                       portion of the received trace string, up to 15 characters, excluding
                       the first byte in the TTI SAPI overhead, which is implicitly
                       always null.
                     type: str
-                    required: true
+                    required: false
                   exp_dapi:
                     description: The expected destination access point identifier
                       (DAPI) portion of the received trace string, up to 15 characters,
                       excluding the first byte in the TTI DAPI overhead, which is
                       implicitly always null.
                     type: str
-                    required: true
+                    required: false
                   exp_oper:
                     description: The expected operator-specific portion of the received
                       trace string, up to 32 characters.
                     type: str
-                    required: true
+                    required: false
   state:
     choices:
       - gathered

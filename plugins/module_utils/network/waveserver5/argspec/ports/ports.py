@@ -42,31 +42,30 @@ class PortsArgs(object):  # pylint: disable=R0903
             "type": "list",
             "elements": "dict",
             "options": {
-                "port_id": {"type": "str", "required": True},
+                "port_id": {"type": "str"},
                 "id": {
                     "type": "dict",
                     "options": {
                         "type": {
                             "type": "str",
                             "choices": ["unknown", "ethernet", "otn", "OTUk", "OTUCn", "OTUCn-Flex"],
-                            "required": True,
                         },
-                        "label": {"type": "str", "required": True},
+                        "label": {"type": "str"},
                     },
                 },
                 "state": {
                     "type": "dict",
-                    "options": {"admin_state": {"type": "str", "choices": ["enabled", "disabled"], "required": True}},
+                    "options": {"admin_state": {"type": "str", "choices": ["enabled", "disabled"]}},
                 },
                 "properties": {
                     "type": "dict",
                     "options": {
-                        "loopback": {"type": "str", "choices": ["disabled", "rx", "tx"], "required": True},
-                        "connection_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "loopback": {"type": "str", "choices": ["disabled", "rx", "tx"]},
+                        "connection_state": {"type": "str", "choices": ["disabled", "enabled"]},
                         "connection_peer": {
                             "type": "list",
                             "elements": "dict",
-                            "options": {"peer_id": {"type": "str", "required": True}},
+                            "options": {"peer_id": {"type": "str"}},
                         },
                         "ethernet": {
                             "type": "dict",
@@ -74,25 +73,19 @@ class PortsArgs(object):  # pylint: disable=R0903
                                 "conditioning_type": {
                                     "type": "str",
                                     "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
-                                    "required": True,
                                 },
-                                "conditioning_holdoff": {"type": "int", "required": True},
+                                "conditioning_holdoff": {"type": "int"},
                             },
                         },
                         "otn": {
                             "type": "dict",
                             "options": {
-                                "odu_termination": {
-                                    "type": "str",
-                                    "choices": ["terminated", "passthrough"],
-                                    "required": True,
-                                },
-                                "otu_sd_threshold": {"type": "str", "required": True},
-                                "odu_sd_threshold": {"type": "str", "required": True},
+                                "odu_termination": {"type": "str", "choices": ["terminated", "passthrough"]},
+                                "otu_sd_threshold": {"type": "str"},
+                                "odu_sd_threshold": {"type": "str"},
                                 "conditioning_type": {
                                     "type": "str",
                                     "choices": ["none", "laser-off", "ethernet", "otn", "protocol-specific"],
-                                    "required": True,
                                 },
                                 "trace": {
                                     "type": "dict",
@@ -103,24 +96,18 @@ class PortsArgs(object):  # pylint: disable=R0903
                                                 "mismatch_mode": {
                                                     "type": "str",
                                                     "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
-                                                    "required": True,
                                                 },
                                                 "mismatch_fail_mode": {
                                                     "type": "str",
                                                     "choices": ["none", "alarm-only", "squelch-traffic"],
-                                                    "required": True,
                                                 },
-                                                "tx_sapi": {"type": "str", "required": True},
-                                                "tx_dapi": {"type": "str", "required": True},
-                                                "tx_oper": {"type": "str", "required": True},
-                                                "tx_oper_mode": {
-                                                    "type": "str",
-                                                    "choices": ["manual", "automatic"],
-                                                    "required": True,
-                                                },
-                                                "exp_sapi": {"type": "str", "required": True},
-                                                "exp_dapi": {"type": "str", "required": True},
-                                                "exp_oper": {"type": "str", "required": True},
+                                                "tx_sapi": {"type": "str"},
+                                                "tx_dapi": {"type": "str"},
+                                                "tx_oper": {"type": "str"},
+                                                "tx_oper_mode": {"type": "str", "choices": ["manual", "automatic"]},
+                                                "exp_sapi": {"type": "str"},
+                                                "exp_dapi": {"type": "str"},
+                                                "exp_oper": {"type": "str"},
                                             },
                                         },
                                         "path": {
@@ -129,24 +116,18 @@ class PortsArgs(object):  # pylint: disable=R0903
                                                 "mismatch_mode": {
                                                     "type": "str",
                                                     "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
-                                                    "required": True,
                                                 },
                                                 "mismatch_fail_mode": {
                                                     "type": "str",
                                                     "choices": ["none", "alarm-only", "squelch-traffic"],
-                                                    "required": True,
                                                 },
-                                                "tx_sapi": {"type": "str", "required": True},
-                                                "tx_dapi": {"type": "str", "required": True},
-                                                "tx_oper": {"type": "str", "required": True},
-                                                "tx_oper_mode": {
-                                                    "type": "str",
-                                                    "choices": ["manual", "automatic"],
-                                                    "required": True,
-                                                },
-                                                "exp_sapi": {"type": "str", "required": True},
-                                                "exp_dapi": {"type": "str", "required": True},
-                                                "exp_oper": {"type": "str", "required": True},
+                                                "tx_sapi": {"type": "str"},
+                                                "tx_dapi": {"type": "str"},
+                                                "tx_oper": {"type": "str"},
+                                                "tx_oper_mode": {"type": "str", "choices": ["manual", "automatic"]},
+                                                "exp_sapi": {"type": "str"},
+                                                "exp_dapi": {"type": "str"},
+                                                "exp_oper": {"type": "str"},
                                             },
                                         },
                                     },
@@ -159,42 +140,34 @@ class PortsArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "channel_id": {"type": "int", "required": True},
-                        "id": {"type": "dict", "options": {"label": {"type": "str", "required": True}}},
+                        "channel_id": {"type": "int"},
+                        "id": {"type": "dict", "options": {"label": {"type": "str"}}},
                         "state": {
                             "type": "dict",
-                            "options": {
-                                "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True}
-                            },
+                            "options": {"admin_state": {"type": "str", "choices": ["disabled", "enabled"]}},
                         },
                         "properties": {
                             "type": "dict",
                             "options": {
-                                "odu_sd_threshold": {"type": "str", "required": True},
+                                "odu_sd_threshold": {"type": "str"},
                                 "trace": {
                                     "type": "dict",
                                     "options": {
                                         "mismatch_mode": {
                                             "type": "str",
                                             "choices": ["operator-only", "sapi", "dapi", "sapi-and-dapi"],
-                                            "required": True,
                                         },
                                         "mismatch_fail_mode": {
                                             "type": "str",
                                             "choices": ["none", "alarm-only", "squelch-traffic"],
-                                            "required": True,
                                         },
-                                        "tx_sapi": {"type": "str", "required": True},
-                                        "tx_dapi": {"type": "str", "required": True},
-                                        "tx_oper": {"type": "str", "required": True},
-                                        "tx_oper_mode": {
-                                            "type": "str",
-                                            "choices": ["manual", "automatic"],
-                                            "required": True,
-                                        },
-                                        "exp_sapi": {"type": "str", "required": True},
-                                        "exp_dapi": {"type": "str", "required": True},
-                                        "exp_oper": {"type": "str", "required": True},
+                                        "tx_sapi": {"type": "str"},
+                                        "tx_dapi": {"type": "str"},
+                                        "tx_oper": {"type": "str"},
+                                        "tx_oper_mode": {"type": "str", "choices": ["manual", "automatic"]},
+                                        "exp_sapi": {"type": "str"},
+                                        "exp_dapi": {"type": "str"},
+                                        "exp_oper": {"type": "str"},
                                     },
                                 },
                             },

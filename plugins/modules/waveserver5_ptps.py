@@ -68,7 +68,7 @@ options:
             choices:
               - disabled
               - enabled
-            required: true
+            required: false
           spli_management:
             description: Whether or not Service Photonic Layer Interoperations management
               protocol is enabled on this PTP.
@@ -76,7 +76,7 @@ options:
             choices:
               - disabled
               - enabled
-            required: true
+            required: false
       properties:
         description: All the configurable and operational data of this PTP instance.
         type: dict
@@ -101,7 +101,7 @@ options:
               - 8x50G
               - 2x50G
               - 400ZR
-            required: true
+            required: false
           xcvr_type:
             description: Transceiver type of the XCVR that's associated with this
               PTP. Type depends on what is physically plugged in. Read only attribute.
@@ -117,18 +117,18 @@ options:
               - none
               - QSFP-DD
               - WaveLogic 5e
-            required: true
+            required: false
           is_coherent:
             description: Indicate whether or not this ptp can support coherent attributes
             type: bool
-            required: true
+            required: false
           forward_error_correction:
             description: Forward error correction.
             type: str
             choices:
               - disabled
               - enabled
-            required: true
+            required: false
           thresholds:
             description: Common container for PTP threshold configuration data.
             type: dict
@@ -137,17 +137,17 @@ options:
                 description: Pre-FEC Signal Fail threshold value, expressed in dB
                   notation.
                 type: float
-                required: true
+                required: false
               pre_fec_sd_db:
                 description: Pre-FEC Signal Degrade threshold value, expressed in
                   dB notation.
                 type: float
-                required: true
+                required: false
               hccs_db:
                 description: High Correction Count Second (HCCS) Threshold, expressed
                   in dB notation.
                 type: float
-                required: true
+                required: false
           transmitter:
             description: PTP transmitter related config and operational data fields.
             type: dict
@@ -161,7 +161,7 @@ options:
                   - disabled
                   - enabled
                   - not-applicable
-                required: true
+                required: false
   state:
     choices:
       - gathered

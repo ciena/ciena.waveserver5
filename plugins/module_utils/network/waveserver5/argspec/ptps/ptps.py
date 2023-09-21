@@ -46,8 +46,8 @@ class PtpsArgs(object):  # pylint: disable=R0903
                 "state": {
                     "type": "dict",
                     "options": {
-                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
-                        "spli_management": {"type": "str", "choices": ["disabled", "enabled"], "required": True},
+                        "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
+                        "spli_management": {"type": "str", "choices": ["disabled", "enabled"]},
                     },
                 },
                 "properties": {
@@ -73,7 +73,6 @@ class PtpsArgs(object):  # pylint: disable=R0903
                                 "2x50G",
                                 "400ZR",
                             ],
-                            "required": True,
                         },
                         "xcvr_type": {
                             "type": "str",
@@ -89,31 +88,20 @@ class PtpsArgs(object):  # pylint: disable=R0903
                                 "QSFP-DD",
                                 "WaveLogic 5e",
                             ],
-                            "required": True,
                         },
-                        "is_coherent": {"type": "bool", "required": True},
-                        "forward_error_correction": {
-                            "type": "str",
-                            "choices": ["disabled", "enabled"],
-                            "required": True,
-                        },
+                        "is_coherent": {"type": "bool"},
+                        "forward_error_correction": {"type": "str", "choices": ["disabled", "enabled"]},
                         "thresholds": {
                             "type": "dict",
                             "options": {
-                                "pre_fec_sf_db": {"type": "float", "required": True},
-                                "pre_fec_sd_db": {"type": "float", "required": True},
-                                "hccs_db": {"type": "float", "required": True},
+                                "pre_fec_sf_db": {"type": "float"},
+                                "pre_fec_sd_db": {"type": "float"},
+                                "hccs_db": {"type": "float"},
                             },
                         },
                         "transmitter": {
                             "type": "dict",
-                            "options": {
-                                "state": {
-                                    "type": "str",
-                                    "choices": ["disabled", "enabled", "not-applicable"],
-                                    "required": True,
-                                }
-                            },
+                            "options": {"state": {"type": "str", "choices": ["disabled", "enabled", "not-applicable"]}},
                         },
                     },
                 },
