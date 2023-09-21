@@ -8,7 +8,7 @@ ciena.waveserver5.waveserver5_system
 **Waveserver System configuration data and operational data.**
 
 
-Version added: 0.0.1
+Version added: 1.0.0
 
 .. contents::
    :local:
