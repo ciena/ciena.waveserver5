@@ -17,9 +17,9 @@ __metaclass__ = type
 
 try:
     from lxml import etree
-
     HAS_LXML = True
 except ImportError:
+    from xml import etree
     HAS_LXML = False
 
 
