@@ -236,7 +236,7 @@ class SystemArgs(object):  # pylint: disable=R0903
                                     "elements": "dict",
                                     "options": {
                                         "key_id": {"type": "int", "required": True},
-                                        "key_value": {"type": "str"},
+                                        "key_value": {"type": "str", "no_log": True},
                                     },
                                 },
                                 "server": {
@@ -283,8 +283,8 @@ class SystemArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "host_name": {"type": "str"},
                                 "user_name": {"type": "str"},
-                                "password": {"type": "str"},
-                                "secret": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
+                                "secret": {"type": "str", "no_log": True},
                             },
                         },
                         "sftp": {
@@ -292,8 +292,8 @@ class SystemArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "host_name": {"type": "str"},
                                 "user_name": {"type": "str"},
-                                "password": {"type": "str"},
-                                "secret": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
+                                "secret": {"type": "str", "no_log": True},
                             },
                         },
                         "scp": {
@@ -301,8 +301,8 @@ class SystemArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "host_name": {"type": "str"},
                                 "user_name": {"type": "str"},
-                                "password": {"type": "str"},
-                                "secret": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
+                                "secret": {"type": "str", "no_log": True},
                             },
                         },
                     },
@@ -367,7 +367,13 @@ class SystemArgs(object):  # pylint: disable=R0903
                 "environment": {
                     "type": "dict",
                     "options": {
-                        "root": {"type": "dict", "options": {"password": {"type": "str"}, "secret": {"type": "str"}}},
+                        "root": {
+                            "type": "dict",
+                            "options": {
+                                "password": {"type": "str", "no_log": True},
+                                "secret": {"type": "str", "no_log": True},
+                            },
+                        },
                         "diag": {
                             "type": "dict",
                             "options": {
@@ -382,7 +388,7 @@ class SystemArgs(object):  # pylint: disable=R0903
                     "options": {
                         "config_mismatch_detection_state": {"type": "str", "choices": ["disabled", "enabled"]},
                         "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
-                        "passphrase": {"type": "str"},
+                        "passphrase": {"type": "str", "no_log": True},
                         "audit_interval": {"type": "int"},
                     },
                 },
