@@ -19,7 +19,6 @@ from copy import deepcopy
 
 import re  # pylint: disable=unused-import
 from ansible.module_utils._text import to_bytes
-from ansible.module_utils.basic import missing_required_lib
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.netconf import (
     remove_namespaces,
 )
