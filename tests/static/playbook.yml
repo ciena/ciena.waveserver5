@@ -1,12 +1,18 @@
 ---
 - hosts: all
   gather_facts: false
-  name: Gather facts for ciena device Waveserver 5
+  name: Test ciena device Waveserver 5
   connection: netconf
   tasks:
-    - name: Get device facts for Waveserver 5
-      ciena.waveserver5.waveserver5_facts:
-        gather_subset:
-          - all
     - name: Test System
-      ansible.builtin.include_tasks: test-system.yml
+      ansible.builtin.import_tasks: test-system.yml
+      tags: system
+    - name: Test Xcvrs
+      ansible.builtin.import_tasks: test-xcvrs.yml
+      tags: xcvrs
+    - name: Test Ports
+      ansible.builtin.import_tasks: test-ports.yml
+      tags: ports
+    - name: Test Ptps
+      ansible.builtin.import_tasks: test-ptps.yml
+      tags: ptps

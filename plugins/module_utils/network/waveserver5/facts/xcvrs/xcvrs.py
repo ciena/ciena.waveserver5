@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
-The waveserver5 system fact class
+The waveserver5 xcvrs fact class
 It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
@@ -28,8 +28,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.netconf.netconf import (
     get,
 )
-from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.argspec.system.system import (
-    SystemArgs,
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.argspec.xcvrs.xcvrs import (
+    XcvrsArgs,
 )
 
 try:
@@ -42,12 +42,12 @@ except ImportError:
     HAS_LXML = False
 
 
-class SystemFacts(object):
-    """The waveserver5 system fact class"""
+class XcvrsFacts(object):
+    """The waveserver5 xcvrs fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = SystemArgs.argument_spec
+        self.argument_spec = XcvrsArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
             if options:
@@ -60,7 +60,7 @@ class SystemFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for system
+        """Populate the facts for xcvrs
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
@@ -72,21 +72,28 @@ class SystemFacts(object):
 
         if not data:
             config_filter = """
-                <waveserver-system xmlns="urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system">
-                </waveserver-system>
+                <waveserver-xcvrs xmlns="urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-xcvr">
+                </waveserver-xcvrs>
                 """
             data = get(self._module, filter=("subtree", config_filter))
 
         stripped = remove_namespaces(xml_to_string(data))
         data = fromstring(to_bytes(stripped, errors="surrogate_then_replace"))
 
-        resource = data.xpath("/rpc-reply/data/waveserver-system")[0]
-        obj = self.render_config(self.generated_spec, resource)
+        resources = data.xpath("/rpc-reply/data/waveserver-xcvrs/xcvrs")
+        objs = []
+        for resource in resources:
+            if resource:
+                obj = self.render_config(self.generated_spec, resource)
+                if obj:
+                    objs.append(obj)
 
         facts = {}
-        facts["system"] = {}
-        params = utils.validate_config(self.argument_spec, {"config": obj})
-        facts["system"] = params["config"]
+        if objs:
+            facts["xcvrs"] = []
+            params = utils.validate_config(self.argument_spec, {"config": objs})
+            for cfg in params["config"]:
+                facts["xcvrs"].append(utils.remove_empties(cfg))
 
         ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts

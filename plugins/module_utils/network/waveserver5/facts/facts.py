@@ -17,9 +17,30 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
     Default,
     Config,
 )
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.system.system import (
+    SystemFacts,
+)
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.xcvrs.xcvrs import (
+    XcvrsFacts,
+)
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.ptps.ptps import (
+    PtpsFacts,
+)
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.ports.ports import (
+    PortsFacts,
+)
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.pm.pm import (
+    PmFacts,
+)
 
 FACT_LEGACY_SUBSETS = dict(default=Default, config=Config)
-FACT_RESOURCE_SUBSETS = dict()
+FACT_RESOURCE_SUBSETS = dict(
+    pm=PmFacts,
+    ports=PortsFacts,
+    ptps=PtpsFacts,
+    xcvrs=XcvrsFacts,
+    system=SystemFacts,
+)
 
 
 class Facts(FactsBase):
@@ -41,9 +62,7 @@ class Facts(FactsBase):
         :return: the facts gathered
         """
         if self.VALID_RESOURCE_SUBSETS:
-            self.get_network_resources_facts(
-                FACT_RESOURCE_SUBSETS, resource_facts_type, data
-            )
+            self.get_network_resources_facts(FACT_RESOURCE_SUBSETS, resource_facts_type, data)
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
             self.get_network_legacy_facts(FACT_LEGACY_SUBSETS, legacy_facts_type)

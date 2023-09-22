@@ -1,1 +1,33 @@
-releases: {}
+ancestor: null
+releases:
+  1.0.0:
+    modules:
+      - description: System module for WaveServer5
+        name: waveserver5_system
+        namespace: ""
+    plugins:
+      netconf:
+        - description:
+            Use ciena netconf plugin to run netconf commands on Ciena Waveserver5
+            platform
+          name: waveserver5
+          namespace: null
+    release_date: "2023-08-30"
+  1.1.0:
+    modules:
+      - description: Xcvrs module for WaveServer5
+        name: waveserver5_xcvrs
+        namespace: ""
+      - description: Ports module for WaveServer5
+        name: waveserver5_ports
+        namespace: ""
+      - description: Ptps module for WaveServer5
+        name: waveserver5_ptps
+        namespace: ""
+      - description: Pm module for WaveServer5
+        name: waveserver5_pm
+        namespace: ""
+    changes:
+      bugfixes:
+        - Update README.md
+    release_date: "2023-09-22"

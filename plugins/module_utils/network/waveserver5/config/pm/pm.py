@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
-The waveserver5_system class
+The waveserver5_pm class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
@@ -36,22 +36,22 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
     config_is_diff,
 )
 
-NAMESPACE = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-system"
-ROOT_KEY = "waveserver-system"
-RESOURCE = "system"
+NAMESPACE = "urn:ciena:params:xml:ns:yang:ciena-ws:ciena-waveserver-pm"
+ROOT_KEY = "waveserver-pm"
+RESOURCE = "pm"
 XML_ITEMS = "N/A"
 
 
-class System(ConfigBase):
+class Pm(ConfigBase):
     """
-    The waveserver5_system class
+    The waveserver5_pm class
     """
 
     gather_subset = ["!all", "!min"]
     gather_network_resources = [RESOURCE]
 
     def __init__(self, module):
-        super(System, self).__init__(module)
+        super(Pm, self).__init__(module)
 
     def get_facts(self):
         """Get the 'facts' (the current configuration)

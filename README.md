@@ -1,9 +1,6 @@
 # Ciena Waveserver5 Collection for Ansible
 
-<!-- Add CI and code coverage badges here. Samples included below. -->
-
-[![CI](https://github.com/ciena/ciena.waveserver5/workflows/CI/badge.svg?event=push)](https://github.com/ciena/ciena.waveserver5/actions) [![Codecov](https://img.shields.io/codecov/c/github/ciena/ciena.waveserver5)](https://codecov.io/gh/ciena/ciena.waveserver5)
-
+[![CI](https://github.com/ciena/ciena.waveserver5/workflows/Test%20collection/badge.svg?event=push)](https://github.com/ciena/ciena.waveserver5/actions)
 The Ansible Ciena Waveserver 5 collection includes a variety of Ansible content to help automate the management of Ciena Waveserver 5 network appliances.
 
 <!--start requires_ansible-->
@@ -34,7 +31,11 @@ Name | Description
 Name | Description
 --- | ---
 [ciena.waveserver5.waveserver5_facts](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_facts_module.rst)|Get facts about waveserver5 devices.
+[ciena.waveserver5.waveserver5_pm](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_pm_module.rst)|Waveserver System configuration data and operational data.
+[ciena.waveserver5.waveserver5_ports](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_ports_module.rst)|Waveserver Port configuration data and operational data.
+[ciena.waveserver5.waveserver5_ptps](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_ptps_module.rst)|Waveserver PTP configuration data and operational data.
 [ciena.waveserver5.waveserver5_system](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_system_module.rst)|Waveserver System configuration data and operational data.
+[ciena.waveserver5.waveserver5_xcvrs](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_xcvrs_module.rst)|Waveserver Transceiver configuration data and operational data.
 
 <!--end collection content-->
 

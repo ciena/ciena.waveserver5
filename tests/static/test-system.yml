@@ -1,4 +1,8 @@
 ---
+- name: Gather hostname
+  ciena.waveserver5.waveserver5_system:
+    state: gathered
+
 - name: Set hostname
   ciena.waveserver5.waveserver5_system:
     config:
@@ -7,7 +11,7 @@
     state: merged
 
 - name: Get the pre-change config using the filter
-  register: xml
+  register: result
   ansible.netcommon.netconf_rpc:
     rpc: get
     xmlns: "urn:ietf:params:xml:ns:netconf:base:1.0"
@@ -19,9 +23,11 @@
           </config>
         </system>
       </filter>
+
 - name: Convert xml text to dictionary
   ansible.builtin.set_fact:
-    xml_dict: "{{ xml.stdout | ansible.utils.from_xml | from_json }}"
+    xml_dict: "{{ result.stdout | ansible.utils.from_xml | from_json }}"
+
 - name: Validate hostname was set
   ansible.builtin.assert:
     that:
@@ -30,6 +36,6 @@
   ciena.waveserver5.waveserver5_system:
     config:
       host_name:
-        config_host_name: WS-2
+        config_host_name: WS-12
     state: merged
   connection: netconf
