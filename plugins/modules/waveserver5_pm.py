@@ -35,7 +35,7 @@ ANSIBLE_METADATA = {"metadata_version": "1.1", "status": ["preview"], "supported
 DOCUMENTATION = """
 ---
 module: waveserver5_pm
-version_added: 0.0.1
+version_added: 1.1.0
 short_description: Waveserver System configuration data and operational data.
 description: Waveserver System configuration data and operational data.
 author:

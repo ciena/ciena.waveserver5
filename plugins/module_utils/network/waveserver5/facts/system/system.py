@@ -67,6 +67,8 @@ class SystemFacts(object):
         :rtype: dictionary
         :returns: facts
         """
+        if not HAS_LXML:
+            self._module.fail_json(msg="lxml is not installed.")
 
         if not data:
             config_filter = """
