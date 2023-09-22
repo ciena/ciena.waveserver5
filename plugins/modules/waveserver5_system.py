@@ -580,7 +580,6 @@ options:
                     description: NTP authentication key value.
                     type: str
                     required: false
-                    no_log: true
               server:
                 description: List of NTP servers to use for time synchronization.
                 type: list
@@ -696,12 +695,10 @@ options:
                 description: FTP password string.
                 type: str
                 required: false
-                no_log: true
               secret:
                 description: FTP secret string.
                 type: str
                 required: false
-                no_log: true
           sftp:
             description: Waveserver system SFTP configuration.
             type: dict
@@ -719,12 +716,10 @@ options:
                 description: SFTP password string.
                 type: str
                 required: false
-                no_log: true
               secret:
                 description: SFTP secret string.
                 type: str
                 required: false
-                no_log: true
           scp:
             description: Waveserver system SCP configuration.
             type: dict
@@ -742,12 +737,10 @@ options:
                 description: SCP password string.
                 type: str
                 required: false
-                no_log: true
               secret:
                 description: SCP secret string.
                 type: str
                 required: false
-                no_log: true
       global_provisioning:
         description: Waveserver system global provisioning attributes.
         type: dict
@@ -917,13 +910,11 @@ options:
                 description: User root password string.
                 type: str
                 required: false
-                no_log: true
               secret:
                 description: The encrypted user password string, supplied as a hashed
                   value.
                 type: str
                 required: false
-                no_log: true
           diag:
             description: System level default environment configuration for diag level
               users.
@@ -967,7 +958,6 @@ options:
               builtin key).'
             type: str
             required: false
-            no_log: true
           audit_interval:
             description: Audit Interval in minutes.
             type: int

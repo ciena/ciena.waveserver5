@@ -160,6 +160,7 @@ class SystemArgs(object):  # pylint: disable=R0903
                                         "key_exchange": {
                                             "type": "list",
                                             "elements": "dict",
+                                            "no_log": True,
                                             "options": {
                                                 "algorithm_name": {"type": "str"},
                                                 "admin_state": {"type": "str", "choices": ["disabled", "enabled"]},
@@ -234,6 +235,7 @@ class SystemArgs(object):  # pylint: disable=R0903
                                 "ntp_key": {
                                     "type": "list",
                                     "elements": "dict",
+                                    "no_log": True,
                                     "options": {
                                         "key_id": {"type": "int", "required": True},
                                         "key_value": {"type": "str", "no_log": True},
