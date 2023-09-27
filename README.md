@@ -30,6 +30,7 @@ Name | Description
 ### Modules
 Name | Description
 --- | ---
+[ciena.waveserver5.waveserver5_aaa](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_aaa_module.rst)|Waveserver AAA configuration data and operational data.
 [ciena.waveserver5.waveserver5_facts](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_facts_module.rst)|Get facts about waveserver5 devices.
 [ciena.waveserver5.waveserver5_pm](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_pm_module.rst)|Waveserver System configuration data and operational data.
 [ciena.waveserver5.waveserver5_ports](https://github.com/ciena/ciena.waveserver5/blob/master/docs/ciena.waveserver5.waveserver5_ports_module.rst)|Waveserver Port configuration data and operational data.
