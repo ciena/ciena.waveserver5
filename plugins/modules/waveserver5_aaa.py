@@ -605,11 +605,13 @@ options:
 EXAMPLES = """
 # Using merged
 
-- name: Configure pm
-  ciena.waveserver5.waveserver5_pm:
+- name: Create new user
+  ciena.waveserver5.waveserver5_aaa:
     config:
-      encryption_gcm_performance_instances:
-        instance_name: foo
+      user:
+        user_name: foo
+        password: Abcd123!
+        access_level: admin
     state: merged
 
 

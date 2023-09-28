@@ -13,6 +13,20 @@
         state:
           admin_state: disabled
     state: merged
+- name: Enable rx loopback
+  ciena.waveserver5.waveserver5_ports:
+    config:
+      - port_id: 5-1
+        properties:
+          loopback: rx
+    state: merged
+- name: Disable loopback
+  ciena.waveserver5.waveserver5_ports:
+    config:
+      - port_id: 5-1
+        properties:
+          loopback: disabled
+    state: merged
 - name: Gather Ports information for validation
   ciena.waveserver5.waveserver5_ports:
     state: gathered
