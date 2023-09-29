@@ -4,18 +4,18 @@
   name: Test ciena device Waveserver 5
   connection: netconf
   tasks:
-    # - name: Test System
-    #   ansible.builtin.import_tasks: test-system.yml
-    #   tags: system
-    # - name: Test Xcvrs
-    #   ansible.builtin.import_tasks: test-xcvrs.yml
-    #   tags: xcvrs
-    # - name: Test Ports
-    #   ansible.builtin.import_tasks: test-ports.yml
-    #   tags: ports
-    # - name: Test Ptps
-    #   ansible.builtin.import_tasks: test-ptps.yml
-    #   tags: ptps
-    - name: Test User
+    - name: Test System
+      ansible.builtin.import_tasks: test-system.yml
+      tags: system
+    - name: Test Xcvrs
+      ansible.builtin.import_tasks: test-xcvrs.yml
+      tags: xcvrs
+    - name: Test Ports
       ansible.builtin.import_tasks: test-ports.yml
+      tags: ports
+    - name: Test Ptps
+      ansible.builtin.import_tasks: test-ptps.yml
+      tags: ptps
+    - name: Test User
+      ansible.builtin.import_tasks: test-aaa.yml
       tags: aaa
