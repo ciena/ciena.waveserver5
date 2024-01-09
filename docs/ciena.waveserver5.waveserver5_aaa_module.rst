@@ -1935,7 +1935,7 @@ Examples
       ciena.waveserver5.waveserver5_aaa:
         config:
           user:
-            user_name: foo
+          - user_name: foo
             password: Abcd123!
             access_level: admin
         state: merged

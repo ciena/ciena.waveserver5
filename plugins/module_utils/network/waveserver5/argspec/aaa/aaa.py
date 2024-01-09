@@ -223,5 +223,6 @@ class AaaArgs(object):  # pylint: disable=R0903
                     },
                 },
             },
-        }
+        },
+        "state": {"type": "str", "default": "merged", "choices": ["merged", "overridden", "gathered"]},
     }  # pylint: disable=C0301
