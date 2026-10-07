@@ -16,6 +16,7 @@ homepage: https://github.com/ciena/ciena.waveserver5
 issues: https://github.com/ciena/ciena.waveserver5/issues
 build_ignore:
   - .gitignore
+  - .ansible
   - changelogs/.plugin-cache.yaml
   - .vscode
   - .github
