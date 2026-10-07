@@ -1,0 +1,1194 @@
+#
+# (c) 2016 Red Hat Inc.
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# Make coding more python3-ish
+from __future__ import absolute_import, division, print_function
+
+
+__metaclass__ = type
+
+import json
+import re
+
+from unittest.mock import MagicMock, PropertyMock, patch
+
+import pytest
+
+from ansible.errors import AnsibleConnectionFailure, AnsibleError
+from ansible.module_utils.common.text.converters import to_text
+from ansible.playbook.play_context import PlayContext
+from ansible.plugins.loader import cache_loader, connection_loader
+
+from ansible_collections.ansible.netcommon.plugins.connection.network_cli import terminal_loader
+
+
+def _make_terminal_mock(
+    ansi_re=None,
+    terminal_initial_prompt=None,
+    terminal_initial_answer=None,
+    terminal_inital_prompt_newline=True,
+    terminal_stdout_re=None,
+    terminal_stderr_re=None,
+):
+    """Build a terminal mock with attributes used by network_cli."""
+    terminal = MagicMock()
+    terminal.ansi_re = ansi_re if ansi_re is not None else []
+    terminal.terminal_initial_prompt = terminal_initial_prompt or []
+    terminal.terminal_initial_answer = terminal_initial_answer or []
+    terminal.terminal_inital_prompt_newline = terminal_inital_prompt_newline
+    terminal.terminal_stdout_re = terminal_stdout_re or [re.compile(rb"device#")]
+    terminal.terminal_stderr_re = terminal_stderr_re or []
+    return terminal
+
+
+@pytest.fixture(name="conn")
+def plugin_fixture(monkeypatch):
+    pc = PlayContext()
+    pc.network_os = "fakeos"
+
+    def get(*args, **kwargs):
+        return MagicMock()
+
+    monkeypatch.setattr(terminal_loader, "get", get)
+    conn = connection_loader.get("ansible.netcommon.network_cli", pc, "/dev/null")
+    return conn
+
+
+@pytest.mark.parametrize("network_os", [None, "invalid"])
+def test_network_cli_invalid_os(network_os):
+    pc = PlayContext()
+    pc.network_os = network_os
+
+    with pytest.raises(AnsibleConnectionFailure):
+        connection_loader.get("ansible.netcommon.network_cli", pc, "/dev/null")
+
+
+@pytest.mark.parametrize("look_for_keys", [True, False, None])
+@pytest.mark.parametrize("password", ["password", None])
+@pytest.mark.parametrize("private_key_file", ["/path/to/key/file", None])
+@pytest.mark.parametrize("ssh_type", ["paramiko", "libssh", "auto"])
+def test_look_for_keys(conn, look_for_keys, password, private_key_file, ssh_type):
+    conn.set_options(
+        direct={
+            "ssh_type": ssh_type,
+            "password": password,
+            "private_key_file": private_key_file,
+        }
+    )
+    if look_for_keys is not None:
+        conn.set_options(direct={"look_for_keys": look_for_keys})
+        assert conn.ssh_type_conn.get_option("look_for_keys") is look_for_keys
+
+    # We automagically set look_for_keys based on the state of password and
+    # private_key_file. Make sure that setting is preserved if the option
+    # is not set manually.
+    elif private_key_file:
+        assert conn.ssh_type_conn.get_option("look_for_keys") is True
+    elif password:
+        assert conn.ssh_type_conn.get_option("look_for_keys") is False
+    else:
+        assert conn.ssh_type_conn.get_option("look_for_keys") is True
+
+
+@pytest.mark.parametrize("ssh_type", ["paramiko", "libssh", "auto"])
+def test_options_pass_through(conn, ssh_type):
+    conn.set_options(
+        direct={
+            "ssh_type": ssh_type,
+            "host_key_checking": False,
+            "proxy_command": "do a proxy",
+        }
+    )
+    # Options not found in underlying connection plugin are not set
+    assert conn.get_option("ssh_type") == ssh_type
+    with pytest.raises(KeyError):
+        conn.ssh_type_conn.get_option("ssh_type")
+    # Options which are shared do pass through
+    # At some point these options should be able to be dropped from network_cli
+    assert conn.get_option("host_key_checking") is False
+    assert conn.ssh_type_conn.get_option("host_key_checking") is False
+    # proxy_command is declared in network_cli and passes through to ssh_type_conn
+    assert conn.get_option("proxy_command") == "do a proxy"
+    assert conn.ssh_type_conn.get_option("proxy_command") == "do a proxy"
+
+
+@pytest.mark.parametrize("has_libssh", (True, False))
+def test_network_cli_ssh_type_auto(conn, has_libssh):
+    """Test that ssh_type: auto resolves to the correct option."""
+    from ansible_collections.ansible.netcommon.plugins.connection import network_cli
+
+    network_cli.HAS_PYLIBSSH = has_libssh
+
+    conn.set_options(
+        direct={
+            "ssh_type": "auto",
+        }
+    )
+    if has_libssh:
+        assert conn.ssh_type == "libssh"
+    else:
+        assert conn.ssh_type == "paramiko"
+
+
+@pytest.mark.parametrize("become_method,become_pass", [("enable", "password"), (None, None)])
+def test_network_cli__connect(conn, become_method, become_pass):
+    conn.ssh = MagicMock()
+    conn.receive = MagicMock()
+    conn._terminal = MagicMock()
+    conn._ssh_type_conn = MagicMock()
+
+    if become_method:
+        conn._play_context.become = True
+        conn._play_context.become_method = become_method
+        conn._play_context.become_pass = become_pass
+
+    conn._connect()
+    assert conn._ssh_type_conn._connect.called is True
+    assert conn._terminal.on_open_shell.called is True
+    if become_method:
+        conn._terminal.on_become.assert_called_with(passwd=become_pass)
+    else:
+        assert conn._terminal.on_become.called is False
+
+
+@pytest.mark.parametrize("command", ["command", json.dumps({"command": "command"})])
+def test_network_cli_exec_command(conn, command):
+    mock_send = MagicMock(return_value=b"command response")
+    conn.send = mock_send
+    conn._ssh_shell = MagicMock()
+    conn._ssh_type_conn = MagicMock()
+
+    out = conn.exec_command(command)
+
+    mock_send.assert_called_with(command=b"command")
+    assert out == b"command response"
+
+
+@pytest.mark.parametrize(
+    "response",
+    [
+        [b"device#command\ncommand response\n\ndevice#"],
+        [b"device#command\ncommand ", b"response\n\ndevice#"],
+        pytest.param(
+            [b"ERROR: error message device#"],
+            marks=pytest.mark.xfail(raises=AnsibleConnectionFailure),
+        ),
+    ],
+)
+@pytest.mark.parametrize("ssh_type", ["paramiko", "libssh", "auto"])
+def test_network_cli_send(conn, response, ssh_type):
+    conn.set_options(
+        direct={
+            "ssh_type": ssh_type,
+            "terminal_stderr_re": [{"pattern": "^ERROR"}],
+            "terminal_stdout_re": [{"pattern": "device#"}],
+        }
+    )
+    mock__shell = MagicMock()
+
+    conn._terminal = MagicMock()
+    conn._ssh_shell = mock__shell
+    conn._connected = True
+
+    if conn.ssh_type == "paramiko":
+        mock__shell.recv.side_effect = [*response, None]
+    elif conn.ssh_type == "libssh":
+        mock__shell.read_bulk_response.side_effect = [*response, None]
+    conn.send(b"command")
+
+    mock__shell.sendall.assert_called_with(b"command\r")
+    assert to_text(conn._command_response) == "command response"
+
+
+def test_network_cli_close(conn):
+    conn._terminal = MagicMock()
+    conn._ssh_shell = MagicMock()
+    conn._ssh_type_conn = MagicMock()
+    conn._connected = True
+
+    conn.close()
+
+    assert conn._connected is False
+    assert conn._terminal.on_close_shell.called is True
+    assert conn._ssh_shell is None
+    assert conn._ssh_type_conn is None
+
+
+# ---- Note - Added as part of parammiko implicit PR - remove post 2028
+def test_network_cli_close_when_not_connected(conn):
+    """close() when _connected is False should not call terminal or close ssh_type_conn."""
+    conn._terminal = MagicMock()
+    conn._ssh_shell = MagicMock()
+    conn._ssh_type_conn = MagicMock()
+    conn._connected = False
+
+    conn.close()
+
+    conn._terminal.on_close_shell.assert_not_called()
+    conn._ssh_type_conn.close.assert_not_called()
+
+
+# ---- ssh_type and paramiko_conn ----
+def test_network_cli_ssh_type_invalid(conn):
+    # set_options validates choices, so set internal _ssh_type to trigger the runtime check
+    conn._ssh_type = "invalid"
+
+    with pytest.raises(AnsibleConnectionFailure) as excinfo:
+        conn.ssh_type
+
+    assert "Invalid value 'invalid'" in str(excinfo.value)
+
+
+def test_network_cli_paramiko_conn_returns_ssh_type_conn(conn):
+    conn.set_options(direct={"ssh_type": "libssh"})
+    assert conn.paramiko_conn is conn.ssh_type_conn
+
+
+# ---- get_prompt ----
+def test_network_cli_get_prompt(conn):
+    conn._connected = True
+    conn._matched_prompt = b"device#"
+    conn.update_cli_prompt_context = MagicMock()
+
+    assert conn.get_prompt() == b"device#"
+    conn.update_cli_prompt_context.assert_called_once()
+
+
+def test_network_cli_get_prompt_ensures_connect(conn):
+    """get_prompt triggers _connect when not connected."""
+    conn._connected = False
+    conn._matched_prompt = b"device#"
+    conn._connect = MagicMock()
+    conn.update_cli_prompt_context = MagicMock()
+
+    conn.get_prompt()
+
+    conn._connect.assert_called_once()
+
+
+# ---- exec_command ----
+def test_network_cli_exec_command_json_with_keys(conn):
+    """exec_command with JSON cmd and prompt/answer/sendonly passes kwargs to send."""
+    conn._ssh_shell = MagicMock()
+    conn.send = MagicMock(return_value=b"output")
+    conn._connected = True
+
+    cmd = json.dumps(
+        {
+            "command": "show run",
+            "prompt": r"\[y/N\]",
+            "answer": "y",
+            "sendonly": False,
+        }
+    )
+    out = conn.exec_command(cmd)
+
+    conn.send.assert_called_once()
+    call_kw = conn.send.call_args[1]
+    assert call_kw.get("command") == b"show run"
+    assert "prompt" in call_kw
+    assert "answer" in call_kw
+    assert call_kw.get("sendonly") is False
+    assert out == b"output"
+
+
+def test_network_cli_exec_command_value_error_falls_back_to_bytes(conn):
+    """Invalid JSON in cmd is treated as raw bytes command."""
+    conn._ssh_shell = MagicMock()
+    conn.send = MagicMock(return_value=b"output")
+    conn._connected = True
+
+    out = conn.exec_command(b"show version")
+
+    conn.send.assert_called_once_with(command=b"show version")
+    assert out == b"output"
+
+
+# ---- _get_terminal_std_re ----
+def test_network_cli_get_terminal_std_re_from_option(conn):
+    conn.set_options(
+        direct={
+            "ssh_type": "libssh",
+            "terminal_stdout_re": [{"pattern": r"hostname#"}],
+        }
+    )
+    conn._terminal = _make_terminal_mock()
+
+    result = conn._get_terminal_std_re("terminal_stdout_re")
+
+    assert len(result) == 1
+    assert result[0].pattern == rb"hostname#"
+
+
+def test_network_cli_get_terminal_std_re_missing_pattern_raises(conn):
+    conn.set_options(
+        direct={
+            "ssh_type": "libssh",
+            "terminal_stdout_re": [{"flags": "re.I"}],
+        }
+    )
+    conn._terminal = _make_terminal_mock()
+
+    with pytest.raises(AnsibleConnectionFailure) as excinfo:
+        conn._get_terminal_std_re("terminal_stdout_re")
+
+    assert "pattern" in str(excinfo.value).lower()
+
+
+def test_network_cli_get_terminal_std_re_with_flags(conn):
+    conn.set_options(
+        direct={
+            "ssh_type": "libssh",
+            "terminal_stdout_re": [{"pattern": r"prompt", "flags": "re.I"}],
+        }
+    )
+    conn._terminal = _make_terminal_mock()
+
+    result = conn._get_terminal_std_re("terminal_stdout_re")
+
+    assert len(result) == 1
+    assert result[0].flags & re.I
+
+
+def test_network_cli_get_terminal_std_re_fallback_to_terminal(conn):
+    conn.set_options(direct={"ssh_type": "libssh"})
+    terminal = _make_terminal_mock()
+    terminal.terminal_stdout_re = [re.compile(rb"fallback#")]
+    conn._terminal = terminal
+
+    result = conn._get_terminal_std_re("terminal_stdout_re")
+
+    assert result == [re.compile(rb"fallback#")]
+
+
+# ---- _strip, _sanitize, _find_prompt, _find_error ----
+def test_network_cli_strip(conn):
+    terminal = _make_terminal_mock(ansi_re=[re.compile(rb"\x1b\[[\d;]*m")])
+    conn._terminal = terminal
+
+    data = b"\x1b[32mdevice#\x1b[0m"
+    out = conn._strip(data)
+
+    assert out == b"device#"
+
+
+def test_network_cli_sanitize(conn):
+    conn._matched_prompt = b"device#"
+    resp = b"line1\ncommand\nline2\ndevice#"
+    out = conn._sanitize(resp, command=b"command", strip_prompt=True)
+
+    assert b"line1" in out
+    assert b"line2" in out
+    assert b"command" not in out
+
+
+def test_network_cli_find_prompt(conn):
+    conn._terminal_stdout_re = [re.compile(rb"device#")]
+    conn._log_messages = MagicMock()
+
+    found = conn._find_prompt(b"output\ndevice#")
+
+    assert found is True
+    assert conn._matched_prompt == b"device#"
+
+
+def test_network_cli_find_prompt_no_match(conn):
+    conn._terminal_stdout_re = [re.compile(rb"device#")]
+
+    found = conn._find_prompt(b"no prompt here")
+
+    assert found is False
+
+
+def test_network_cli_find_error(conn):
+    conn._terminal_stderr_re = [re.compile(rb"^ERROR")]
+    conn._matched_pattern = b"device#"
+    conn._log_messages = MagicMock()
+
+    found = conn._find_error(b"ERROR: something failed")
+
+    assert found is True
+
+
+def test_network_cli_find_error_no_match(conn):
+    conn._terminal_stderr_re = [re.compile(rb"^ERROR")]
+
+    found = conn._find_error(b"output ok")
+
+    assert found is False
+
+
+# ---- _validate_timeout_value ----
+def test_network_cli_validate_timeout_value_negative_raises(conn):
+    with pytest.raises(AnsibleConnectionFailure) as excinfo:
+        conn._validate_timeout_value(-1, "test_timer")
+
+    assert "invalid" in str(excinfo.value).lower()
+    assert "test_timer" in str(excinfo.value)
+
+
+def test_network_cli_validate_timeout_value_non_negative(conn):
+    conn._validate_timeout_value(0, "test_timer")
+    conn._validate_timeout_value(30, "test_timer")
+
+
+# ---- _handle_prompt ----
+def test_network_cli_handle_prompt_single_match(conn):
+    conn._ssh_shell = MagicMock()
+    conn._log_messages = MagicMock()
+    conn._matched_cmd_prompt = None
+
+    found = conn._handle_prompt(
+        b"device#",
+        prompts=[b"device#"],
+        answer=[b""],
+        newline=True,
+        check_all=False,
+    )
+
+    assert found is True
+    conn._ssh_shell.sendall.assert_called_once()
+
+
+def test_network_cli_handle_prompt_regex_compile_error(conn):
+    with pytest.raises(ConnectionError) as excinfo:
+        conn._handle_prompt(
+            b"data",
+            prompts=["[invalid"],
+            answer=[""],
+            newline=True,
+            check_all=False,
+        )
+    assert "compile" in str(excinfo.value).lower() or "regex" in str(excinfo.value).lower()
+
+
+# ---- get_cache ----
+def test_network_cli_get_cache(conn):
+    conn._cache = None
+    with patch.object(cache_loader, "get", return_value=MagicMock()) as mock_get:
+        cache = conn.get_cache()
+        assert cache is mock_get.return_value
+        mock_get.assert_called_once_with("ansible.netcommon.memory")
+    assert conn._cache is cache
+
+
+def test_network_cli_get_cache_reuses_existing(conn):
+    existing = MagicMock()
+    conn._cache = existing
+    assert conn.get_cache() is existing
+
+
+# ---- _is_in_config_mode ----
+def test_network_cli_is_in_config_mode_true(conn):
+    conn._matched_prompt = b"(config)#"
+    conn.get_prompt = lambda: conn._matched_prompt
+    conn._terminal = MagicMock()
+    conn._terminal.terminal_config_prompt = re.compile(r"\(config\)#")
+
+    assert conn._is_in_config_mode() is True
+
+
+def test_network_cli_is_in_config_mode_false(conn):
+    conn._matched_prompt = b"device#"
+    conn.get_prompt = lambda: conn._matched_prompt
+    conn._terminal = MagicMock()
+    conn._terminal.terminal_config_prompt = re.compile(r"\(config\)#")
+
+    assert conn._is_in_config_mode() is False
+
+
+def test_network_cli_is_in_config_mode_no_config_prompt_attr(conn):
+    conn._matched_prompt = b"device#"
+    conn.get_prompt = lambda: conn._matched_prompt
+    conn._terminal = MagicMock(spec=[])  # no terminal_config_prompt
+
+    assert conn._is_in_config_mode() is False
+
+
+# ---- send check_all validation ----
+def test_network_cli_send_check_all_prompt_answer_length_mismatch(conn):
+    conn._connected = True
+    conn._ssh_shell = MagicMock()
+    conn._terminal_stdout_re = [re.compile(rb"#")]
+    conn._terminal_stderr_re = []
+    conn._terminal = _make_terminal_mock()
+    conn.receive = MagicMock(return_value=b"device#")
+    conn._single_user_mode = False
+
+    with pytest.raises(AnsibleConnectionFailure) as excinfo:
+        conn.send(
+            b"cmd",
+            prompt=[b"p1", b"p2"],
+            answer=[b"a1"],
+            check_all=True,
+        )
+    assert "not same" in str(excinfo.value) or "prompts" in str(excinfo.value).lower()
+
+
+# ---- transport_test ----
+def test_network_cli_transport_test(conn):
+    conn.close = MagicMock()
+    conn._connect = MagicMock()
+
+    conn.transport_test(connect_timeout=10)
+
+    assert conn.close.call_count == 2
+    conn._connect.assert_called_once()
+
+
+# ---- _on_become ----
+@pytest.mark.parametrize(
+    "become_errors,should_raise", [("fail", True), ("warn", False), ("ignore", False)]
+)
+def test_network_cli_on_become_errors(conn, become_errors, should_raise):
+    conn._terminal = MagicMock()
+    conn._terminal.on_become.side_effect = AnsibleConnectionFailure("auth failed")
+    conn.set_options(direct={"ssh_type": "libssh", "become_errors": become_errors})
+
+    if should_raise:
+        with pytest.raises(AnsibleConnectionFailure):
+            conn._on_become(become_pass="secret")
+    else:
+        conn._on_become(become_pass="secret")
+    conn._terminal.on_become.assert_called_once_with(passwd="secret")
+
+
+# ---- _on_open_shell ----
+@pytest.mark.parametrize(
+    "terminal_errors,should_raise", [("fail", True), ("warn", False), ("ignore", False)]
+)
+def test_network_cli_on_open_shell_errors(conn, terminal_errors, should_raise):
+    conn._terminal = MagicMock()
+    conn._terminal.on_open_shell.side_effect = AnsibleConnectionFailure("terminal failed")
+    conn.set_options(direct={"ssh_type": "libssh", "terminal_errors": terminal_errors})
+
+    if should_raise:
+        with pytest.raises(AnsibleConnectionFailure):
+            conn._on_open_shell()
+    else:
+        conn._on_open_shell()
+    conn._terminal.on_open_shell.assert_called_once()
+
+
+# ---- _connect retry ----
+def test_network_cli_connect_retries_then_succeeds(conn):
+    mock_ssh = MagicMock()
+    mock_ssh.ssh.invoke_shell.return_value = MagicMock()
+    conn.set_options(direct={"ssh_type": "libssh", "network_cli_retries": 2})
+    conn._ssh_type_conn = MagicMock()
+    conn._ssh_type_conn._connect = MagicMock(
+        side_effect=[Exception("first"), Exception("second"), mock_ssh]
+    )
+    conn._ssh_type_conn._set_log_channel = MagicMock()
+    conn._ssh_type_conn.force_persistence = False
+    conn._play_context.become = False
+    conn._terminal = _make_terminal_mock()
+    conn._ssh_shell = None
+    conn.receive = MagicMock()
+
+    conn._connect()
+
+    assert conn._ssh_type_conn._connect.call_count == 3
+
+
+def test_network_cli_connect_retries_exhausted_raises(conn):
+    conn.set_options(direct={"ssh_type": "libssh", "network_cli_retries": 1})
+    conn._ssh_type_conn = MagicMock()
+    conn._ssh_type_conn._connect = MagicMock(side_effect=Exception("connect failed"))
+    conn._ssh_type_conn._set_log_channel = MagicMock()
+    conn._ssh_type_conn.force_persistence = False
+
+    with pytest.raises(AnsibleConnectionFailure) as excinfo:
+        conn._connect()
+    assert "connect failed" in str(excinfo.value)
+
+
+def test_network_cli_connect_ansible_error_propagates(conn):
+    conn.set_options(direct={"ssh_type": "libssh"})
+    conn._ssh_type_conn = MagicMock()
+    conn._ssh_type_conn._connect = MagicMock(side_effect=AnsibleError("ansible error"))
+    conn._ssh_type_conn._set_log_channel = MagicMock()
+    conn._ssh_type_conn.force_persistence = False
+
+    with pytest.raises(AnsibleError) as excinfo:
+        conn._connect()
+    assert "ansible error" in str(excinfo.value)
+
+
+# ---- _ParamikoConnection ----
+def test_paramiko_connection_get_option_from_defaults():
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    pc.remote_addr = "192.168.1.1"
+    pc.remote_user = "admin"
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+
+    assert paramiko_conn.get_option("remote_addr") == "192.168.1.1"
+    assert paramiko_conn.get_option("port") == 22
+    assert paramiko_conn.get_option("host_key_checking") is True
+
+
+def test_paramiko_connection_get_option_unknown_raises():
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+
+    with pytest.raises(KeyError):
+        paramiko_conn.get_option("ssh_type")
+
+
+def test_paramiko_connection_set_option_get_option():
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    paramiko_conn.set_option("port", 2222)
+
+    assert paramiko_conn.get_option("port") == 2222
+
+
+def test_paramiko_connection_set_options_only_stores_known():
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    paramiko_conn.set_options(
+        direct={"port": 2222, "ssh_type": "libssh", "proxy_command": "nc %h %p"}
+    )
+
+    assert paramiko_conn.get_option("port") == 2222
+    assert paramiko_conn.get_option("proxy_command") == "nc %h %p"
+    with pytest.raises(KeyError):
+        paramiko_conn.get_option("ssh_type")
+
+
+def test_paramiko_connection_cache_key():
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    pc.remote_addr = "host1"
+    pc.remote_user = "user1"
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+
+    key = paramiko_conn._cache_key()
+    assert "host1" in key
+    assert "user1" in key
+
+
+def test_paramiko_connection_connect_uncached_without_paramiko():
+    from ansible_collections.ansible.netcommon.plugins.connection import network_cli
+
+    orig_has = network_cli.HAS_PARAMIKO
+    orig_err = network_cli.PARAMIKO_IMPORT_ERR
+    try:
+        network_cli.HAS_PARAMIKO = False
+        network_cli.PARAMIKO_IMPORT_ERR = Exception("paramiko not installed")
+
+        pc = PlayContext()
+        pc.remote_addr = "host1"
+        pc.remote_user = "user1"
+        paramiko_conn = network_cli._ParamikoConnection(pc, "/dev/null", parent_connection=None)
+
+        with pytest.raises(AnsibleError) as excinfo:
+            paramiko_conn._connect_uncached()
+        assert "paramiko is not installed" in str(excinfo.value)
+    finally:
+        network_cli.HAS_PARAMIKO = orig_has
+        network_cli.PARAMIKO_IMPORT_ERR = orig_err
+
+
+def test_network_cli_copy_file_libssh(conn):
+    """libssh branch: delegate to ssh_type_conn.put_file (no _connect_uncached)."""
+    mock_libssh = MagicMock()
+    conn._ssh_type = "libssh"
+    conn._ssh_type_conn = mock_libssh
+    conn.copy_file(source="/tmp/local", destination="/remote/x", proto="sftp", timeout=45)
+    mock_libssh.put_file.assert_called_once_with("/tmp/local", "/remote/x", proto="sftp")
+
+
+def test_network_cli_get_file_libssh(conn):
+    """libssh branch: _connect then fetch_file on ssh_type_conn."""
+    mock_libssh = MagicMock()
+    conn._ssh_type = "libssh"
+    conn._ssh_type_conn = mock_libssh
+    conn.get_file(source="/r/f", destination="/l/f", proto="sftp", timeout=60)
+    mock_libssh._connect.assert_called_once()
+    mock_libssh.fetch_file.assert_called_once_with("/r/f", "/l/f", proto="sftp")
+
+
+def test_network_cli_copy_file_invalid_ssh_type_raises(conn):
+    """Else branch: unsupported ssh_type must raise AnsibleError."""
+    with patch.object(type(conn), "ssh_type", new_callable=PropertyMock, return_value="bogus"):
+        with pytest.raises(AnsibleError, match="Do not know how to do SCP with ssh_type"):
+            conn.copy_file(source="/a", destination="/b")
+
+
+def test_network_cli_get_file_invalid_ssh_type_raises(conn):
+    """Else branch for get_file when ssh_type is not libssh or paramiko."""
+    with patch.object(type(conn), "ssh_type", new_callable=PropertyMock, return_value="bogus"):
+        with pytest.raises(AnsibleError, match="Do not know how to do SCP with ssh_type"):
+            conn.get_file(source="/a", destination="/b")
+
+
+# --- proxy_command tests (issue #776) ---
+
+
+def test_proxy_command_var_options_reaches_shim():
+    """proxy_command set via var_options is stored by the paramiko shim."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    paramiko_conn.set_options(
+        var_options={"proxy_command": "ssh -W %h:%p jumphost"},
+    )
+    assert paramiko_conn.get_option("proxy_command") == "ssh -W %h:%p jumphost"
+
+
+def test_proxy_command_direct_overrides_var_options():
+    """direct proxy_command takes precedence over var_options."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    paramiko_conn.set_options(
+        direct={"proxy_command": "direct-proxy"},
+        var_options={"proxy_command": "var-proxy"},
+    )
+    assert paramiko_conn.get_option("proxy_command") == "direct-proxy"
+
+
+def test_proxy_command_falls_back_to_parent():
+    """When proxy_command is not set directly, get_option falls back to parent."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    mock_parent = MagicMock()
+    mock_parent.get_option.return_value = "ssh -W %h:%p jumphost"
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=mock_parent)
+    assert paramiko_conn.get_option("proxy_command") == "ssh -W %h:%p jumphost"
+
+
+def test_proxy_command_default_when_unset():
+    """When proxy_command is not set anywhere, get_option returns the default."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    assert paramiko_conn.get_option("proxy_command") is None
+
+
+def test_proxy_command_parse_replaces_tokens():
+    """_parse_proxy_command replaces %h, %p, %r tokens."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    pc.remote_addr = "10.0.0.1"
+    pc.remote_user = "admin"
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    paramiko_conn.set_option("proxy_command", "ssh -W %h:%p -l %r jumphost")
+
+    with patch(
+        "ansible_collections.ansible.netcommon.plugins.connection.network_cli.paramiko"
+    ) as mock_paramiko:
+        mock_paramiko.ProxyCommand.return_value = MagicMock()
+        result = paramiko_conn._parse_proxy_command(port=22)
+
+    mock_paramiko.ProxyCommand.assert_called_once_with("ssh -W 10.0.0.1:22 -l admin jumphost")
+    assert "sock" in result
+
+
+@pytest.mark.parametrize("ssh_type", ["paramiko", "libssh", "auto"])
+def test_proxy_command_pass_through_network_cli(conn, ssh_type):
+    """proxy_command set via direct on network_cli reaches ssh_type_conn."""
+    conn.set_options(
+        direct={
+            "ssh_type": ssh_type,
+            "proxy_command": "ssh -W %h:%p jumphost",
+        }
+    )
+    assert conn.get_option("proxy_command") == "ssh -W %h:%p jumphost"
+    assert conn.ssh_type_conn.get_option("proxy_command") == "ssh -W %h:%p jumphost"
+
+
+# --- proxy_command: _parse_proxy_command edge cases ---
+
+
+def test_parse_proxy_command_returns_empty_when_unset():
+    """_parse_proxy_command with no proxy_command returns empty dict."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+
+    result = paramiko_conn._parse_proxy_command(port=22)
+    assert result == {}
+
+
+def test_parse_proxy_command_attribute_error_fallback():
+    """_parse_proxy_command returns empty dict when paramiko.ProxyCommand is unavailable."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    pc.remote_addr = "10.0.0.1"
+    pc.remote_user = "admin"
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    paramiko_conn.set_option("proxy_command", "ssh -W %h:%p jumphost")
+
+    with patch(
+        "ansible_collections.ansible.netcommon.plugins.connection.network_cli.paramiko"
+    ) as mock_paramiko:
+        mock_paramiko.ProxyCommand.side_effect = AttributeError("no ProxyCommand")
+        result = paramiko_conn._parse_proxy_command(port=22)
+
+    assert result == {}
+
+
+# --- paramiko shim: var_options filtering ---
+
+
+def test_paramiko_shim_var_options_ignores_unknown_keys():
+    """var_options keys not in _PARAMIKO_DEFAULTS are silently ignored."""
+    from ansible_collections.ansible.netcommon.plugins.connection.network_cli import (
+        _ParamikoConnection,
+    )
+
+    pc = PlayContext()
+    paramiko_conn = _ParamikoConnection(pc, "/dev/null", parent_connection=None)
+    paramiko_conn.set_options(
+        var_options={
+            "proxy_command": "ssh -W %h:%p jumphost",
+            "ssh_type": "paramiko",
+            "nonexistent_option": "should_be_ignored",
+        },
+    )
+    assert paramiko_conn.get_option("proxy_command") == "ssh -W %h:%p jumphost"
+    with pytest.raises(KeyError):
+        paramiko_conn.get_option("ssh_type")
+    with pytest.raises(KeyError):
+        paramiko_conn.get_option("nonexistent_option")
+
+
+# --- transcript recording tests (PR #772) ---
+
+
+def test_transcript_recording_disabled_by_default(conn):
+    """Recording is off when ANSIBLE_NETWORK_CLI_RECORD is not set."""
+    assert conn._transcript_recording is False
+    assert conn._transcript_log is None
+
+
+def test_transcript_recording_enabled_by_env(monkeypatch):
+    """Setting ANSIBLE_NETWORK_CLI_RECORD=1 turns on recording."""
+    monkeypatch.setenv("ANSIBLE_NETWORK_CLI_RECORD", "1")
+    pc = PlayContext()
+    pc.network_os = "fakeos"
+    monkeypatch.setattr(terminal_loader, "get", lambda *a, **kw: MagicMock())
+    conn = connection_loader.get("ansible.netcommon.network_cli", pc, "/dev/null")
+    assert conn._transcript_recording is True
+    assert conn._transcript_log == []
+
+
+def test_transcript_recording_custom_output_dir(monkeypatch):
+    """ANSIBLE_NETWORK_CLI_RECORD_PATH overrides the default output dir."""
+    monkeypatch.setenv("ANSIBLE_NETWORK_CLI_RECORD", "1")
+    monkeypatch.setenv("ANSIBLE_NETWORK_CLI_RECORD_PATH", "/custom/path")
+    pc = PlayContext()
+    pc.network_os = "fakeos"
+    monkeypatch.setattr(terminal_loader, "get", lambda *a, **kw: MagicMock())
+    conn = connection_loader.get("ansible.netcommon.network_cli", pc, "/dev/null")
+    assert conn._transcript_output_dir == "/custom/path"
+
+
+def test_transcript_recording_default_output_dir(monkeypatch):
+    """Default output dir is /tmp/transcript-recordings."""
+    monkeypatch.setenv("ANSIBLE_NETWORK_CLI_RECORD", "1")
+    monkeypatch.delenv("ANSIBLE_NETWORK_CLI_RECORD_PATH", raising=False)
+    pc = PlayContext()
+    pc.network_os = "fakeos"
+    monkeypatch.setattr(terminal_loader, "get", lambda *a, **kw: MagicMock())
+    conn = connection_loader.get("ansible.netcommon.network_cli", pc, "/dev/null")
+    assert conn._transcript_output_dir == "/tmp/transcript-recordings"
+
+
+def test_send_appends_to_transcript_log(conn):
+    """When recording is on, send() appends command/response to the log."""
+    conn._transcript_recording = True
+    conn._transcript_log = []
+    conn._connected = True
+    conn._ssh_shell = MagicMock()
+    conn._history = []
+    conn._single_user_mode = False
+
+    mock_terminal = _make_terminal_mock()
+    conn._terminal = mock_terminal
+
+    # Mock receive to return a known response
+    with patch.object(conn, "receive", return_value=b"hostname box1\n"):
+        with patch.object(conn, "update_cli_prompt_context"):
+            conn.send(b"show running-config | section ^hostname")
+
+    assert len(conn._transcript_log) == 1
+    entry = conn._transcript_log[0]
+    assert entry["command"] == "show running-config | section ^hostname"
+    assert entry["response"] == "hostname box1\n"
+    assert "timestamp" in entry
+    assert isinstance(entry["timestamp"], float)
+
+
+def test_send_does_not_record_when_disabled(conn):
+    """When recording is off, send() does not create a log entry."""
+    conn._transcript_recording = False
+    conn._transcript_log = None
+    conn._connected = True
+    conn._ssh_shell = MagicMock()
+    conn._history = []
+    conn._single_user_mode = False
+
+    mock_terminal = _make_terminal_mock()
+    conn._terminal = mock_terminal
+
+    with patch.object(conn, "receive", return_value=b"hostname box1\n"):
+        with patch.object(conn, "update_cli_prompt_context"):
+            conn.send(b"show running-config | section ^hostname")
+
+    assert conn._transcript_log is None
+
+
+def test_flush_transcript_log_writes_jsonl(conn, tmp_path):
+    """_flush_transcript_log writes each entry as a JSON line."""
+    conn._transcript_recording = True
+    conn._transcript_log = [
+        {"command": "terminal length 0", "response": "", "timestamp": 1714300000.0},
+        {"command": "show version", "response": "Cisco IOS XE\n", "timestamp": 1714300001.0},
+    ]
+    conn._transcript_output_dir = str(tmp_path)
+    conn._play_context.remote_addr = "192.168.1.1"
+    conn._play_context.port = 22
+
+    conn._flush_transcript_log()
+
+    outfile = tmp_path / "192.168.1.1_22.jsonl"
+    assert outfile.exists()
+    lines = outfile.read_text().strip().split("\n")
+    assert len(lines) == 2
+    assert json.loads(lines[0])["command"] == "terminal length 0"
+    assert json.loads(lines[1])["command"] == "show version"
+    assert json.loads(lines[1])["response"] == "Cisco IOS XE\n"
+
+
+def test_flush_transcript_log_appends(conn, tmp_path):
+    """Successive flushes append to the same file, not overwrite."""
+    conn._transcript_recording = True
+    conn._transcript_output_dir = str(tmp_path)
+    conn._play_context.remote_addr = "10.0.0.1"
+    conn._play_context.port = 830
+
+    # First flush
+    conn._transcript_log = [
+        {"command": "cmd1", "response": "resp1", "timestamp": 1.0},
+    ]
+    conn._flush_transcript_log()
+
+    # Second flush
+    conn._transcript_log = [
+        {"command": "cmd2", "response": "resp2", "timestamp": 2.0},
+    ]
+    conn._flush_transcript_log()
+
+    outfile = tmp_path / "10.0.0.1_830.jsonl"
+    lines = outfile.read_text().strip().split("\n")
+    assert len(lines) == 2
+    assert json.loads(lines[0])["command"] == "cmd1"
+    assert json.loads(lines[1])["command"] == "cmd2"
+
+
+def test_flush_transcript_log_default_port(conn, tmp_path):
+    """When port is None, default to 22 in the filename."""
+    conn._transcript_recording = True
+    conn._transcript_log = [
+        {"command": "show clock", "response": "12:00:00", "timestamp": 1.0},
+    ]
+    conn._transcript_output_dir = str(tmp_path)
+    conn._play_context.remote_addr = "router1"
+    conn._play_context.port = None
+
+    conn._flush_transcript_log()
+
+    outfile = tmp_path / "router1_22.jsonl"
+    assert outfile.exists()
+
+
+def test_flush_transcript_log_handles_write_error(conn):
+    """_flush_transcript_log emits a warning on write failure, does not raise."""
+    conn._transcript_recording = True
+    conn._transcript_log = [
+        {"command": "show clock", "response": "12:00:00", "timestamp": 1.0},
+    ]
+    conn._transcript_output_dir = "/nonexistent/deeply/nested/path"
+    conn._play_context.remote_addr = "host1"
+    conn._play_context.port = 22
+
+    # Patch os.makedirs to raise so we test the error handling path
+    with patch("os.makedirs", side_effect=OSError("Permission denied")):
+        # Should not raise
+        conn._flush_transcript_log()
+
+
+def test_close_flushes_transcript(conn):
+    """close() calls _flush_transcript_log when recording is active with entries."""
+    conn._transcript_recording = True
+    conn._transcript_log = [
+        {"command": "cmd", "response": "resp", "timestamp": 1.0},
+    ]
+    conn._connected = True
+    conn._ssh_shell = MagicMock()
+    conn._terminal = _make_terminal_mock()
+    conn._ssh_type_conn = MagicMock()
+
+    with patch.object(conn, "_flush_transcript_log") as mock_flush:
+        conn.close()
+
+    mock_flush.assert_called_once()
+
+
+def test_close_skips_flush_when_log_empty(conn):
+    """close() does not flush when the transcript log is empty."""
+    conn._transcript_recording = True
+    conn._transcript_log = []
+    conn._connected = True
+    conn._ssh_shell = MagicMock()
+    conn._terminal = _make_terminal_mock()
+    conn._ssh_type_conn = MagicMock()
+
+    with patch.object(conn, "_flush_transcript_log") as mock_flush:
+        conn.close()
+
+    mock_flush.assert_not_called()
+
+
+def test_close_skips_flush_when_recording_disabled(conn):
+    """close() does not flush when recording was never enabled."""
+    conn._transcript_recording = False
+    conn._transcript_log = None
+    conn._connected = True
+    conn._ssh_shell = MagicMock()
+    conn._terminal = _make_terminal_mock()
+    conn._ssh_type_conn = MagicMock()
+
+    with patch.object(conn, "_flush_transcript_log") as mock_flush:
+        conn.close()
+
+    mock_flush.assert_not_called()
+
+
+@pytest.mark.parametrize("env_value", ["0", "false", "False", "FALSE", "no", "No", ""])
+def test_transcript_recording_disabled_for_falsy_values(monkeypatch, env_value):
+    """Setting ANSIBLE_NETWORK_CLI_RECORD to '0', 'false', 'no', or '' does NOT enable recording."""
+    monkeypatch.setenv("ANSIBLE_NETWORK_CLI_RECORD", env_value)
+    pc = PlayContext()
+    pc.network_os = "fakeos"
+    monkeypatch.setattr(terminal_loader, "get", lambda *a, **kw: MagicMock())
+    conn = connection_loader.get("ansible.netcommon.network_cli", pc, "/dev/null")
+    assert conn._transcript_recording is False
+    assert conn._transcript_log is None
+
+
+@pytest.mark.parametrize("env_value", ["1", "true", "True", "TRUE", "yes", "Yes", "YES"])
+def test_transcript_recording_enabled_for_truthy_values(monkeypatch, env_value):
+    """Setting ANSIBLE_NETWORK_CLI_RECORD to '1', 'true', or 'yes' enables recording."""
+    monkeypatch.setenv("ANSIBLE_NETWORK_CLI_RECORD", env_value)
+    pc = PlayContext()
+    pc.network_os = "fakeos"
+    monkeypatch.setattr(terminal_loader, "get", lambda *a, **kw: MagicMock())
+    conn = connection_loader.get("ansible.netcommon.network_cli", pc, "/dev/null")
+    assert conn._transcript_recording is True
+    assert conn._transcript_log == []
+
+
+def test_flush_transcript_log_sanitizes_hostname(conn, tmp_path):
+    """Path traversal characters in hostname are sanitized in the output filename."""
+    conn._transcript_recording = True
+    conn._transcript_log = [
+        {"command": "show clock", "response": "12:00:00", "timestamp": 1.0},
+    ]
+    conn._transcript_output_dir = str(tmp_path)
+    conn._play_context.remote_addr = "../../etc/cron.d/evil"
+    conn._play_context.port = 22
+
+    conn._flush_transcript_log()
+
+    # The traversal characters (/ and spaces) should be replaced with
+    # underscores so the file stays inside the output directory.
+    # Dots and hyphens are preserved by the regex [^\w.\-]
+    expected = tmp_path / ".._.._etc_cron.d_evil_22.jsonl"
+    assert expected.exists()
+    # Verify no file was written outside the output directory
+    import pathlib
+
+    for f in pathlib.Path(str(tmp_path)).rglob("*.jsonl"):
+        assert str(f).startswith(str(tmp_path))
+
+
+def test_flush_transcript_log_preserves_normal_hostnames(conn, tmp_path):
+    """Normal hostnames (IPs, FQDNs, hyphens) are not altered by sanitization."""
+    conn._transcript_recording = True
+    conn._transcript_log = [
+        {"command": "show clock", "response": "12:00:00", "timestamp": 1.0},
+    ]
+    conn._transcript_output_dir = str(tmp_path)
+    conn._play_context.remote_addr = "router-core.lab.local"
+    conn._play_context.port = 22
+
+    conn._flush_transcript_log()
+
+    outfile = tmp_path / "router-core.lab.local_22.jsonl"
+    assert outfile.exists()
+
+
+def test_flush_transcript_log_restrictive_permissions(conn, tmp_path):
+    """Output directory is created with 0o700 and files with 0o600."""
+    output_dir = tmp_path / "recordings"
+    conn._transcript_recording = True
+    conn._transcript_log = [
+        {"command": "show clock", "response": "12:00:00", "timestamp": 1.0},
+    ]
+    conn._transcript_output_dir = str(output_dir)
+    conn._play_context.remote_addr = "10.0.0.1"
+    conn._play_context.port = 22
+
+    conn._flush_transcript_log()
+
+    assert output_dir.exists()
+    assert oct(output_dir.stat().st_mode & 0o777) == oct(0o700)
+    outfile = output_dir / "10.0.0.1_22.jsonl"
+    assert outfile.exists()
+    assert oct(outfile.stat().st_mode & 0o777) == oct(0o600)

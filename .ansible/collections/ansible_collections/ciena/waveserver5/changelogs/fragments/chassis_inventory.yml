@@ -1,0 +1,2 @@
+minor_changes:
+  - facts - add an inventory subset and read-only inventory module for OpenConfig platform components.
