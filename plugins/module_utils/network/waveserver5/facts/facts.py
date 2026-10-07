@@ -36,6 +36,9 @@ from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserv
 from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.aaa.aaa import (
     AaaFacts,
 )
+from ansible_collections.ciena.waveserver5.plugins.module_utils.network.waveserver5.facts.inventory.inventory import (
+    InventoryFacts,
+)
 
 FACT_LEGACY_SUBSETS = dict(default=Default, config=Config)
 FACT_RESOURCE_SUBSETS = dict(
@@ -45,6 +48,7 @@ FACT_RESOURCE_SUBSETS = dict(
     ptps=PtpsFacts,
     xcvrs=XcvrsFacts,
     system=SystemFacts,
+    inventory=InventoryFacts,
 )
 
 

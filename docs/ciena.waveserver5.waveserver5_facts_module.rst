@@ -67,7 +67,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are &#x27;all&#x27;, &#x27;interfaces&#x27;</div>
+                        <div>When supplied, this argument restricts the facts collected to a given subset. Valid subsets include <code>all</code>, <code>aaa</code>, <code>inventory</code>, <code>pm</code>, <code>ports</code>, <code>ptps</code>, <code>system</code>, and <code>xcvrs</code>. The <code>inventory</code> subset gathers OpenConfig platform component data, including chassis and installed components.</div>
                 </td>
             </tr>
             <tr>
@@ -108,6 +108,16 @@ Examples
     - waveserver5_facts:
         gather_subset: all
         gather_network_resources: all
+
+        # Gather chassis and component inventory
+        - name: Gather chassis inventory
+            ciena.waveserver5.waveserver5_facts:
+                gather_network_resources:
+                    - inventory
+            register: device_inventory
+
+        - ansible.builtin.debug:
+                var: device_inventory.ansible_facts.ansible_network_resources.inventory
 
 
 

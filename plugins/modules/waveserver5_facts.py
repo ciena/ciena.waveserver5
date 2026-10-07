@@ -57,7 +57,9 @@ options:
       Possible values for this argument include all and the resources like interfaces,
       vlans etc. Can specify a list of values to include a larger subset. Values can
       also be used with an initial C(!) to specify that a specific subset should
-      not be collected. Valid subsets are 'all', 'interfaces'
+      not be collected. Valid subsets are 'all', 'aaa', 'inventory', 'pm', 'ports',
+      'ptps', 'system', and 'xcvrs'. The C(inventory) subset gathers OpenConfig
+      platform component data, including chassis and installed components.
     required: false
     type: list
     elements: str
@@ -69,6 +71,16 @@ EXAMPLES = """
 - waveserver5_facts:
     gather_subset: all
     gather_network_resources: all
+
+# Gather chassis and component inventory
+- name: Gather chassis inventory
+  ciena.waveserver5.waveserver5_facts:
+    gather_network_resources:
+      - inventory
+  register: device_inventory
+
+- ansible.builtin.debug:
+    var: device_inventory.ansible_facts.ansible_network_resources.inventory
 
 """
 
