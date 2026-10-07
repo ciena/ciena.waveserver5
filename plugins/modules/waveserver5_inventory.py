@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# Copyright 2026 Ciena
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -10,6 +13,9 @@ DOCUMENTATION = """
 module: waveserver5_inventory
 version_added: 1.2.0
 short_description: Gather chassis and component inventory from Waveserver 5.
+author:
+  - Jeff Groom (@jgroom33)
+  - Galo Ertola (@perrary)
 description:
   - Reads OpenConfig platform component inventory over NETCONF.
   - This read-only module returns the chassis and installed components exposed by

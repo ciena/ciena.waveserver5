@@ -479,8 +479,6 @@ EXAMPLES = """
         state:
           admin_state: enabled
     state: merged
-
-
 """
 RETURN = """
 before:

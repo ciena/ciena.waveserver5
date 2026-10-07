@@ -418,8 +418,6 @@ EXAMPLES = """
       encryption_gcm_performance_instances:
         instance_name: foo
     state: merged
-
-
 """
 RETURN = """
 before:

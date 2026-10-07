@@ -613,8 +613,6 @@ EXAMPLES = """
         password: Abcd123!
         access_level: admin
     state: merged
-
-
 """
 RETURN = """
 before:

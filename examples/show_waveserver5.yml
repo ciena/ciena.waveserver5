@@ -2,8 +2,8 @@
 - name: Collect Waveserver 5 show data
   hosts: waveservers
   gather_facts: false
-  collections:
-    - ciena.waveserver5
+  vars:
+    ansible_port: 443
   tasks:
     - name: Show software and base device facts
       ciena.waveserver5.waveserver5_facts:

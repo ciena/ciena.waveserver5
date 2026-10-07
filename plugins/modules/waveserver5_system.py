@@ -1068,8 +1068,6 @@ EXAMPLES = """
       host_name:
         config_host_name: foo
     state: merged
-
-
 """
 RETURN = """
 before:

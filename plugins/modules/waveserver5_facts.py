@@ -81,7 +81,6 @@ EXAMPLES = """
 
 - ansible.builtin.debug:
     var: device_inventory.ansible_facts.ansible_network_resources.inventory
-
 """
 
 RETURN = """
