@@ -1,0 +1,39 @@
+{
+ "collection_info": {
+  "namespace": "ciena",
+  "name": "waveserver5",
+  "version": "1.2.0",
+  "authors": [
+   "Jeff Groom (github.com/jgroom33)",
+   "Galo Ertola (github.com/perrary)"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "ciena",
+   "waveserver",
+   "networking",
+   "ethernet",
+   "netconf",
+   "optical",
+   "dwdm"
+  ],
+  "description": "Ansible collection for Ciena's Waveserver 5",
+  "license": [],
+  "license_file": "LICENSE",
+  "dependencies": {
+   "ansible.netcommon": ">=2.5.1"
+  },
+  "repository": "https://github.com/ciena/ciena.waveserver5",
+  "documentation": null,
+  "homepage": "https://github.com/ciena/ciena.waveserver5",
+  "issues": "https://github.com/ciena/ciena.waveserver5/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "72d8bbd93c5285a9a4551936f94e82d7609849435df664f3f0cf6b64f4684602",
+  "format": 1
+ },
+ "format": 1
+}

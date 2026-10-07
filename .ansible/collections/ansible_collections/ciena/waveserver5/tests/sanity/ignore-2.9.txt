@@ -1,0 +1,1 @@
+plugins/action/waveserver5.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`

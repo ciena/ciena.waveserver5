@@ -1,7 +1,7 @@
 ---
 namespace: ciena
 name: waveserver5
-version: 1.1.0
+version: 1.2.0
 readme: README.md
 dependencies:
   ansible.netcommon: ">=2.5.1"
@@ -16,6 +16,7 @@ homepage: https://github.com/ciena/ciena.waveserver5
 issues: https://github.com/ciena/ciena.waveserver5/issues
 build_ignore:
   - .gitignore
+  - .ansible
   - changelogs/.plugin-cache.yaml
   - .vscode
   - .github

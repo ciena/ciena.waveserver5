@@ -1,0 +1,18 @@
+---
+- name: Gather Xcvrs information
+  ciena.waveserver5.waveserver5_xcvrs:
+    state: gathered
+- name: Disable xcvr
+  ciena.waveserver5.waveserver5_xcvrs:
+    config:
+      - xcvr_id: 5-1
+        state:
+          admin_state: disabled
+    state: merged
+- name: Enable xcvr
+  ciena.waveserver5.waveserver5_xcvrs:
+    config:
+      - xcvr_id: 5-1
+        state:
+          admin_state: enabled
+    state: merged
