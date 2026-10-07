@@ -1,7 +1,7 @@
 ---
-- hosts: all
+- name: Test ciena device Waveserver 5
+  hosts: all
   gather_facts: false
-  name: Test ciena device Waveserver 5
   connection: netconf
   tasks:
     # - name: Test System
