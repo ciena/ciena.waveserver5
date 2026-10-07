@@ -139,6 +139,12 @@ For a system-specific read, use the module with `state: gathered`. This is the c
 
 The system resource includes the fields defined by the [system model](docs/ciena.waveserver5.waveserver5_system_module.rst). Other resource modules use the same `gathered` pattern to return current data for their respective models.
 
+The complete read-only example is available at [examples/show_waveserver5.yml](examples/show_waveserver5.yml). Run it with an inventory containing a `waveservers` group and the NETCONF connection variables shown above:
+
+```bash
+ansible-playbook -i inventory.yml examples/show_waveserver5.yml
+```
+
 ### Configure a resource
 
 Use `config` to provide fields from the module's model and `state: merged` to apply the supplied values while leaving unrelated settings unchanged. For example:

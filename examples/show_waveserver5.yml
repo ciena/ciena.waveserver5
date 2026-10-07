@@ -1,0 +1,51 @@
+---
+- name: Collect Waveserver 5 show data
+  hosts: waveservers
+  gather_facts: false
+  collections:
+    - ciena.waveserver5
+  tasks:
+    - name: Show software and base device facts
+      ciena.waveserver5.waveserver5_facts:
+        gather_subset:
+          - default
+      register: software_show
+      tags: software
+
+    - name: Show system data
+      ciena.waveserver5.waveserver5_system:
+        state: gathered
+      register: system_show
+      tags: system
+
+    - name: Show chassis and component inventory
+      ciena.waveserver5.waveserver5_inventory:
+        state: gathered
+      register: chassis_inventory_show
+      tags: inventory
+
+    - name: Show port data
+      ciena.waveserver5.waveserver5_ports:
+        state: gathered
+      register: port_show
+      tags: ports
+
+    - name: Display software version
+      ansible.builtin.debug:
+        var: software_show.ansible_facts.ansible_net_version
+      tags: software
+
+    - name: Display system data
+      ansible.builtin.debug:
+        var: system_show.gathered
+      tags: system
+
+    - name: Display chassis inventory
+      ansible.builtin.debug:
+        var: chassis_inventory_show.gathered
+      tags: inventory
+
+    - name: Display port data
+      ansible.builtin.debug:
+        var: port_show.gathered
+      tags: ports
