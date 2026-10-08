@@ -1,0 +1,42 @@
+---
+name: PR requirements
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    branches: [main]
+
+jobs:
+  version-and-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require galaxy.yml version bump
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          base_version=$(git show "$BASE:galaxy.yml" | sed -n 's/^version:[[:space:]]*//p' | tr -d "\"'")
+          head_version=$(sed -n 's/^version:[[:space:]]*//p' galaxy.yml | tr -d "\"'")
+          echo "base: $base_version  head: $head_version"
+          if [ "$base_version" = "$head_version" ]; then
+            echo "::error file=galaxy.yml::version must be bumped (still $head_version)"
+            exit 1
+          fi
+          highest=$(printf '%s\n%s\n' "$base_version" "$head_version" | sort -V | tail -n1)
+          if [ "$highest" != "$head_version" ]; then
+            echo "::error file=galaxy.yml::version $head_version is lower than $base_version"
+            exit 1
+          fi
+
+      - name: Require changelog fragment
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          fragments=$(git diff --name-only --diff-filter=AM "$BASE"...HEAD -- 'changelogs/fragments/*.yml' 'changelogs/fragments/*.yaml')
+          if [ -z "$fragments" ]; then
+            echo "::error::add a changelog fragment under changelogs/fragments/"
+            exit 1
+          fi
+          echo "$fragments"
